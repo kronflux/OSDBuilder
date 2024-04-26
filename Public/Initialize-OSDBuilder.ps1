@@ -38,13 +38,13 @@ function Initialize-OSDBuilder {
     #=================================================
     Write-Verbose "Initializing OSDBuilder ..." -Verbose
 
-    
+
     $global:GetOSDBuilder = [ordered]@{
         Home                    = $global:GetOSDBuilderHome
         Initialize              = $true
         JsonLocal               = Join-Path $global:GetOSDBuilderHome 'OSDBuilder.json'
         JsonGlobal              = Join-Path $env:ProgramData 'OSDeploy\OSDBuilder.json'
-<#         PathContentADK          = Join-Path $global:GetOSDBuilderHome 'Content\ADK'
+<#      PathContentADK          = Join-Path $global:GetOSDBuilderHome 'Content\ADK'
         PathContentDaRT         = Join-Path $global:GetOSDBuilderHome 'Content\DaRT'
         PathContentDrivers      = Join-Path $global:GetOSDBuilderHome 'Content\Drivers'
         PathContentExtraFiles   = Join-Path $global:GetOSDBuilderHome 'Content\ExtraFiles'
@@ -62,7 +62,7 @@ function Initialize-OSDBuilder {
         #AllowLocalPriority      = $false
         PathContent             = Join-Path $global:GetOSDBuilderHome 'Content'
         PathContentPacks        = Join-Path $global:GetOSDBuilderHome 'ContentPacks'
-        PathFeatureUpdates		= Join-Path $global:GetOSDBuilderHome 'FeatureUpdates'
+        PathFeatureUpdates      = Join-Path $global:GetOSDBuilderHome 'FeatureUpdates'
         PathMount               = Join-Path $global:GetOSDBuilderHome 'Mount'
         PathOSBuilds            = Join-Path $global:GetOSDBuilderHome 'OSBuilds'
         PathOSImport            = Join-Path $global:GetOSDBuilderHome 'OSImport'
@@ -237,7 +237,7 @@ function Initialize-OSDBuilder {
     $global:SetOSDBuilderPathContentPacks       = $global:SetOSDBuilder.PathContentPacks
     $global:SetOSDBuilderPathMount              = $global:SetOSDBuilder.PathMount
     $global:SetOSDBuilderPathOSBuilds           = $global:SetOSDBuilder.PathOSBuilds
-    $global:SetOSDBuilderPathFeatureUpdates		= $global:SetOSDBuilder.PathFeatureUpdates
+    $global:SetOSDBuilderPathFeatureUpdates     = $global:SetOSDBuilder.PathFeatureUpdates
     $global:SetOSDBuilderPathOSImport           = $global:SetOSDBuilder.PathOSImport
     $global:SetOSDBuilderPathOSMedia            = $global:SetOSDBuilder.PathOSMedia
     $global:SetOSDBuilderPathPEBuilds           = $global:SetOSDBuilder.PathPEBuilds

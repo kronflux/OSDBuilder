@@ -16,7 +16,7 @@ function Import-OSMedia {
         #THIS PARAMETER IS NOT A GUARANTEE OF ANY FUNCTIONALITY
         #THIS PARAMETER IS A GUARANTEE OF BEING GHOSTED IF YOU CONTACT THE DEV FOR SUPPORT
         [switch]$AllowUnsupportedOS = $global:SetOSDBuilder.ImportOSMediaAllowUnsupportedOS,
-        
+
         #Creates an OSBuild with NetFX enabled
         #Import-OSMedia -Edition Enterprise -SkipGrid -QuickBuild
         #Execute Command:
@@ -24,7 +24,7 @@ function Import-OSMedia {
         #Alias: Build,BuildNetFX
         [Alias('Build')]
         [switch]$BuildNetFX = $global:SetOSDBuilder.ImportOSMediaBuildNetFX,
-        
+
         #The Operating System EditionId to import
         #Import-OSMedia -EditionId Enterprise
         #Import-OSMedia -EditionId Enterprise -SkipGrid
@@ -75,7 +75,7 @@ function Import-OSMedia {
         #Alias: Index
         [Alias('Index')]
         [int]$ImageIndex = $global:SetOSDBuilder.ImportOSMediaImageIndex,
-        
+
         #The Operating System ImageName to Import
         #Import-OSMedia -ImageName 'Windows 10 Enterprise'
         #Import-OSMedia -ImageName 'Windows 10 Enterprise' -SkipGrid
@@ -174,7 +174,7 @@ function Import-OSMedia {
 
         #Skips the searh of the FeatureUpdates path for downloaded Feature Updates
         [switch]$SkipFeatureUpdates = $global:SetOSDBuilder.ImportOSMediaSkipFeatureUpdates,
-        
+
         #Used to bypass the ISE GridView Operating System Selection
         #Must use EditionId or ImageName Parameter for best results
         #Alias: SkipGridView
@@ -197,7 +197,7 @@ function Import-OSMedia {
     #ImportOSMediaFeatureUpdates
     #ImportOSMediaPSDrives
     #ImportOSMediaPSDrives
-    
+
     Begin {
         Write-Host '========================================================================================' -ForegroundColor DarkGray
         Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
@@ -319,7 +319,7 @@ function Import-OSMedia {
         #=================================================
         if (@($ImportOSMediaWindowsImages).Count -gt 0) {
             if (!($SkipGrid.IsPresent)) {
-                $ImportOSMediaWindowsImages = $ImportOSMediaWindowsImages | Out-GridView -Title "Import-OSMedia: Select OSMedia to Import and press OK (Cancel to Exit)" -PassThru        
+                $ImportOSMediaWindowsImages = $ImportOSMediaWindowsImages | Out-GridView -Title "Import-OSMedia: Select OSMedia to Import and press OK (Cancel to Exit)" -PassThru
                 if($null -eq $ImportOSMediaWindowsImages) {
                     Write-Host '========================================================================================' -ForegroundColor DarkGray
                     Show-ActionTime; Write-Warning "Import-OSMedia: Compatible OSMedia was not selected . . . Exiting!"
@@ -364,7 +364,7 @@ function Import-OSMedia {
 
                 Write-Host '========================================================================================' -ForegroundColor DarkGray
                 Write-Host "Image: Export Install.esd Index $SourceImageIndex to $SourceTempWim" -ForegroundColor Green
-                
+
                 $CurrentLog = "$env:Temp\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage.log"
                 Write-Verbose "CurrentLog: $CurrentLog"
                 Export-WindowsImage -SourceImagePath $SourceImagePath -SourceIndex $SourceImageIndex -DestinationImagePath $SourceTempWim -CheckIntegrity -CompressionType max -LogPath "$CurrentLog" | Out-Null
@@ -427,7 +427,7 @@ function Import-OSMedia {
             if (!(Test-Path "$OSMediaPathInfo\json"))      {New-Item "$OSMediaPathInfo\json" -ItemType Directory -Force | Out-Null}
             if (!(Test-Path "$OSMediaPathInfo\logs"))      {New-Item "$OSMediaPathInfo\logs" -ItemType Directory -Force | Out-Null}
             if (!(Test-Path "$OSMediaPathInfo\xml"))       {New-Item "$OSMediaPathInfo\xml" -ItemType Directory -Force | Out-Null}
-            
+
             $OSMediaPathOS = Join-Path $OSMediaPath 'OS'
             if (!(Test-Path "$OSMediaPathOS"))             {New-Item "$OSMediaPathOS" -ItemType Directory -Force | Out-Null}
             $OSMediaPathWindowsImage = $OSMediaPathOS + "\Sources\install.wim"
@@ -473,11 +473,11 @@ function Import-OSMedia {
             robocopy "$SourceOSMedia" "$OSMediaPathOS" *.* /e /xf install.wim install.esd | Out-Null
             Get-ChildItem -Recurse -Path "$OSMediaPathOS\*" | Set-ItemProperty -Name IsReadOnly -Value $false -ErrorAction SilentlyContinue | Out-Null
 
-            if ($OSMediaGetItem.Extension -eq '.esd') {        
+            if ($OSMediaGetItem.Extension -eq '.esd') {
                 $CurrentLog = "$OSMediaPathInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage.log"
                 Write-Verbose "CurrentLog: $CurrentLog"
                 Export-WindowsImage -SourceImagePath $SourceTempWim -SourceIndex 1 -DestinationImagePath "$OSMediaPathOS\sources\install.wim" -LogPath "$CurrentLog" | Out-Null
-            } else {            
+            } else {
                 $CurrentLog = "$OSMediaPathInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage.log"
                 Write-Verbose "CurrentLog: $CurrentLog"
                 Export-WindowsImage -SourceImagePath $SourceImagePath -SourceIndex $SourceImageIndex -DestinationImagePath "$OSMediaPathOS\sources\install.wim" -LogPath "$CurrentLog" | Out-Null
@@ -520,7 +520,7 @@ function Import-OSMedia {
                 $UBR = "$($GetWindowsImage.Build).$($GetWindowsImage.SPBuild)"
             }
             Write-Verbose "========== UBR: $UBR"
-            
+
             $GetWindowsImage | Out-File "$OSMediaPath\WindowsImage.txt"
             $GetWindowsImage | Out-File "$OSMediaPathInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Get-WindowsImage.txt"
             $GetWindowsImage | Export-Clixml -Path "$OSMediaPathInfo\xml\Get-WindowsImage.xml"

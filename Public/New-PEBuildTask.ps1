@@ -220,7 +220,7 @@ function New-PEBuildTask {
         if ($AddContentPacks.IsPresent) {
             if (Get-IsContentPacksEnabled) {
                 [array]$ContentPacks = (Get-TaskContentPacks).Name
-            
+
                 $ContentPacks = [array]$ContentPacks + [array]$ExistingTask.ContentPacks
                 $ContentPacks = $ContentPacks | Sort-Object -Unique
             } else {
@@ -268,7 +268,7 @@ function New-PEBuildTask {
         $WinPEADK = $null
         if ($ContentWinPEADK.IsPresent) {
             [array]$WinPEADK = (Get-TaskWinPEADK).FullName
-            
+
             $WinPEADK = [array]$WinPEADK + [array]$ExistingTask.WinPEADK
             $WinPEADK = $WinPEADK | Sort-Object -Unique | Sort-Object Length
         } else {
@@ -286,7 +286,7 @@ function New-PEBuildTask {
         $WinPEDrivers = $null
         if ($ContentWinPEDrivers.IsPresent) {
             [array]$WinPEDrivers = (Get-TaskWinPEDrivers).FullName
-            
+
             $WinPEDrivers = [array]$WinPEDrivers + [array]$ExistingTask.WinPEDrivers
             $WinPEDrivers = $WinPEDrivers | Sort-Object -Unique
         } else {
@@ -304,7 +304,7 @@ function New-PEBuildTask {
         $WinPEExtraFiles = $null
         if ($ContentWinPEExtraFiles.IsPresent) {
             [array]$WinPEExtraFiles = (Get-TaskWinPEExtraFiles).FullName
-            
+
             $WinPEExtraFiles = [array]$WinPEExtraFiles + [array]$ExistingTask.WinPEExtraFiles
             $WinPEExtraFiles = $WinPEExtraFiles | Sort-Object -Unique
         } else {
@@ -322,7 +322,7 @@ function New-PEBuildTask {
         $WinPEScripts = $null
         if ($ContentWinPEScripts.IsPresent) {
             [array]$WinPEScripts = (Get-TaskWinPEScripts).FullName
-            
+
             $WinPEScripts = [array]$WinPEScripts + [array]$ExistingTask.WinPEScripts
             $WinPEScripts = $WinPEScripts | Sort-Object -Unique
         } else {
@@ -395,7 +395,7 @@ function New-PEBuildTask {
         $Task | ConvertTo-Json | Out-File "$TaskPath"
         $Task
     }
-    
+
     End {
         #Write-Host '========================================================================================' -ForegroundColor DarkGray
         #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
