@@ -5075,15 +5075,16 @@ function New-ItemDirectorySetOSDBuilderPathContent {
     $ItemDirectories = @(
         $SetOSDBuilderPathContent
         $GetOSDBuilderPathContentADK
-        "$GetOSDBuilderPathContentADK\Windows 10 2004\Windows Preinstallation Environment"
-        #"$GetOSDBuilderPathContentADK\Windows 10 2009\Windows Preinstallation Environment"
+        "$GetOSDBuilderPathContentADK\Windows 10 23H2\Windows Preinstallation Environment"
         $GetOSDBuilderPathContentDaRT
         "$GetOSDBuilderPathContentDaRT\DaRT 10"
         $GetOSDBuilderPathContentDrivers
         "$SetOSDBuilderPathContent\ExtraFiles"
         #"$GetOSDBuilderPathContentIsoExtract"
-        "$GetOSDBuilderPathContentIsoExtract\Windows 10 2004 FOD x64"
-        "$GetOSDBuilderPathContentIsoExtract\Windows 10 2004 Language"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 10 22H2 FOD x64"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 10 22H2 Language"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 10 23H2 FOD x64"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 10 23H2 Language"
         #"$GetOSDBuilderPathContentIsoExtract\Windows 10 2009 FOD x64"
         #"$GetOSDBuilderPathContentIsoExtract\Windows 10 2009 Language"
         #"$SetOSDBuilderPathContent\LanguagePacks"
