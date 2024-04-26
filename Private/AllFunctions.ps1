@@ -498,7 +498,8 @@ function Add-ContentPack {
     #   BUILD
     #=================================================
     if ($ContentPacks) {
-        if ($ReleaseID -match '1909') {$MSUX = '1903'}
+        if ($ReleaseID -match '2004') {$MSUX = '2004'}
+        elseif ($ReleaseID -match '2009') {$MSUX = '2004'}
         elseif ($ReleaseID -match '20H2') {$MSUX = '2004'}
         elseif ($ReleaseID -match '21H1') {$MSUX = '2004'}
         elseif ($ReleaseID -match '21H2') {$MSUX = '2004'}
@@ -3421,7 +3422,7 @@ function Get-TaskContentAddFeatureOnDemand {
     $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*LanguageExperiencePack*"}
     $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.FullName -notlike "*metadata*"}
 
-    if (($OSMedia.ReleaseId -gt 1803) -or ($OSMedia.ReleaseId -match '20H2') -or ($OSMedia.ReleaseId -match '21H1') -or ($OSMedia.ReleaseId -match '21H2')) {
+    if (($OSMedia.ReleaseId -gt 2004) -or ($OSMedia.ReleaseId -match '2009') -or ($OSMedia.ReleaseId -match '20H2') -or ($OSMedia.ReleaseId -match '21H1') -or ($OSMedia.ReleaseId -match '21H2') -or ($OSMedia.ReleaseId -match '22H2')) {
         $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*ActiveDirectory*"}
         $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*BitLocker-Recovery*"}
         $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*CertificateServices*"}
@@ -3461,8 +3462,8 @@ function Get-TaskContentAddFeatureOnDemand {
     if ($OSMedia.InstallationType -eq 'Client') {$AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -notlike "*Windows Server*"}}
     if ($OSMedia.InstallationType -like "*Server*") {$AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -like "*Windows Server*"}}
     if ($($OSMedia.ReleaseId)) {
-        if ($($OSMedia.ReleaseId) -eq 1909) {
-            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+        if ($($OSMedia.ReleaseId) -eq 2004) {
+            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq 2009) {
             $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -3569,6 +3570,8 @@ function Get-TaskContentIsoExtract {
     if ($($OSMedia.ReleaseId)) {
         if ($($OSMedia.ReleaseId) -eq 1909) {
             $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+        if ($($OSMedia.ReleaseId) -eq 2004) {
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq 2009) {
             $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -3580,6 +3583,9 @@ function Get-TaskContentIsoExtract {
             $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '21H2') {
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
+        }
+        elseif ($($OSMedia.ReleaseId) -eq '22H2') {
             $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '22H2') {
@@ -3642,8 +3648,8 @@ function Get-TaskContentLanguageFeature {
         if ($($OSMedia.Arch) -eq 'x86') {$LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -like "*x86*"}}
         if ($($OSMedia.Arch) -eq 'x64') {$LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -like "*x64*" -or $_.FullName -like "*amd64*"}}
         if ($($OSMedia.ReleaseId)) {
-            if ($($OSMedia.ReleaseId) -eq 1909) {
-                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+            if ($($OSMedia.ReleaseId) -eq 2004) {
+                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
             }
             elseif ($($OSMedia.ReleaseId) -eq 2009) {
                 $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -3693,8 +3699,8 @@ function Get-TaskContentLanguageInterfacePack {
         foreach ($Package in $LanguageLipUpdatesDir) {$Package.FullName = $($Package.FullName).replace("$SetOSDBuilderPathContent\",'')}
         $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -like "*$($OSMedia.Arch)*"}
         if ($($OSMedia.ReleaseId)) {
-            if ($($OSMedia.ReleaseId) -eq 1909) {
-                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+            if ($($OSMedia.ReleaseId) -eq 2004) {
+                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
             }
             elseif ($($OSMedia.ReleaseId) -eq 2009) {
                 $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -3757,8 +3763,8 @@ function Get-TaskContentLanguagePack {
     if ($OSMedia.InstallationType -eq 'Client') {$LanguagePack = $LanguagePack | Where-Object {$_.FullName -notlike "*Windows Server*"}}
     if ($OSMedia.InstallationType -like "*Server*") {$LanguagePack = $LanguagePack | Where-Object {$_.FullName -like "*Windows Server*"}}
     if ($($OSMedia.ReleaseId)) {
-        if ($($OSMedia.ReleaseId) -eq 1909) {
-            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+        if ($($OSMedia.ReleaseId) -eq 2004) {
+            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq 2009) {
             $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -4017,8 +4023,8 @@ function Get-TaskWinPEADK {
     $WinPEADK = Get-ChildItem -Path ("$SetOSDBuilderPathContent\WinPE\ADK\*","$GetOSDBuilderPathContentADK\*\Windows Preinstallation Environment\*\WinPE_OCs") *.cab -Recurse -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName
     foreach ($Pack in $WinPEADK) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
-    if ($($OSMedia.ReleaseId) -eq 1909) {
-        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+    if ($($OSMedia.ReleaseId) -eq 2004) {
+        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq 2009) {
         $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -4067,8 +4073,8 @@ function Get-TaskWinPEADKPE {
     $WinPEADKPE = Get-ChildItem -Path ("$SetOSDBuilderPathContent\WinPE\ADK\*","$GetOSDBuilderPathContentADK\*\Windows Preinstallation Environment\*\WinPE_OCs") *.cab -Recurse -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName
     foreach ($Pack in $WinPEADKPE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
-    if ($($OSMedia.ReleaseId) -eq 1909) {
-        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+    if ($($OSMedia.ReleaseId) -eq 2004) {
+        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq 2009) {
         $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -4118,8 +4124,8 @@ function Get-TaskWinPEADKRE {
 
     foreach ($Pack in $WinPEADKRE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
-    if ($($OSMedia.ReleaseId) -eq 1909) {
-        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+    if ($($OSMedia.ReleaseId) -eq 2004) {
+        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq 2009) {
         $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -4174,8 +4180,8 @@ function Get-TaskWinPEADKSE {
     $WinPEADKSE = Get-ChildItem -Path ("$SetOSDBuilderPathContent\WinPE\ADK\*","$GetOSDBuilderPathContentADK\*\Windows Preinstallation Environment\*\WinPE_OCs") *.cab -Recurse -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName
     foreach ($Pack in $WinPEADKSE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
-    if ($($OSMedia.ReleaseId) -eq 1909) {
-        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
+    if ($($OSMedia.ReleaseId) -eq 2004) {
+        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq 2009) {
         $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '2004' -or $_.FullName -match '2009' -or $_.FullName -match '20H2' -or $_.FullName -match '21H1' -or $_.FullName -match '21H2' -or $_.FullName -match '22H2'}
@@ -4952,8 +4958,6 @@ function New-ItemDirectorySetOSDBuilderPathContent {
     $ItemDirectories = @(
         $SetOSDBuilderPathContent
         $GetOSDBuilderPathContentADK
-        "$GetOSDBuilderPathContentADK\Windows 10 1903\Windows Preinstallation Environment"
-        #"$GetOSDBuilderPathContentADK\Windows 10 1909\Windows Preinstallation Environment"
         "$GetOSDBuilderPathContentADK\Windows 10 2004\Windows Preinstallation Environment"
         #"$GetOSDBuilderPathContentADK\Windows 10 2009\Windows Preinstallation Environment"
         $GetOSDBuilderPathContentDaRT
@@ -4961,23 +4965,15 @@ function New-ItemDirectorySetOSDBuilderPathContent {
         $GetOSDBuilderPathContentDrivers
         "$SetOSDBuilderPathContent\ExtraFiles"
         #"$GetOSDBuilderPathContentIsoExtract"
-        "$GetOSDBuilderPathContentIsoExtract\Windows 10 1903 FOD x64"
-        "$GetOSDBuilderPathContentIsoExtract\Windows 10 1903 Language"
-        #"$GetOSDBuilderPathContentIsoExtract\Windows 10 1909 FOD x64"
-        #"$GetOSDBuilderPathContentIsoExtract\Windows 10 1909 Language"
         "$GetOSDBuilderPathContentIsoExtract\Windows 10 2004 FOD x64"
         "$GetOSDBuilderPathContentIsoExtract\Windows 10 2004 Language"
         #"$GetOSDBuilderPathContentIsoExtract\Windows 10 2009 FOD x64"
         #"$GetOSDBuilderPathContentIsoExtract\Windows 10 2009 Language"
-        #"$GetOSDBuilderPathContentIsoExtract\Windows 10 1909 Language"
-        "$GetOSDBuilderPathContentIsoExtract\Windows Server 2019 1809 FOD x64"
-        "$GetOSDBuilderPathContentIsoExtract\Windows Server 2019 1809 Language"
         #"$SetOSDBuilderPathContent\LanguagePacks"
         $SetOSDBuilderPathMount
         $GetOSDBuilderPathContentOneDrive
         $SetOSDBuilderPathUpdates
         $GetOSDBuilderPathContentPackages
-        #"$GetOSDBuilderPathContentPackages\Win10 x64 1809"
         #"$SetOSDBuilderPathContent\Provisioning"
         #"$SetOSDBuilderPathContent\Registry"
         $GetOSDBuilderPathContentScripts
@@ -4986,7 +4982,6 @@ function New-ItemDirectorySetOSDBuilderPathContent {
         #"$SetOSDBuilderPathContent\Updates"
         #"$SetOSDBuilderPathContent\Updates\Custom"
         #"$SetOSDBuilderPathContent\WinPE"
-        #"$SetOSDBuilderPathContent\WinPE\ADK\Win10 x64 1809"
         #"$SetOSDBuilderPathContent\WinPE\DaRT\DaRT 10"
         #"$SetOSDBuilderPathContent\WinPE\Drivers"
         #"$SetOSDBuilderPathContent\WinPE\Drivers\WinPE 10 x64"
@@ -5200,25 +5195,14 @@ function Rename-OSMedia {
             }
             [string]$OSMReleaseId = $($OSMRegistry.ReleaseId)
 
-            if ($OSMBuild -eq 7600) {$OSMReleaseId = 7600}
-            if ($OSMBuild -eq 7601) {$OSMReleaseId = 7601}
-            if ($OSMBuild -eq 9600) {$OSMReleaseId = 9600}
-            if ($OSMBuild -eq 10240) {$OSMReleaseId = 1507}
-            if ($OSMBuild -eq 14393) {$OSMReleaseId = 1607}
-            if ($OSMBuild -eq 15063) {$OSMReleaseId = 1703}
-            if ($OSMBuild -eq 16299) {$OSMReleaseId = 1709}
-            if ($OSMBuild -eq 17134) {$OSMReleaseId = 1803}
-            if ($OSMBuild -eq 17763) {$OSMReleaseId = 1809}
-            #if ($OSMBuild -eq 18362) {$OSMReleaseId = 1903}
-            #if ($OSMBuild -eq 18363) {$OSMReleaseId = 1909}
-            #if ($OSMBuild -eq 19041) {$OSMReleaseId = 2004}
-            #if ($OSMBuild -eq 19042) {$OSMReleaseId = '20H2'}
-            #if ($OSMBuild -eq 19043) {$OSMReleaseId = '21H1'}
-            #if ($OSMBuild -eq 19044) {$OSMReleaseId = '21H2'}
+            #if ($OSMBuild -eq 19041) {$OSMReleaseId = 2004} # Windows 10 "20H1"
+            #if ($OSMBuild -eq 19042) {$OSMReleaseId = '20H2'} # Windows 10 "20H2"
+            #if ($OSMBuild -eq 19043) {$OSMReleaseId = '21H1'} # Windows 10 "21H1"
+            #if ($OSMBuild -eq 19044) {$OSMReleaseId = '21H2'} # Windows 10 "21H2"
+            #if ($OSMBuild -eq 19045) {$OSMReleaseId = '22H2'} # Windows 10 "22H2"
+            #if ($OSMBuild -eq 20348) {$OSMReleaseId = '21H2'} # Windows Server 2022
 
             Write-Verbose "ReleaseId: $OSMReleaseId"
-
-            if ($OSMReleaseId -eq 7601) {$OSMReleaseId = 'SP1'}
 
             $FullNameFormat = "$OSMImageName $OSMArch $OSMReleaseId $OSMUBR $($OSMWindowsImage.Languages)"
 
@@ -5456,12 +5440,12 @@ function Repair-PEBuildTask {
 
             if ($Task.MediaName -like "*x64*") {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x64'}}
             if ($Task.MediaName -like "*x86*") {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x86'}}
-            if ($Task.MediaName -like "*1511*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1511'}}
-            if ($Task.MediaName -like "*1607*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1607'}}
-            if ($Task.MediaName -like "*1703*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1703'}}
-            if ($Task.MediaName -like "*1709*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1709'}}
-            if ($Task.MediaName -like "*1803*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1803'}}
-            if ($Task.MediaName -like "*1809*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1809'}}
+            if ($Task.MediaName -like "*2004*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '20H1'}}
+            if ($Task.MediaName -like "*2009*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '20H2'}}
+            if ($Task.MediaName -like "*20H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '20H2'}}
+            if ($Task.MediaName -like "*21H1*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H1'}}
+            if ($Task.MediaName -like "*21H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
+            if ($Task.MediaName -like "*22H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
 
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "$($Task.TaskName): Select the OSMedia used with this PEBuild Task"
 

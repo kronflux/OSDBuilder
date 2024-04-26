@@ -30,7 +30,7 @@ function Get-OSMedia {
         [string]$OSMajorVersion,
 
         #Filter the OSMedia by OS Release Id
-        [ValidateSet ('22H2','21H2','21H1','20H2',2004,1909,1903,1809)]
+        [ValidateSet ('22H2','21H2','21H1','20H2',2009,2004)]
         [string]$OSReleaseId,
 
         #Filter the OSMedia by Image Revision
@@ -162,23 +162,12 @@ function Get-OSMedia {
             [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
             if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
 
-            if ($OSMBuild -eq 7600) {$ReleaseId = 7600}
-            if ($OSMBuild -eq 7601) {$ReleaseId = 7601}
-            if ($OSMBuild -eq 9600) {$ReleaseId = 9600}
-            if ($OSMBuild -eq 10240) {$ReleaseId = 1507}
-            if ($OSMBuild -eq 14393) {$ReleaseId = 1607}
-            if ($OSMBuild -eq 15063) {$ReleaseId = 1703}
-            if ($OSMBuild -eq 16299) {$ReleaseId = 1709}
-            if ($OSMBuild -eq 17134) {$ReleaseId = 1803}
-            if ($OSMBuild -eq 17763) {$ReleaseId = 1809}
-            if ($RegValueCurrentBuild -eq 18362) {$ReleaseId = 1903}
-            if ($RegValueCurrentBuild -eq 18363) {$ReleaseId = 1909}
-            if ($RegValueCurrentBuild -eq 19041) {$ReleaseId = 2004}
-            if ($RegValueCurrentBuild -eq 19042) {$ReleaseId = '20H2'}
-            if ($RegValueCurrentBuild -eq 19043) {$ReleaseId = '21H1'}
-            if ($RegValueCurrentBuild -eq 19044) {$ReleaseId = '21H2'} #Windows
-            if ($RegValueCurrentBuild -eq 22000) {$ReleaseId = '21H2'} #Windows 11
-            if ($RegValueCurrentBuild -eq 20348) {$ReleaseId = '21H2'} #Server 2022  
+            if ($RegValueCurrentBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
+            if ($RegValueCurrentBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
+            if ($RegValueCurrentBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
+            if ($RegValueCurrentBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
+            if ($RegValueCurrentBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+            if ($RegValueCurrentBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
 
             Write-Verbose "ReleaseId: $ReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"
