@@ -44,11 +44,16 @@ function New-OSBuild {
             'ComponentDU',`
             'ComponentDU Critical',`
             'ComponentDU SafeOS',`
+            'DefinitionUpdate',`
             'DotNet',`
             'DotNetCU',`
-            'LCU',
+            'Drivers',`
+            'FeatureOnDemand',`
+            'LCU',`
+            'QualityUpdate',`
             'SetupDU',`
-            'SSU'
+            'SSU',`
+            'WindowsDriver'
         )]
         [string[]]$Exclude = $global:SetOSDBuilder.NewOSBuildExclude,
 
@@ -76,11 +81,16 @@ function New-OSBuild {
             'ComponentDU',`
             'ComponentDU Critical',`
             'ComponentDU SafeOS',`
+            'DefinitionUpdate',`
             'DotNet',`
             'DotNetCU',`
-            'LCU',
+            'Drivers',`
+            'FeatureOnDemand',`
+            'LCU',`
+            'QualityUpdate',`
             'SetupDU',`
-            'SSU'
+            'SSU',`
+            'WindowsDriver'
         )]
         [string[]]$Include = $global:SetOSDBuilder.NewOSBuildInclude,
 
