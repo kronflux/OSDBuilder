@@ -122,6 +122,7 @@ function New-PEBuildTask {
         if ($TaskName -match '21H1') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H1'}}
         if ($TaskName -match '21H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
         if ($TaskName -match '22H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
+        if ($TaskName -match '23H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '23H2'}}
 
         Try {
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "Select a Source OSMedia to use for this Task (Cancel to Exit)"
@@ -183,12 +184,16 @@ function New-PEBuildTask {
         Write-Verbose '19.10.29 Set-OSMedia.ReleaseId'
         #=================================================
         if ($null -eq $($OSMedia.ReleaseId)) {
-            #if ($($OSMedia.Build) -eq 19041) {$OSMedia.ReleaseId = 2004} # Windows 10 "20H1"
-            #if ($($OSMedia.Build) -eq 19042) {$OSMedia.ReleaseId = '20H2'} # Windows 10 "20H2"
-            #if ($($OSMedia.Build) -eq 19043) {$OSMedia.ReleaseId = '21H1'} # Windows 10 "21H1"
-            #if ($($OSMedia.Build) -eq 19044) {$OSMedia.ReleaseId = '21H2'} # Windows 10 "21H2"
-            #if ($($OSMedia.Build) -eq 19045) {$OSMedia.ReleaseId = '22H2'} # Windows 10 "22H2"
-            #if ($($OSMedia.Build) -eq 20348) {$OSMedia.ReleaseId = '21H2'} # Windows Server 2022
+            if ($($OSMedia.Build) -eq 19041) {$OSMedia.ReleaseId = 2004} # Windows 10 "20H1"
+            if ($($OSMedia.Build) -eq 19042) {$OSMedia.ReleaseId = '20H2'} # Windows 10 "20H2"
+            if ($($OSMedia.Build) -eq 19043) {$OSMedia.ReleaseId = '21H1'} # Windows 10 "21H1"
+            if ($($OSMedia.Build) -eq 19044) {$OSMedia.ReleaseId = '21H2'} # Windows 10 "21H2"
+            if ($($OSMedia.Build) -eq 19045) {$OSMedia.ReleaseId = '22H2'} # Windows 10 "22H2"
+            if ($($OSMedia.Build) -eq 20348) {$OSMedia.ReleaseId = '21H2'} # Windows Server 2022
+            if ($($OSMedia.Build) -eq 22000) {$OSMedia.ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+            if ($($OSMedia.Build) -eq 22621) {$OSMedia.ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+            if ($($OSMedia.Build) -eq 22631) {$OSMedia.ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($($OSMedia.Build) -eq 25398) {$OSMedia.ReleaseId = '23H2'} # Windows Server
         }
         #=================================================
         Write-Host '========================================================================================' -ForegroundColor DarkGray

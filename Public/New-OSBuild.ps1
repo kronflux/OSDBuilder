@@ -521,11 +521,16 @@ function New-OSBuild {
             #=================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
             if ($null -eq $ReleaseId) {
-                #if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                #if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                #if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
-                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
-                #if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
+                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
+                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
+                if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
+                if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
+                if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+                if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+                if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
             }
 
             Write-Verbose "ReleaseId: $ReleaseId"
@@ -1159,11 +1164,16 @@ function New-OSBuild {
                     [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
                     if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
                 }
-                #if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                #if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                #if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
-                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
-                #if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
+                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
+                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
+                if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
+                if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
+                if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+                if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+                if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
 
                 if ($OSMajorVersion -eq 10) {
                     if ($WorkingName -like "build*") {$NewOSMediaName = "$OSImageName $OSArchitecture $ReleaseId $UBR"}

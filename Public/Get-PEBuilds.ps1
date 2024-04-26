@@ -119,12 +119,16 @@ function Get-PEBuilds {
             [string]$RegValueReleaseId = ($RegKeyCurrentVersion).ReleaseId
             if ($RegValueDisplayVersion) {$RegValueReleaseId = $RegValueDisplayVersion}
 
-            #if ($OSMBuild -eq 19041) {$RegValueReleaseId = 2004} # Windows 10 "20H1"
-            #if ($OSMBuild -eq 19042) {$RegValueReleaseId = '20H2'} # Windows 10 "20H2"
-            #if ($OSMBuild -eq 19043) {$RegValueReleaseId = '21H1'} # Windows 10 "21H1"
-            #if ($OSMBuild -eq 19044) {$RegValueReleaseId = '21H2'} # Windows 10 "21H2"
-            #if ($OSMBuild -eq 19045) {$RegValueReleaseId = '22H2'} # Windows 10 "22H2"
-            #if ($OSMBuild -eq 20348) {$RegValueReleaseId = '21H2'} # Windows Server 2022
+            if ($OSMBuild -eq 19041) {$RegValueReleaseId = 2004} # Windows 10 "20H1"
+            if ($OSMBuild -eq 19042) {$RegValueReleaseId = '20H2'} # Windows 10 "20H2"
+            if ($OSMBuild -eq 19043) {$RegValueReleaseId = '21H1'} # Windows 10 "21H1"
+            if ($OSMBuild -eq 19044) {$RegValueReleaseId = '21H2'} # Windows 10 "21H2"
+            if ($OSMBuild -eq 19045) {$RegValueReleaseId = '22H2'} # Windows 10 "22H2"
+            if ($OSMBuild -eq 20348) {$RegValueReleaseId = '21H2'} # Windows Server 2022
+            if ($OSMBuild -eq 22000) {$RegValueReleaseId = '21H2'} # Windows 11 "Sun Valley"
+            if ($OSMBuild -eq 22621) {$RegValueReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+            if ($OSMBuild -eq 22631) {$RegValueReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($OSMBuild -eq 25398) {$RegValueReleaseId = '23H2'} # Windows Server
 
             Write-Verbose "ReleaseId: $RegValueReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"
