@@ -28,42 +28,30 @@ function Import-OSMedia {
         #The Operating System EditionId to import
         #Import-OSMedia -EditionId Enterprise
         #Import-OSMedia -EditionId Enterprise -SkipGrid
-        #Values:
-        #Education
-        #EducationN
-        #Enterprise
-        #EnterpriseN
-        #EnterpriseS
-        #EnterpriseSN
-        #Professional
-        #ProfessionalEducation
-        #ProfessionalEducationN
-        #ProfessionalN
-        #ProfessionalWorkstation
-        #ProfessionalWorkstationN
-        #ServerDatacenter
-        #ServerDatacenterACor
-        #ServerRdsh
-        #ServerStandard
-        #ServerStandardACor
         [ValidateSet(`
             'Education',`
-            'Enterprise',`
-            'Professional',`
-            'ProfessionalEducation',`
-            'ProfessionalWorkstation',`
-            'ServerStandard',`
-            'ServerDatacenter',`
-            'ServerStandardACor',`
-            'ServerDatacenterACor',`
-            'ServerRdsh',`
             'EducationN',`
+            'Enterprise',`
+            'EnterpriseLTSB',`
             'EnterpriseN',`
             'EnterpriseS',`
             'EnterpriseSN',`
-            'ProfessionalN',`
+            'Professional',`
+            'ProfessionalEducation',`
             'ProfessionalEducationN',`
-            'ProfessionalWorkstationN'
+            'ProfessionalN',`
+            'ProfessionalWorkstation',`
+            'ProfessionalWorkstationEducation',`
+            'ProfessionalWorkstationEducationN',`
+            'ProfessionalWorkstationN',`
+            'ServerDatacenter',`
+            'ServerDatacenterACor',`
+            'ServerEssentials',`
+            'ServerRdsh',`
+            'ServerStandard',`
+            'ServerStandardACor',`
+            'IoTCore',`
+            'IoTEnterprise'
         )]
         #Alias: Edition
         [Alias('Edition')]
@@ -81,47 +69,51 @@ function Import-OSMedia {
         #Import-OSMedia -ImageName 'Windows 10 Enterprise' -SkipGrid
         [ValidateSet(`
             'Windows 10 Education',`
+            'Windows 10 Education N',`
             'Windows 10 Enterprise',`
             'Windows 10 Enterprise for Virtual Desktops',`
-            'Windows 10 Enterprise 2016 LTSB',`
             'Windows 10 Enterprise LTSC',`
-            'Windows 10 Pro',`
-            'Windows 10 Pro Education',`
-            'Windows 10 Pro for Workstations',`
-            'Windows 10 Education N',`
             'Windows 10 Enterprise N',`
             'Windows 10 Enterprise N LTSC',`
-            'Windows 10 Pro N',`
+            'Windows 10 Pro',`
+            'Windows 10 Pro Education',`
             'Windows 10 Pro Education N',`
+            'Windows 10 Pro for Workstations',`
+            'Windows 10 Pro N',`
             'Windows 10 Pro N for Workstations',`
             'Windows 11 Education',`
+            'Windows 11 Education N',`
             'Windows 11 Enterprise',`
             'Windows 11 Enterprise for Virtual Desktops',`
-            'Windows 11 Enterprise 2016 LTSB',`
             'Windows 11 Enterprise LTSC',`
-            'Windows 11 Pro',`
-            'Windows 11 Pro Education',`
-            'Windows 11 Pro for Workstations',`
-            'Windows 11 Education N',`
             'Windows 11 Enterprise N',`
             'Windows 11 Enterprise N LTSC',`
-            'Windows 11 Pro N',`
+            'Windows 11 Pro',`
+            'Windows 11 Pro Education',`
             'Windows 11 Pro Education N',`
+            'Windows 11 Pro for Workstations',`
+            'Windows 11 Pro N',`
             'Windows 11 Pro N for Workstations',`
+            'Windows Server Essentials',`
+            'Windows Server RDSH',`
             'Windows Server Standard',`
-            'Windows Server Datacenter',
-            'Windows Server 2016 Standard',`
-            'Windows Server 2016 Standard (Desktop Experience)',`
-            'Windows Server 2016 Datacenter',`
-            'Windows Server 2016 Datacenter (Desktop Experience)',
+            'Windows Server Standard ACOR',`
+            'Windows Server Datacenter',`
+            'Windows Server Datacenter ACOR',`
+            'Windows Server 2019 Essentials',`
+            'Windows Server 2019 RDSH',`
             'Windows Server 2019 Standard',`
             'Windows Server 2019 Standard (Desktop Experience)',`
             'Windows Server 2019 Datacenter',`
-            'Windows Server 2019 Datacenter (Desktop Experience)',
+            'Windows Server 2019 Datacenter (Desktop Experience)',`
+            'Windows Server 2022 Essentials',`
+            'Windows Server 2022 RDSH',`
             'Windows Server 2022 Standard',`
             'Windows Server 2022 Standard (Desktop Experience)',`
             'Windows Server 2022 Datacenter',`
-            'Windows Server 2022 Datacenter (Desktop Experience)'
+            'Windows Server 2022 Datacenter (Desktop Experience)',`
+            'Windows IoT Enterprise',`
+            'Windows IoT Core'
         )]
         [string[]]$ImageName = $global:SetOSDBuilder.ImportOSMediaImageName,
 
@@ -131,7 +123,11 @@ function Import-OSMedia {
         [ValidateSet(`
             'Client',`
             'Server',`
-            'Server Core'
+            'Server Core',`
+            'Server Nano',`
+            'Server Full',`
+            'IoT Enterprise',`
+            'IoT Core'
         )]
         [string[]]$InstallationType = $global:SetOSDBuilder.ImportOSMediaInstallationType,
 
