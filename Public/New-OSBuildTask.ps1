@@ -57,7 +57,11 @@ function New-OSBuildTask {
         #Select a StartLayout.xml in GridView from the Content\StartLayout directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentStartLayout = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayout,
-        
+
+        #Select a DefaultAppAssociations.xml in GridView from the Content\DefaultAppAssociations directory
+        [Parameter(ParameterSetName='All')]
+        [switch]$ContentDefaultAppAssociations = $global:SetOSDBuilder.NewOSBuildTaskDefaultAppAssociations,
+
         #Select an Unattend.xml file in GridView from the Content\Unattend directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentUnattend = $global:SetOSDBuilder.NewOSBuildTaskContentUnattend,
@@ -499,6 +503,22 @@ function New-OSBuildTask {
         }
         if (!($StartLayoutXML)) {if ($ExistingTask.StartLayoutXML) {$StartLayoutXML = $ExistingTask.StartLayoutXML}}
         #=================================================
+        #   Content DefaultAppAssociations
+        #=================================================
+        Write-Host "DefaultAppAssociations" -ForegroundColor Green
+        if ($ExistingTask.DefaultAppAssociationsXML) {
+            foreach ($Item in $ExistingTask.DefaultAppAssociationsXML) {
+                Write-Host "$Item" -ForegroundColor DarkGray
+            }
+        }
+        $DefaultAppAssociationsXML = $null
+        if ($ContentDefaultAppAssociations.IsPresent) {
+            if ($OSMedia.MajorVersion -eq 10) {$DefaultAppAssociationsXML = (Get-TaskContentDefaultAppAssociationsXML).FullName}
+        } else {
+            if ($ExistingTask.DefaultAppAssociationsXML) {$DefaultAppAssociationsXML = $ExistingTask.DefaultAppAssociationsXML}
+        }
+        if (!($DefaultAppAssociationsXML)) {if ($ExistingTask.DefaultAppAssociationsXML) {$DefaultAppAssociationsXML = $ExistingTask.DefaultAppAssociationsXML}}
+        #=================================================
         #   Content Unattend
         #=================================================
         Write-Host "Unattend" -ForegroundColor Green
@@ -934,6 +954,7 @@ function New-OSBuildTask {
             "PSModulesWinPE" = [string[]]$PSModulesWinPE;
             "Scripts" = [string[]]$Scripts;
             "StartLayoutXML" = [string]$StartLayoutXML;
+            "DefaultAppAssociationsXML" = [string]$DefaultAppAssociationsXML;
             "UnattendXML" = [string]$UnattendXML;
             #=================================================
             #   Content Packages
