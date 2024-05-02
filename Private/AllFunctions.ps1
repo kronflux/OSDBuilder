@@ -444,6 +444,8 @@ function Add-ContentDefaultAppAssociations {
     #=================================================
     Show-ActionTime; Write-Host -ForegroundColor Green "OS: Use Content DefaultAppAssociations"
     Write-Host "    $SetOSDBuilderPathContent\$DefaultAppAssociationsXML" -ForegroundColor DarkGray
+    $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-ContentDefaultAppAssociations.log"
+    Write-Verbose "CurrentLog: $CurrentLog"
     Try {
         Dism /Image:"$MountDirectory" /Import-DefaultAppAssociations:"$SetOSDBuilderPathContent\$DefaultAppAssociationsXML" /LogPath:"$CurrentLog" | Out-Null
     }
