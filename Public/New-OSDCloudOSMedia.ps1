@@ -37,7 +37,7 @@ function New-OSDCloudOSMedia {
         #   OSDCloud
         #=======================================================================
         $BirdBox = @()
-        $BirdBox = Get-OSMedia -OSMajorVersion 10 | Where-Object {$_.MediaType -eq 'OSImport'} | Where-Object {$_.RegBuild -ge 19041}
+        $BirdBox = Get-OSMedia -OSMajorVersion 10 | Where-Object {$_.MediaType -eq 'OSImport'} | Where-Object {$_.RegBuild -ge 19044}
 
         $BirdBox = $BirdBox | Out-GridView -PassThru -Title "Select one or more OSImport to Build (Cancel to Exit) and press OK"
 
@@ -160,9 +160,6 @@ function New-OSDCloudOSMedia {
             #=======================================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
             if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
                 if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
                 if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
                 if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
@@ -444,11 +441,6 @@ function New-OSDCloudOSMedia {
                         $OneDriveSetupDownload = $true
                     }
                 }
-<#                     if ($OneDriveSetupDownload -eq $true) {
-                    $WebClient = New-Object System.Net.WebClient
-                    Write-Host "Downloading to $OneDriveSetup" -ForegroundColor Gray
-                    $WebClient.DownloadFile('https://go.microsoft.com/fwlink/p/?LinkId=248256',"$OneDriveSetup")
-                } #>
 
                 if ($OSArchitecture -eq 'x86') {
                     $OneDriveSetupInfo = Get-Item -Path "$MountDirectory\Windows\System32\OneDriveSetup.exe" | Select-Object -Property *

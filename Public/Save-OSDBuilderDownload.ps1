@@ -45,7 +45,7 @@ function Save-OSDBuilderDownload {
 
         #Feature Update Build
         [Parameter(ParameterSetName = 'FeatureUpdates')]
-        [ValidateSet ('23H2','22H2','21H2','21H1','20H2',2009,2004)]
+        [ValidateSet ('23H2','22H2','21H2')]
         [string]$FeatureBuild,
 
         #Feature Update Edition
@@ -82,7 +82,7 @@ function Save-OSDBuilderDownload {
 
         #Filter Microsoft Updates for a specific ReleaseId
         [Parameter(ParameterSetName='OSDUpdate')]
-        [ValidateSet ('23H2','22H2','21H2','21H1','20H2',2009,2004)]
+        [ValidateSet ('23H2','22H2','21H2')]
         [Alias('ReleaseId')]
         [string]$UpdateBuild,
 
@@ -296,12 +296,10 @@ function Save-OSDBuilderDownload {
             }
             elseif ($UseCurl -eq $true) {
                 if ($host.name -match 'ConsoleHost') {
-                    #Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadFullPath`" --url `"$($Item.OriginUri)`""
                     Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadPath\$DownloadFile`" --url `"$DownloadUrl`""
                 }
                 else {
                     #PowerShell ISE will display a NativeCommandError, so progress will not be displayed
-                    #$Quiet = Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadFullPath`" --url `"$($Item.OriginUri)`" 2>&1"
                     $Quiet = Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadPath\$DownloadFile`" --url `"$DownloadUrl`" 2>&1"
                 }
             }

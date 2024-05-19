@@ -230,14 +230,9 @@ function New-OSBuild {
                     $BirdBox = Get-OSMedia -Revision OK -Updates Update
                 }
                 if ($UpdateNeeded.IsPresent) {
-                    if ($BirdBox | Where-Object {$_.MajorVersion -eq 6}) {
-                        Write-Warning "UpdateNeeded does not support Legacy Operating Systems"
-                        Write-Warning "Legacy Operating Systems have been removed from the results"
-                        $BirdBox = $BirdBox | Where-Object {$_.MajorVersion -eq 10}
-                    }
                     $BirdBox = $BirdBox | Where-Object {($_.Servicing -eq '') -or ($_.Cumulative -eq '') -or ($_.Adobe -eq '')}
                 }
-                $BirdBox = $BirdBox | Where-Object {($_.MajorVersion -eq 10) -or ($_.InstallationType -like "*Client*" -and $_.Version -like "6.1.7601*") -or ($_.InstallationType -like "*Server*" -and $_.Version -like "6.3*")}
+                $BirdBox = $BirdBox | Where-Object {($_.MajorVersion -eq 10)}
                 $BirdBox = $BirdBox | Out-GridView -PassThru -Title "Select one or more OSMedia to Update (Cancel to Exit) and press OK"
             }
         }
@@ -351,12 +346,6 @@ function New-OSBuild {
                 if ($TaskOSMedia) {
                     $OSMediaName = $TaskOSMedia.Name
                     $OSMediaPath = $TaskOSMedia.FullName
-                    #Write-Host '========================================================================================' -ForegroundColor DarkGray
-                    #Write-Host "Task Source OSMedia" -ForegroundColor Green
-                    #Write-Host "-OSMedia Name:                  $OSMediaName"
-                    #Write-Host "-OSMedia Path:                  $OSMediaPath"
-                    #Write-Host "-OSMedia Family:                $TaskOSMFamily"
-                    #Write-Host "-OSMedia Guid:                  $TaskOSMGuid"
                 }
                 $LatestOSMedia = Get-OSMedia -Revision OK | Where-Object {$_.OSMFamily -eq $TaskOSMFamily}
                 if ($LatestOSMedia) {
@@ -372,11 +361,6 @@ function New-OSBuild {
                     Write-Warning "Unable to find a matching OSMFamily $TaskOSMFamily"
                     Return
                 }
-
-<#                 if ($null -eq $OSMediaPath) {
-                    Write-Warning "Unable to find a matching OSMedia"
-                    Return
-                } #>
             }
 
             #=================================================
@@ -533,9 +517,6 @@ function New-OSBuild {
             #=================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
             if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
                 if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
                 if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
                 if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
@@ -781,31 +762,6 @@ function New-OSBuild {
                 $OSDUpdateDotNet = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}
             }
             #=================================================
-            #   OSDBuilder Seven
-            #=================================================
-            $OSDUpdateWinSeven = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows 7') {
-                $OSDUpdateWinSeven = $OSDUpdates
-            }
-            #=================================================
-            #   OSDBuilder EightOne
-            #=================================================
-            $OSDUpdateWinEightOne = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows 8.1') {
-                $OSDUpdateWinEightOne = $OSDUpdates
-                $OSDUpdateWinEightOne = $OSDUpdateWinEightOne | Where-Object {$_.UpdateGroup -ne 'SetupDU'}
-                $OSDUpdateWinEightOne = $OSDUpdateWinEightOne | Where-Object {$_.UpdateGroup -notlike "ComponentDU*"}
-            }
-            #=================================================
-            #   OSDBuilder Twelve
-            #=================================================
-            $OSDUpdateWinTwelveR2 = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows Server 2012 R2') {
-                $OSDUpdateWinTwelveR2 = $OSDUpdates
-                $OSDUpdateWinTwelveR2 = $OSDUpdateWinTwelveR2 | Where-Object {$_.UpdateGroup -ne 'SetupDU'}
-                $OSDUpdateWinTwelveR2 = $OSDUpdateWinTwelveR2 | Where-Object {$_.UpdateGroup -notlike "ComponentDU*"}
-            }
-            #=================================================
             #   Optional
             #=================================================
             $OSDUpdateOptional = @()
@@ -959,8 +915,6 @@ function New-OSBuild {
                 Add-ContentPack -PackType MEDIA
                 if ($LanguagePacks -or $LanguageInterfacePacks -or $LanguageFeatures -or $LocalExperiencePacks -or ($global:UpdateLanguageContent -eq $true)) {
                     Set-LanguageSettingsOS
-                    #Update-CumulativeOS -Force
-                    #if ($HideCleanupProgress.IsPresent) {Invoke-DismCleanupImage -HideCleanupProgress} else {Invoke-DismCleanupImage}
                 }
                 #=================================================
                 #   Optional Content
@@ -979,11 +933,6 @@ function New-OSBuild {
                 #=================================================
                 Show-ActionTime; Write-Host -ForegroundColor Green "OS: Update Build Revision $UBRPre (Pre-LCU)"
                 if ($global:ReapplyLCU -eq $true) {Update-CumulativeOS -Force} else {Update-CumulativeOS}
-                #=================================================
-                #   Update-OSMedia
-                #=================================================
-                Update-WindowsSevenOS
-                Update-WindowsServer2012R2OS
                 #=================================================
                 #   Install.wim UBR Post-Update
                 #=================================================
@@ -1027,11 +976,6 @@ function New-OSBuild {
                             $OneDriveSetupDownload = $true
                         }
                     }
-<#                     if ($OneDriveSetupDownload -eq $true) {
-                        $WebClient = New-Object System.Net.WebClient
-                        Write-Host "Downloading to $OneDriveSetup" -ForegroundColor Gray
-                        $WebClient.DownloadFile('https://go.microsoft.com/fwlink/p/?LinkId=248256',"$OneDriveSetup")
-                    } #>
 
                     if ($OSArchitecture -eq 'x86') {
                         if (Test-Path "$MountDirectory\Windows\System32\OneDriveSetup.exe") {
@@ -1087,10 +1031,6 @@ function New-OSBuild {
                 Add-ContentPack -PackType OSScripts
                 Add-ContentPack -PackType OSStartLayout
                 Add-ContentPack -PackType OSDefaultAppAssociations
-                #=================================================
-                #   Updates
-                #=================================================
-                #Update-ServicingStackOS -Force
                 #=================================================
                 #   Mirror OSMedia and OSBuild
                 #=================================================
@@ -1178,9 +1118,6 @@ function New-OSBuild {
                     [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
                     if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
                 }
-                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
                 if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
                 if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
                 if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
@@ -1253,11 +1190,6 @@ function New-OSBuild {
                         Write-Warning "Could not rename the the Build directory ..."
                     }
                 }
-<#                 if (Test-Path "$NewOSMediaPath") {
-                    Return (Get-OSMedia | Where-Object {$_.FullName -eq $NewOSMediaPath})
-                } else {
-                    Return (Get-OSMedia | Where-Object {$_.FullName -eq $WorkingPath})
-                } #>
             }
         }
     }

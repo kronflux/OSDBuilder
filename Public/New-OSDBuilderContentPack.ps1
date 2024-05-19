@@ -24,10 +24,8 @@ function New-OSDBuilderContentPack {
     $OSContentPack = @(
         'Media\ALL'
         'Media\x64'
-        #'Media\x86'
         'OSDrivers\ALL'
         'OSDrivers\x64'
-        #'OSDrivers\x86'
         'OSExtraFiles\ALL'
         'OSExtraFiles\ALL Subdirs'
         'OSExtraFiles\x64'
@@ -36,37 +34,28 @@ function New-OSDBuilderContentPack {
         'OSPoshMods\System'
         'OSRegistry\ALL'
         'OSRegistry\x64'
-        #'OSRegistry\x86'
         'OSScripts\ALL'
         'OSScripts\x64'
-        #'OSScripts\x86'
         'OSStartLayout\ALL'
         'OSStartLayout\x64'
-        #'OSStartLayout\x86'
         'OSDefaultAppAssociations\ALL'
         'OSDefaultAppAssociations\x64'
-        #'OSDefaultAppAssociations\x86'
     )
 
     $PEContentPack = @(
         'PEDaRT'
         'PEDrivers\ALL'
         'PEDrivers\x64'
-        #'PEDrivers\x86'
         'PEExtraFiles\ALL'
         'PEExtraFiles\ALL Subdirs'
         'PEExtraFiles\x64'
         'PEExtraFiles\x64 Subdirs'
-        #'PEExtraFiles\x86'
-        #'PEExtraFiles\x86 Subdirs'
         'PEPoshMods\ProgramFiles'
         'PEPoshMods\System'
         'PERegistry\ALL'
         'PERegistry\x64'
-        #'PERegistry\x86'
         'PEScripts\ALL'
         'PEScripts\x64'
-        #'PEScripts\x86'
     )
 
     $MultiLangContentPack = @()

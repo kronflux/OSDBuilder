@@ -193,7 +193,6 @@ function New-OSBuildTask {
         $TaskName = "$TaskName"
         if ($SaveAs -eq 'Task') {$TaskPath = "$SetOSDBuilderPathTasks\OSBuild $TaskName.json"}
         if ($SaveAs -eq 'Template') {$TaskPath = "$SetOSDBuilderPathTemplates\OSBuild $TaskName.json"}
-        #if ($SaveAs -eq 'GlobalTemplate') {$TaskPath = "$SetOSDBuilderPathTemplates\OSBuild Global $TaskName.json"}
         #=================================================
         #   Existing Task
         #=================================================
@@ -234,10 +233,6 @@ function New-OSBuildTask {
 
             if ($TaskName -match 'x64') {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x64'}}
             if ($TaskName -match 'x86') {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x86'}}
-            if ($TaskName -match '2004') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '2004'}}
-            if ($TaskName -match '2009') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '20H2'}}
-            if ($TaskName -match '20H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '20H2'}}
-            if ($TaskName -match '21H1') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H1'}}
             if ($TaskName -match '21H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
             if ($TaskName -match '22H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
             if ($TaskName -match '23H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '23H2'}}
@@ -303,9 +298,6 @@ function New-OSBuildTask {
         Write-Verbose '19.10.29 Set-OSMedia.ReleaseId'
         #=================================================
         if ($null -eq $($OSMedia.ReleaseId)) {
-            if ($($OSMedia.Build) -eq 19041) {$OSMedia.ReleaseId = 2004} # Windows 10 "20H1"
-            if ($($OSMedia.Build) -eq 19042) {$OSMedia.ReleaseId = '20H2'} # Windows 10 "20H2"
-            if ($($OSMedia.Build) -eq 19043) {$OSMedia.ReleaseId = '21H1'} # Windows 10 "21H1"
             if ($($OSMedia.Build) -eq 19044) {$OSMedia.ReleaseId = '21H2'} # Windows 10 "21H2"
             if ($($OSMedia.Build) -eq 19045) {$OSMedia.ReleaseId = '22H2'} # Windows 10 "22H2"
             if ($($OSMedia.Build) -eq 20348) {$OSMedia.ReleaseId = '21H2'} # Windows Server 2022
@@ -556,7 +548,6 @@ function New-OSBuildTask {
         #   IsoExtract
         #=================================================
         if ($OSMedia.MajorVersion -eq 10) {
-            #if ($ContentFeaturesOnDemand.IsPresent -or $ContentLanguagePackages.IsPresent) {
             #=================================================
             #   ContentIsoExtract
             #=================================================
@@ -890,7 +881,6 @@ function New-OSBuildTask {
         #=================================================
         #   Corrections
         #=================================================
-        if ($OSMedia.MajorVersion -eq 6) {$EnableNetFX3 = $false}
         if ($null -eq $SetAllIntl) {if ($ExistingTask.SetAllIntl) {$SetAllIntl = $ExistingTask.SetAllIntl}}
         if ($null -eq $SetInputLocale) {if ($ExistingTask.SetInputLocale) {$SetInputLocale = $ExistingTask.SetInputLocale}}
         if ($null -eq $SetSKUIntlDefaults) {if ($ExistingTask.SetSKUIntlDefaults) {$SetSKUIntlDefaults = $ExistingTask.SetSKUIntlDefaults}}

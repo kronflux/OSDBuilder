@@ -9,16 +9,16 @@ Updates are gathered from the OSDBuilder Update Catalogs
 https://osdbuilder.osdeploy.com/module/functions/update-osmedia
 
 .EXAMPLE
-Update-OSMedia -Name 'Win10 Ent x64 1803 17134.345'
+Update-OSMedia -Name 'Win10 Ent x64 22H2 19045.4412'
 
 .EXAMPLE
-Update-OSMedia -Name 'Win10 Ent x64 1803 17134.345' -Download
+Update-OSMedia -Name 'Win10 Ent x64 22H2 19045.4412' -Download
 
 .EXAMPLE
-Update-OSMedia -Name 'Win10 Ent x64 1803 17134.345' -Download -Execute
+Update-OSMedia -Name 'Win10 Ent x64 22H2 19045.4412' -Download -Execute
 
 .EXAMPLE
-Update-OSMedia -Name 'Win10 Ent x64 1803 17134.345' -Download -Execute -ISO
+Update-OSMedia -Name 'Win10 Ent x64 22H2 19045.4412' -Download -Execute -ISO
 
 .NOTES
 19.10.14 Added HideCleanupProgress
@@ -209,14 +209,9 @@ function Update-OSMedia {
                     $BirdBox = Get-OSMedia -Revision OK -Updates Update
                 }
                 if ($UpdateNeeded.IsPresent) {
-                    if ($BirdBox | Where-Object {$_.MajorVersion -eq 6}) {
-                        Write-Warning "UpdateNeeded does not support Legacy Operating Systems"
-                        Write-Warning "Legacy Operating Systems have been removed from the results"
-                        $BirdBox = $BirdBox | Where-Object {$_.MajorVersion -eq 10}
-                    }
                     $BirdBox = $BirdBox | Where-Object {($_.Servicing -eq '') -or ($_.Cumulative -eq '') -or ($_.Adobe -eq '')}
                 }
-                $BirdBox = $BirdBox | Where-Object {($_.MajorVersion -eq 10) -or ($_.InstallationType -like "*Client*" -and $_.Version -like "6.1.7601*") -or ($_.InstallationType -like "*Server*" -and $_.Version -like "6.3*")}
+                $BirdBox = $BirdBox | Where-Object {($_.MajorVersion -eq 10)}
                 $BirdBox = $BirdBox | Out-GridView -PassThru -Title "Select one or more OSMedia to Update (Cancel to Exit) and press OK"
             }
         }
@@ -227,7 +222,6 @@ function Update-OSMedia {
             #=================================================
             if ($MyInvocation.MyCommand.Name -eq 'New-OSBuild') {
                 if ($PSCmdlet.ParameterSetName -eq 'Taskless') {
-                    #$Task = Get-OSMedia -Revision OK | Where-Object {$_.Name -eq $Bird.Name}
                     $Task = Get-OSMedia | Where-Object {$_.Name -eq $Bird.Name} | Sort-Object ModifiedTime | Select-Object -Last 1
 
                     $TaskType = 'OSBuild'
@@ -330,12 +324,6 @@ function Update-OSMedia {
                 if ($TaskOSMedia) {
                     $OSMediaName = $TaskOSMedia.Name
                     $OSMediaPath = $TaskOSMedia.FullName
-                    #Write-Host '========================================================================================' -ForegroundColor DarkGray
-                    #Write-Host "Task Source OSMedia" -ForegroundColor Green
-                    #Write-Host "-OSMedia Name:                  $OSMediaName"
-                    #Write-Host "-OSMedia Path:                  $OSMediaPath"
-                    #Write-Host "-OSMedia Family:                $TaskOSMFamily"
-                    #Write-Host "-OSMedia Guid:                  $TaskOSMGuid"
                 }
                 $LatestOSMedia = Get-OSMedia -Revision OK | Where-Object {$_.OSMFamily -eq $TaskOSMFamily}
                 if ($LatestOSMedia) {
@@ -351,11 +339,6 @@ function Update-OSMedia {
                     Write-Warning "Unable to find a matching OSMFamily $TaskOSMFamily"
                     Return
                 }
-
-<#                 if ($null -eq $OSMediaPath) {
-                    Write-Warning "Unable to find a matching OSMedia"
-                    Return
-                } #>
             }
 
             #=================================================
@@ -512,9 +495,6 @@ function Update-OSMedia {
             #=================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
             if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
                 if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
                 if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
                 if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
@@ -727,32 +707,17 @@ function Update-OSMedia {
                 $MissingUpdate = $true
             }
             #=================================================
-            #   SetupDU
-            #=================================================
-            $OSDUpdateSetupDU = @()
-            $OSDUpdateSetupDU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SetupDU'}
-            #=================================================
-            #   ComponentDU
-            #=================================================
-            $OSDUpdateComponentDU = @()
-            $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}
-            #=================================================
-            #   SSU
-            #=================================================
-            $OSDUpdateSSU = @()
-            $OSDUpdateSSU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SSU'}
-            #=================================================
-            #   LCU
-            #=================================================
-            $OSDUpdateLCU = @()
-            $OSDUpdateLCU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}
-            #=================================================
             #   AdobeSU
             #=================================================
             $OSDUpdateAdobeSU = @()
             if ($OSMajorVersion -eq 10) {
                 $OSDUpdateAdobeSU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'AdobeSU'}
             }
+            #=================================================
+            #   ComponentDU
+            #=================================================
+            $OSDUpdateComponentDU = @()
+            $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}
             #=================================================
             #   DotNet
             #=================================================
@@ -761,30 +726,25 @@ function Update-OSMedia {
                 $OSDUpdateDotNet = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}
             }
             #=================================================
-            #   OSDBuilder Seven
+            #   LCU
             #=================================================
-            $OSDUpdateWinSeven = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows 7') {
-                $OSDUpdateWinSeven = $OSDUpdates
-            }
+            $OSDUpdateLCU = @()
+            $OSDUpdateLCU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}
             #=================================================
-            #   OSDBuilder EightOne
+            #   QualityUpdate
             #=================================================
-            $OSDUpdateWinEightOne = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows 8.1') {
-                $OSDUpdateWinEightOne = $OSDUpdates
-                $OSDUpdateWinEightOne = $OSDUpdateWinEightOne | Where-Object {$_.UpdateGroup -ne 'SetupDU'}
-                $OSDUpdateWinEightOne = $OSDUpdateWinEightOne | Where-Object {$_.UpdateGroup -notlike "ComponentDU*"}
-            }
+            $OSDUpdateLCU = @()
+            $OSDUpdateLCU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'QualityUpdate'}
             #=================================================
-            #   OSDBuilder Twelve
+            #   SetupDU
             #=================================================
-            $OSDUpdateWinTwelveR2 = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows Server 2012 R2') {
-                $OSDUpdateWinTwelveR2 = $OSDUpdates
-                $OSDUpdateWinTwelveR2 = $OSDUpdateWinTwelveR2 | Where-Object {$_.UpdateGroup -ne 'SetupDU'}
-                $OSDUpdateWinTwelveR2 = $OSDUpdateWinTwelveR2 | Where-Object {$_.UpdateGroup -notlike "ComponentDU*"}
-            }
+            $OSDUpdateSetupDU = @()
+            $OSDUpdateSetupDU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SetupDU'}
+            #=================================================
+            #   SSU
+            #=================================================
+            $OSDUpdateSSU = @()
+            $OSDUpdateSSU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SSU'}
             #=================================================
             #   Optional
             #=================================================
@@ -939,8 +899,6 @@ function Update-OSMedia {
                 Add-ContentPack -PackType MEDIA
                 if ($LanguagePacks -or $LanguageInterfacePacks -or $LanguageFeatures -or $LocalExperiencePacks -or ($global:UpdateLanguageContent -eq $true)) {
                     Set-LanguageSettingsOS
-                    #Update-CumulativeOS -Force
-                    #if ($HideCleanupProgress.IsPresent) {Invoke-DismCleanupImage -HideCleanupProgress} else {Invoke-DismCleanupImage}
                 }
                 #=================================================
                 #   Optional Content
@@ -959,11 +917,6 @@ function Update-OSMedia {
                 #=================================================
                 Show-ActionTime; Write-Host -ForegroundColor Green "OS: Update Build Revision $UBRPre (Pre-LCU)"
                 if ($global:ReapplyLCU -eq $true) {Update-CumulativeOS -Force} else {Update-CumulativeOS}
-                #=================================================
-                #   Update-OSMedia
-                #=================================================
-                Update-WindowsSevenOS
-                Update-WindowsServer2012R2OS
                 #=================================================
                 #   Install.wim UBR Post-Update
                 #=================================================
@@ -1007,11 +960,6 @@ function Update-OSMedia {
                             $OneDriveSetupDownload = $true
                         }
                     }
-<#                     if ($OneDriveSetupDownload -eq $true) {
-                        $WebClient = New-Object System.Net.WebClient
-                        Write-Host "Downloading to $OneDriveSetup" -ForegroundColor Gray
-                        $WebClient.DownloadFile('https://go.microsoft.com/fwlink/p/?LinkId=248256',"$OneDriveSetup")
-                    } #>
 
                     if ($OSArchitecture -eq 'x86') {
                         if (Test-Path "$MountDirectory\Windows\System32\OneDriveSetup.exe") {
@@ -1158,9 +1106,6 @@ function Update-OSMedia {
                     [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
                     if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
                 }
-                if ($OSBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-                if ($OSBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-                if ($OSBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
                 if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
                 if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
                 if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
@@ -1233,11 +1178,6 @@ function Update-OSMedia {
                         Write-Warning "Could not rename the the Build directory ..."
                     }
                 }
-<#                 if (Test-Path "$NewOSMediaPath") {
-                    Return (Get-OSMedia | Where-Object {$_.FullName -eq $NewOSMediaPath})
-                } else {
-                    Return (Get-OSMedia | Where-Object {$_.FullName -eq $WorkingPath})
-                } #>
             }
         }
     }

@@ -30,7 +30,7 @@ function Get-OSMedia {
         [string]$OSMajorVersion,
 
         #Filter the OSMedia by OS Release Id
-        [ValidateSet ('23H2','22H2','21H2','21H1','20H2',2009,2004)]
+        [ValidateSet ('23H2','22H2','21H2')]
         [string]$OSReleaseId,
 
         #Filter the OSMedia by Image Revision
@@ -162,9 +162,6 @@ function Get-OSMedia {
             [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
             if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
 
-            if ($RegValueCurrentBuild -eq 19041) {$ReleaseId = 2004} # Windows 10 "20H1"
-            if ($RegValueCurrentBuild -eq 19042) {$ReleaseId = '20H2'} # Windows 10 "20H2"
-            if ($RegValueCurrentBuild -eq 19043) {$ReleaseId = '21H1'} # Windows 10 "21H1"
             if ($RegValueCurrentBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
             if ($RegValueCurrentBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
             if ($RegValueCurrentBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022

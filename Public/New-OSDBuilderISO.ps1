@@ -158,16 +158,6 @@ function New-OSDBuilderISO {
             }
 
             # 32 character limit for a Label
-            # 23 = Win10 Edu x64 17134.112
-            # 25 = Win10 Edu N x64 17134.112
-            # 23 = Win10 Ent x64 17134.112
-            # 25 = Win10 Ent N x64 17134.112
-            # 23 = Win10 Pro x64 17134.112
-            # 27 = Win10 Pro Edu x64 17134.112
-            # 29 = Win10 Pro EduN x64 17134.112
-            # 27 = Win10 Pro Wks x64 17134.112
-            # 26 = Win10 Pro N x64 17134.112
-            # 29 = Win10 Pro N Wks x64 17134.112
             $ISOLabel = '-l"{0}"' -f $OSImageName
             $ISOFolder = "$($Media.FullName)\ISO"
             if (!(Test-Path $ISOFolder)) {New-Item -Path $ISOFolder -ItemType Directory -Force | Out-Null}

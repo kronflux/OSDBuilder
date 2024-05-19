@@ -44,17 +44,6 @@ function Initialize-OSDBuilder {
         Initialize              = $true
         JsonLocal               = Join-Path $global:GetOSDBuilderHome 'OSDBuilder.json'
         JsonGlobal              = Join-Path $env:ProgramData 'OSDeploy\OSDBuilder.json'
-<#      PathContentADK          = Join-Path $global:GetOSDBuilderHome 'Content\ADK'
-        PathContentDaRT         = Join-Path $global:GetOSDBuilderHome 'Content\DaRT'
-        PathContentDrivers      = Join-Path $global:GetOSDBuilderHome 'Content\Drivers'
-        PathContentExtraFiles   = Join-Path $global:GetOSDBuilderHome 'Content\ExtraFiles'
-        PathContentIsoExtract   = Join-Path $global:GetOSDBuilderHome 'Content\IsoExtract'
-        PathContentOneDrive     = Join-Path $global:GetOSDBuilderHome 'Content\OneDrive'
-        PathContentPackages     = Join-Path $global:GetOSDBuilderHome 'Content\Packages'
-        PathContentScripts      = Join-Path $global:GetOSDBuilderHome 'Content\Scripts'
-        PathContentStartLayout  = Join-Path $global:GetOSDBuilderHome 'Content\StartLayout'
-        PathContentDefaultAppAssociations = Join-Path $global:GetOSDBuilderHome 'Content\DefaultAppAssociations'
-        PathContentUnattend     = Join-Path $global:GetOSDBuilderHome 'Content\Unattend' #>
     }
 
     $global:SetOSDBuilder = [ordered]@{
@@ -190,20 +179,6 @@ function Initialize-OSDBuilder {
             Catch {Write-Warning "Unable to import $($global:GetOSDBuilder.JsonGlobal)"}
         }
     }
-
-<#     if ($global:SetOSDBuilder.AllowLocalPriority -eq $true) {
-        if (Test-Path $global:GetOSDBuilder.JsonLocal) {
-            Write-Verbose "Importing OSDBuilder Local Priority $($global:GetOSDBuilder.JsonLocal) as Priority"
-            Try {
-                $global:GetOSDBuilder.LocalSettings = (Get-Content $global:GetOSDBuilder.JsonLocal -RAW | ConvertFrom-Json).PSObject.Properties | foreach {[ordered]@{Name = $_.Name; Value = $_.Value}} | ConvertTo-Json | ConvertFrom-Json
-                $global:GetOSDBuilder.LocalSettings | foreach {
-                    Write-Verbose "$($_.Name) = $($_.Value)"
-                    $global:SetOSDBuilder.$($_.Name) = $($_.Value)
-                }
-            }
-            Catch {Write-Warning "Unable to import $($global:GetOSDBuilder.JsonLocal)"}
-        }
-    } #>
 
     #=================================================
     #   Set Content Paths

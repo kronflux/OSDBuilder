@@ -262,13 +262,6 @@ function Import-OSMedia {
             if ($Image.Architecture -eq '12') {$Image.Architecture = 'x64 ARM'}
         }
         #=================================================
-        #   AllowUnsupportedOS
-        #   Major Version gt 10
-        #   Build ge 1809
-        #=================================================
-        Write-Verbose "Filtering Windows Major Version gt 10 and Build ge 1809"
-        $ImportOSMediaWindowsImages = $ImportOSMediaWindowsImages | Where-Object {($_.MajorVersion -eq '10')}
-        #=================================================
         #   ImportOSMediaWindowsImages Filter
         #=================================================
         if ($EditionId) {
