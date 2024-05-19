@@ -173,9 +173,9 @@ function Import-OSMedia {
         #=================================================
         Show-ActionTime; Write-Host 'Get-OSDBuilder: Validating OSDBuilder Content'
         Show-ActionTime; Write-Warning 'This version of OSDBuilder only supports:'
-        Show-ActionTime; Write-Warning 'Windows 10 2004 - 22H2'
+        Show-ActionTime; Write-Warning 'Windows 10 21H2 - 22H2'
         Show-ActionTime; Write-Warning 'Windows 11 21H2 - 23H2'
-        Show-ActionTime; Write-Warning 'Windows Server 2019 2004 - Windows Server 23H2'
+        Show-ActionTime; Write-Warning 'Windows Server 2019 - Windows Server 23H2'
         Get-OSDBuilder -CreatePaths -HideDetails
         #=================================================
         #   Block
