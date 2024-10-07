@@ -404,7 +404,7 @@ function Add-ContentScriptsPE {
         }
     }
 }
-function Add-ContentStartLayout {
+function Add-ContentStartLayouts {
     [CmdletBinding()]
     param ()
     #=================================================
@@ -412,14 +412,25 @@ function Add-ContentStartLayout {
     #=================================================
     if ($ScriptName -ne 'New-OSBuild') {Return}
     if ($OSMajorVersion -ne 10) {Return}
-    if ([string]::IsNullOrWhiteSpace($StartLayoutXML)) {Return}
+    if ([string]::IsNullOrWhiteSpace($StartLayouts)) {Return}
     #=================================================
     #   TASK
     #=================================================
-    Show-ActionTime; Write-Host -ForegroundColor Green "OS: Use Content StartLayout"
-    Write-Host "    $SetOSDBuilderPathContent\$StartLayoutXML" -ForegroundColor DarkGray
+    Show-ActionTime; Write-Host -ForegroundColor Green "OS: Use Content StartLayouts"
+    Write-Host "    $SetOSDBuilderPathContent\$StartLayouts" -ForegroundColor DarkGray
+    
     Try {
-        Copy-Item -Path "$SetOSDBuilderPathContent\$StartLayoutXML" -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" -Recurse -Force | Out-Null
+        # Copy both XML and JSON files to their respective destinations
+        $xmlFilePath = "$SetOSDBuilderPathContent\$StartLayouts\LayoutModification.xml"
+        $jsonFilePath = "$SetOSDBuilderPathContent\$StartLayouts\LayoutModification.json"
+        
+        if (Test-Path $xmlFilePath) {
+            Copy-Item -Path $xmlFilePath -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" -Recurse -Force | Out-Null
+        }
+
+        if (Test-Path $jsonFilePath) {
+            Copy-Item -Path $jsonFilePath -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.json" -Recurse -Force | Out-Null
+        }
     }
     Catch {
         $ErrorMessage = $_.Exception.Message
@@ -494,7 +505,7 @@ function Add-ContentPack {
             'OSPoshMods',
             'OSRegistry',
             'OSScripts',
-            'OSStartLayout',
+            'OSStartLayouts',
             'OSDefaultAppAssociations',
             'PEADK',
             'PEADKLang',
@@ -522,6 +533,7 @@ function Add-ContentPack {
         if ($ReleaseID -match '21H2') {$MSUX = '2004'}
         elseif ($ReleaseID -match '22H2') {$MSUX = '2004'}
         elseif ($ReleaseID -match '23H2') {$MSUX = '2004'}
+        elseif ($ReleaseID -match '24H2') {$MSUX = '2004'}
         else {$MSUX = $ReleaseID}
         #=================================================
         #   MEDIA ContentPacks
@@ -674,10 +686,10 @@ function Add-ContentPack {
                 }
             }
         }
-        if ($PackType -eq 'OSStartLayout') {
-            Show-ActionTime; Write-Host -ForegroundColor Green "OSStartLayout ContentPack"
+        if ($PackType -eq 'OSStartLayouts') {
+            Show-ActionTime; Write-Host -ForegroundColor Green "OSStartLayouts ContentPack"
             foreach ($ContentPack in $ContentPacks) {
-                $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSStartLayout"
+                $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSStartLayouts"
 
                 $ContentPaths = @(
                     "$ContentPackPath\ALL"
@@ -1351,11 +1363,24 @@ function Add-ContentPackOSStartLayouts {
     #======================================================================================
     #   BUILD
     #======================================================================================
-    $ContentPackOSStartLayouts = Get-ChildItem "$ContentPackContent\*.xml" -File | Select-Object -Property FullName
+    # Get both XML and JSON files
+    $ContentPackOSStartLayouts = Get-ChildItem "$ContentPackContent\*" -Include *.xml, *.json -File | Select-Object -Property FullName
+
     foreach ($ContentPackOSStartLayout in $ContentPackOSStartLayouts) {
-        Write-Host -ForegroundColor Cyan "  $($ContentPackOSStartLayout.FullName)"
+        Write-Host -ForegroundColor Cyan "  $($ContentPackOSStartLayouts.FullName)"
         Try {
-            Copy-Item -Path "$($ContentPackOSStartLayout.FullName)" -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" -Recurse -Force | Out-Null
+            # Determine the destination path based on the file extension
+            $destinationPath = if ($ContentPackOSStartLayouts.Extension -eq ".xml") {
+                "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml"
+            } elseif ($ContentPackOSStartLayouts.Extension -eq ".json") {
+                "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.json"
+            } else {
+                # If the file extension is neither .xml nor .json, skip it
+                continue
+            }
+        
+            # Copy the selected file to the appropriate destination
+            Copy-Item -Path "$($ContentPackOSStartLayouts.FullName)" -Destination $destinationPath -Recurse -Force | Out-Null
         }
         Catch {
             $ErrorMessage = $_.Exception.Message
@@ -3423,7 +3448,7 @@ function Get-TaskContentAddFeatureOnDemand {
     $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*LanguageExperiencePack*"}
     $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.FullName -notlike "*metadata*"}
 
-    if (($OSMedia.ReleaseId -match '21H2') -or ($OSMedia.ReleaseId -match '22H2') -or ($OSMedia.ReleaseId -match '23H2')) {
+    if (($OSMedia.ReleaseId -match '21H2') -or ($OSMedia.ReleaseId -match '22H2') -or ($OSMedia.ReleaseId -match '23H2') -or ($OSMedia.ReleaseId -match '24H2')) {
         $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*ActiveDirectory*"}
         $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*BitLocker-Recovery*"}
         $FeaturesOnDemandIsoExtractDir = $FeaturesOnDemandIsoExtractDir | Where-Object {$_.Name -notlike "*CertificateServices*"}
@@ -3463,13 +3488,16 @@ function Get-TaskContentAddFeatureOnDemand {
     if ($OSMedia.InstallationType -like "*Server*") {$AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -like "*Windows Server*"}}
     if ($($OSMedia.ReleaseId)) {
         if ($($OSMedia.ReleaseId) -eq '21H2') {
-            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+        }
+        elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+            $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         else {
             $AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -3560,16 +3588,19 @@ function Get-TaskContentIsoExtract {
     $ContentIsoExtract = Get-ChildItem -Path "$GetOSDBuilderPathContentIsoExtract\*" -Include *.cab, *.appx -Recurse | Select-Object -Property Name, FullName
     if ($($OSMedia.ReleaseId)) {
         if ($($OSMedia.ReleaseId) -eq '21H2') {
-            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+        }
+        elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+            $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         else {
             $ContentIsoExtract = $ContentIsoExtract | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -3629,13 +3660,16 @@ function Get-TaskContentLanguageFeature {
         if ($($OSMedia.Arch) -eq 'x64') {$LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -like "*x64*" -or $_.FullName -like "*amd64*"}}
         if ($($OSMedia.ReleaseId)) {
             if ($($OSMedia.ReleaseId) -eq '21H2') {
-                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
             }
             elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
             }
             elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+            }
+            elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+                $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
             }
             else {
                 $LanguageFodUpdatesDir = $LanguageFodUpdatesDir | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -3671,13 +3705,16 @@ function Get-TaskContentLanguageInterfacePack {
         $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -like "*$($OSMedia.Arch)*"}
         if ($($OSMedia.ReleaseId)) {
             if ($($OSMedia.ReleaseId) -eq '21H2') {
-                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
             }
             elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
             }
             elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+            }
+            elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+                $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
             }
             else {
                 $LanguageLipUpdatesDir = $LanguageLipUpdatesDir | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -3726,13 +3763,16 @@ function Get-TaskContentLanguagePack {
     if ($OSMedia.InstallationType -like "*Server*") {$LanguagePack = $LanguagePack | Where-Object {$_.FullName -like "*Windows Server*"}}
     if ($($OSMedia.ReleaseId)) {
         if ($($OSMedia.ReleaseId) -eq '21H2') {
-            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+        }
+        elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+            $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
         }
         else {
             $LanguagePack = $LanguagePack | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -3824,26 +3864,26 @@ function Get-TaskContentScripts {
     foreach ($Item in $Scripts) {Write-Host "$($Item.FullName)" -ForegroundColor White}
     Return $Scripts
 }
-function Get-TaskContentStartLayoutXML {
+function Get-TaskContentStartLayouts {
     #=================================================
-    #   Content StartLayout
+    #   Content StartLayouts
     #=================================================
     [CmdletBinding()]
     param ()
-    $StartLayoutXML = Get-ChildItem -Path $GetOSDBuilderPathContentStartLayout *.xml -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName, Length, CreationTime | Sort-Object -Property FullName
-    foreach ($Item in $StartLayoutXML) {$Item.FullName = $($Item.FullName).replace("$SetOSDBuilderPathContent\",'')}
+    $StartLayouts = Get-ChildItem -Path $GetOSDBuilderPathContentStartLayouts -Include *.xml, *.json -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName, Length, CreationTime | Sort-Object -Property FullName
+    foreach ($Item in $StartLayouts) {$Item.FullName = $($Item.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
-    if ($null -eq $StartLayoutXML) {Write-Warning "StartLayoutXML: To select a Start Layout, add Content to $GetOSDBuilderPathContentStartLayout"}
+    if ($null -eq $StartLayouts) {Write-Warning "StartLayouts: To select Start Layouts, add Content to $GetOSDBuilderPathContentStartLayouts"}
     else {
-        if ($ExistingTask.StartLayoutXML) {
-            foreach ($Item in $ExistingTask.StartLayoutXML) {
-                $StartLayoutXML = $StartLayoutXML | Where-Object {$_.FullName -ne $Item}
+        if ($ExistingTask.StartLayouts) {
+            foreach ($Item in $ExistingTask.StartLayouts) {
+                $StartLayouts = $StartLayouts | Where-Object {$_.FullName -ne $Item}
             }
         }
-        $StartLayoutXML = $StartLayoutXML | Out-GridView -Title "StartLayoutXML: Select a Start Layout XML to apply and press OK (Esc or Cancel to Skip)" -OutputMode Single
+        $StartLayouts = $StartLayouts | Out-GridView -Title "StartLayouts: Select Start Layouts to apply and press OK (Esc or Cancel to Skip)" -OutputMode Single
     }
-    foreach ($Item in $StartLayoutXML) {Write-Host "$($Item.FullName)" -ForegroundColor White}
-    Return $StartLayoutXML
+    foreach ($Item in $StartLayouts) {Write-Host "$($Item.FullName)" -ForegroundColor White}
+    Return $StartLayouts
 }
 function Get-TaskContentDefaultAppAssociationsXML {
     #=================================================
@@ -3998,13 +4038,16 @@ function Get-TaskWinPEADK {
     foreach ($Pack in $WinPEADK) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
     if ($($OSMedia.ReleaseId) -eq '21H2') {
-        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+    }
+    elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+        $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     else {
         $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -4039,13 +4082,16 @@ function Get-TaskWinPEADKPE {
     foreach ($Pack in $WinPEADKPE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
     if ($($OSMedia.ReleaseId) -eq '21H2') {
-        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+    }
+    elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+        $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     else {
         $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -4081,13 +4127,16 @@ function Get-TaskWinPEADKRE {
     foreach ($Pack in $WinPEADKRE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
     if ($($OSMedia.ReleaseId) -eq '21H2') {
-        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+    }
+    elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+        $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     else {
         $WinPEADKRE = $WinPEADKRE | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -4128,13 +4177,16 @@ function Get-TaskWinPEADKSE {
     foreach ($Pack in $WinPEADKSE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
     if ($($OSMedia.ReleaseId) -eq '21H2') {
-        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '22H2') {
-        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     elseif ($($OSMedia.ReleaseId) -eq '23H2') {
-        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2'}
+        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
+    }
+    elseif ($($OSMedia.ReleaseId) -eq '24H2') {
+        $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match '21H2' -or $_.FullName -match '22H2' -or $_.FullName -match '23H2' -or $_.FullName -match '24H2'}
     }
     else {
         $WinPEADKSE = $WinPEADKSE | Where-Object {$_.FullName -match $OSMedia.ReleaseId}
@@ -4895,21 +4947,23 @@ function New-ItemDirectorySetOSDBuilderPathContent {
     $ItemDirectories = @(
         $SetOSDBuilderPathContent
         $GetOSDBuilderPathContentADK
-        "$GetOSDBuilderPathContentADK\Windows 10 23H2\Windows Preinstallation Environment"
+        "$GetOSDBuilderPathContentADK\Windows 10 24H2\Windows Preinstallation Environment"
         $GetOSDBuilderPathContentDaRT
         "$GetOSDBuilderPathContentDaRT\DaRT 10"
         $GetOSDBuilderPathContentDrivers
         "$SetOSDBuilderPathContent\ExtraFiles"
         "$GetOSDBuilderPathContentIsoExtract\Windows 10 22H2 FOD x64"
         "$GetOSDBuilderPathContentIsoExtract\Windows 10 22H2 Language"
-        "$GetOSDBuilderPathContentIsoExtract\Windows 10 23H2 FOD x64"
-        "$GetOSDBuilderPathContentIsoExtract\Windows 10 23H2 Language"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 11 23H2 FOD x64"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 11 23H2 Language"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 11 24H2 FOD x64"
+        "$GetOSDBuilderPathContentIsoExtract\Windows 11 24H2 Language"
         $SetOSDBuilderPathMount
         $GetOSDBuilderPathContentOneDrive
         $SetOSDBuilderPathUpdates
         $GetOSDBuilderPathContentPackages
         $GetOSDBuilderPathContentScripts
-        $GetOSDBuilderPathContentStartLayout
+        $GetOSDBuilderPathContentStartLayouts
         $GetOSDBuilderPathContentDefaultAppAssociations
         $GetOSDBuilderPathContentUnattend
     )
@@ -5124,6 +5178,7 @@ function Rename-OSMedia {
             if ($OSMBuild -eq 22000) {$OSMReleaseId = '21H2'} # Windows 11 "Sun Valley"
             if ($OSMBuild -eq 22621) {$OSMReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
             if ($OSMBuild -eq 22631) {$OSMReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($OSMBuild -eq 26100) {$OSMReleaseId = '24H2'} # Windows 11 "Next Valley"
             if ($OSMBuild -eq 25398) {$OSMReleaseId = '23H2'} # Windows Server
 
             Write-Verbose "ReleaseId: $OSMReleaseId"
@@ -5252,7 +5307,7 @@ function Repair-OSBuildTask {
                 "ModifiedTime" = [datetime]$OSMedia.ModifiedTime;
 
                 "EnableNetFX3" = [string]$Task.EnableNetFX3;
-                "StartLayoutXML" = [string]$Task.ImportStartLayout;
+                "StartLayouts" = [string]$Task.ImportStartLayouts;
                 "DefaultAppAssociationsXML" = [string]$Task.ImportDefaultAppAssociations;
                 "UnattendXML" = [string]$Task.UseWindowsUnattend;
                 "WinPEAutoExtraFiles" = [string]"False";
@@ -5368,6 +5423,7 @@ function Repair-PEBuildTask {
             if ($Task.MediaName -like "*21H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
             if ($Task.MediaName -like "*22H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
             if ($Task.MediaName -like "*23H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '23H2'}}
+            if ($Task.MediaName -like "*24H2*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '24H2'}}
 
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "$($Task.TaskName): Select the OSMedia used with this PEBuild Task"
 
@@ -6114,8 +6170,10 @@ function Show-TaskInfo {
         foreach ($item in $RemovePackage)       {Write-Host -ForegroundColor Cyan "   $item"}}
 
 
-    if ($StartLayoutXML)    {
-    Write-Host "-Start Layout:              $SetOSDBuilderPathContent\$StartLayoutXML"}
+    if ($StartLayouts) {
+        Write-Host "-Start Layouts:"
+        foreach ($item in $StartLayouts)          {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
+
     if ($DefaultAppAssociationsXML)    {
     Write-Host "-Default App Associations:              $SetOSDBuilderPathContent\$DefaultAppAssociationsXML"}
     if ($UnattendXML)       {
@@ -6237,7 +6295,7 @@ function Show-TaskInfo {
         "ModifiedTime" = [datetime]$CombinedOSMedia.ModifiedTime;
 
         "EnableNetFX3" = [string]$EnableNetFX3;
-        "StartLayoutXML" = [string]$StartLayoutXML;
+        "StartLayouts" = [string[]]$($StartLayouts | Sort-Object -Unique);
         "DefaultAppAssociationsXML" = [string]$DefaultAppAssociationsXML;
         "UnattendXML" = [string]$UnattendXML;
         "WinPEAutoExtraFiles" = [string]$WinPEAutoExtraFiles;

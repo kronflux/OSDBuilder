@@ -36,8 +36,8 @@ function New-OSDBuilderContentPack {
         'OSRegistry\x64'
         'OSScripts\ALL'
         'OSScripts\x64'
-        'OSStartLayout\ALL'
-        'OSStartLayout\x64'
+        'OSStartLayouts\ALL'
+        'OSStartLayouts\x64'
         'OSDefaultAppAssociations\ALL'
         'OSDefaultAppAssociations\x64'
     )

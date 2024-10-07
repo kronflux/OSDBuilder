@@ -54,9 +54,9 @@ function New-OSBuildTask {
         [Parameter(ParameterSetName='All')]
         [switch]$ContentScripts = $global:SetOSDBuilder.NewOSBuildTaskContentScripts,
 
-        #Select a StartLayout.xml in GridView from the Content\StartLayout directory
+        #Select a StartLayout.xml and/or StartLayout.json in GridView from the Content\StartLayouts directory
         [Parameter(ParameterSetName='All')]
-        [switch]$ContentStartLayout = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayout,
+        [switch]$ContentStartLayouts = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayouts,
 
         #Select a DefaultAppAssociations.xml in GridView from the Content\DefaultAppAssociations directory
         [Parameter(ParameterSetName='All')]
@@ -236,6 +236,7 @@ function New-OSBuildTask {
             if ($TaskName -match '21H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
             if ($TaskName -match '22H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
             if ($TaskName -match '23H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '23H2'}}
+            if ($TaskName -match '24H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '24H2'}}
 
             Try {
                 $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title 'Select a Source OSMedia to use for this Task (Cancel to Exit)'
@@ -304,6 +305,7 @@ function New-OSBuildTask {
             if ($($OSMedia.Build) -eq 22000) {$OSMedia.ReleaseId = '21H2'} # Windows 11 "Sun Valley"
             if ($($OSMedia.Build) -eq 22621) {$OSMedia.ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
             if ($($OSMedia.Build) -eq 22631) {$OSMedia.ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($($OSMedia.Build) -eq 26100) {$OSMedia.ReleaseId = '24H2'} # Windows 11 "Next Valley"
             if ($($OSMedia.Build) -eq 25398) {$OSMedia.ReleaseId = '23H2'} # Windows Server
         }
         #=================================================
@@ -479,21 +481,23 @@ function New-OSBuildTask {
             if ($ExistingTask.Scripts) {$Scripts = $ExistingTask.Scripts}
         }
         #=================================================
-        #   Content StartLayout
+        #   Content StartLayouts
         #=================================================
-        Write-Host "StartLayout" -ForegroundColor Green
-        if ($ExistingTask.StartLayoutXML) {
-            foreach ($Item in $ExistingTask.StartLayoutXML) {
+        Write-Host "StartLayouts" -ForegroundColor Green
+        if ($ExistingTask.StartLayouts) {
+            foreach ($Item in $ExistingTask.StartLayouts) {
                 Write-Host "$Item" -ForegroundColor DarkGray
             }
         }
-        $StartLayoutXML = $null
-        if ($ContentStartLayout.IsPresent) {
-            if ($OSMedia.MajorVersion -eq 10) {$StartLayoutXML = (Get-TaskContentStartLayoutXML).FullName}
+        $StartLayouts = $null
+        if ($ContentStartLayouts.IsPresent) {
+            [array]$StartLayouts = (Get-TaskContentStartLayouts).FullName
+
+            $StartLayouts = [array]$StartLayouts + [array]$ExistingTask.StartLayouts
+            $StartLayouts = $StartLayouts | Sort-Object -Unique
         } else {
-            if ($ExistingTask.StartLayoutXML) {$StartLayoutXML = $ExistingTask.StartLayoutXML}
+            if ($ExistingTask.StartLayouts) {$StartLayouts = $ExistingTask.StartLayouts}
         }
-        if (!($StartLayoutXML)) {if ($ExistingTask.StartLayoutXML) {$StartLayoutXML = $ExistingTask.StartLayoutXML}}
         #=================================================
         #   Content DefaultAppAssociations
         #=================================================
@@ -943,7 +947,7 @@ function New-OSBuildTask {
             "PSModulesOS" = [string[]]$PSModulesOS;
             "PSModulesWinPE" = [string[]]$PSModulesWinPE;
             "Scripts" = [string[]]$Scripts;
-            "StartLayoutXML" = [string]$StartLayoutXML;
+            "StartLayouts" = [string[]]$StartLayouts;
             "DefaultAppAssociationsXML" = [string]$DefaultAppAssociationsXML;
             "UnattendXML" = [string]$UnattendXML;
             #=================================================

@@ -68,7 +68,7 @@ function Use-OSDUpdateBuilder {
         [string]$UpdateArch,
 
         [Parameter(Mandatory)]
-        [ValidateSet ('23H2','22H2','21H2')]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [string]$UpdateBuild,
 
         [ValidateSet('AdobeSU','DotNet','DotNetCU','LCU','SSU')]

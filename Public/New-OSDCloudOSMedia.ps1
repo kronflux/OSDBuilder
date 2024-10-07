@@ -166,6 +166,7 @@ function New-OSDCloudOSMedia {
                 if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
                 if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
                 if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
                 if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
             }
 
@@ -474,7 +475,7 @@ function New-OSDCloudOSMedia {
             Disable-WindowsOptionalFeatureOS
             Add-ContentDriversOS
             Add-ContentExtraFilesOS
-            Add-ContentStartLayout
+            Add-ContentStartLayouts
             Add-ContentDefaultAppAssociations
             Add-ContentUnattend
             Add-ContentScriptsOS
@@ -485,7 +486,7 @@ function New-OSDCloudOSMedia {
             Add-ContentPack -PackType OSPoshMods
             Add-ContentPack -PackType OSRegistry
             Add-ContentPack -PackType OSScripts
-            Add-ContentPack -PackType OSStartLayout
+            Add-ContentPack -PackType OSStartLayouts
             Add-ContentPack -PackType OSDefaultAppAssociations
             #=======================================================================
             #   Mirror OSMedia and OSBuild

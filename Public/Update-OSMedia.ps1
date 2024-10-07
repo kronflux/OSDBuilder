@@ -249,7 +249,7 @@ function Update-OSMedia {
                 if (Test-Path "$SetOSDBuilderPathOSMedia\$OSMediaName") {$OSMediaPath = "$SetOSDBuilderPathOSMedia\$OSMediaName"}
                 if (Test-Path "$SetOSDBuilderPathOSImport\$OSMediaName") {$OSMediaPath = "$SetOSDBuilderPathOSImport\$OSMediaName"}
                 $EnableNetFX3 = $Task.EnableNetFX3
-                $StartLayoutXML = $Task.StartLayoutXML
+                $StartLayouts = $Task.StartLayouts
                 $DefaultAppAssociationsXML = $Task.DefaultAppAssociationsXML
                 $UnattendXML = $Task.UnattendXML
                 $WinPEAutoExtraFiles = $Task.WinPEAutoExtraFiles
@@ -367,7 +367,6 @@ function Update-OSMedia {
                     $ContentPacks += @($Task.ContentPacks | Where-Object {$_})
 
                     if (!($Task.EnableNetFX3 -eq $False)) {$EnableNetFX3 = $Task.EnableNetFX3}
-                    if ($Task.StartLayoutXML) {$StartLayoutXML = $Task.StartLayoutXML}
                     if ($Task.DefaultAppAssociationsXML) {$DefaultAppAssociationsXML = $Task.DefaultAppAssociationsXML}
                     if ($Task.UnattendXML) {$UnattendXML = $Task.UnattendXML}
                     if (!($Task.WinPEAutoExtraFiles -eq $False)) {$WinPEAutoExtraFiles = $Task.WinPEAutoExtraFiles}
@@ -375,6 +374,7 @@ function Update-OSMedia {
                     if (!($Task.WinREWiFi -eq $False)) {$WinREWiFi = $Task.WinREWiFi}
                     if ($Task.WinPEDaRT) {$WinPEDaRT = $Task.WinPEDaRT}
 
+                    $StartLayouts += @($Task.StartLayouts | Where-Object {$_})
                     $ExtraFiles += @($Task.ExtraFiles | Where-Object {$_})
                     $Scripts += @($Task.Scripts | Where-Object {$_})
                     $Drivers += @($Task.Drivers | Where-Object {$_})
@@ -501,6 +501,7 @@ function Update-OSMedia {
                 if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
                 if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
                 if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
                 if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
             }
 
@@ -1002,7 +1003,7 @@ function Update-OSMedia {
                 Disable-WindowsOptionalFeatureOS
                 Add-ContentDriversOS
                 Add-ContentExtraFilesOS
-                Add-ContentStartLayout
+                Add-ContentStartLayouts
                 Add-ContentDefaultAppAssociations
                 Add-ContentUnattend
                 Add-ContentScriptsOS
@@ -1013,7 +1014,7 @@ function Update-OSMedia {
                 Add-ContentPack -PackType OSPoshMods
                 Add-ContentPack -PackType OSRegistry
                 Add-ContentPack -PackType OSScripts
-                Add-ContentPack -PackType OSStartLayout
+                Add-ContentPack -PackType OSStartLayouts
                 Add-ContentPack -PackType OSDefaultAppAssociations
                 #=================================================
                 #   Updates
@@ -1112,6 +1113,7 @@ function Update-OSMedia {
                 if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
                 if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
                 if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
                 if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
 
                 if ($OSMajorVersion -eq 10) {

@@ -329,6 +329,7 @@ $MDTUnattendPEx86 = @'
             if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
             if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
             if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
             if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
             #=================================================
             Write-Verbose '19.1.1 Set Working Path'

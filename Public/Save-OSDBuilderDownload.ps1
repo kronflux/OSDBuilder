@@ -45,7 +45,7 @@ function Save-OSDBuilderDownload {
 
         #Feature Update Build
         [Parameter(ParameterSetName = 'FeatureUpdates')]
-        [ValidateSet ('23H2','22H2','21H2')]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [string]$FeatureBuild,
 
         #Feature Update Edition
@@ -82,7 +82,7 @@ function Save-OSDBuilderDownload {
 
         #Filter Microsoft Updates for a specific ReleaseId
         [Parameter(ParameterSetName='OSDUpdate')]
-        [ValidateSet ('23H2','22H2','21H2')]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [Alias('ReleaseId')]
         [string]$UpdateBuild,
 

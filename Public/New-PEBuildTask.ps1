@@ -119,6 +119,7 @@ function New-PEBuildTask {
         if ($TaskName -match '21H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
         if ($TaskName -match '22H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
         if ($TaskName -match '23H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '23H2'}}
+        if ($TaskName -match '24H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '24H2'}}
 
         Try {
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "Select a Source OSMedia to use for this Task (Cancel to Exit)"
@@ -186,6 +187,7 @@ function New-PEBuildTask {
             if ($($OSMedia.Build) -eq 22000) {$OSMedia.ReleaseId = '21H2'} # Windows 11 "Sun Valley"
             if ($($OSMedia.Build) -eq 22621) {$OSMedia.ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
             if ($($OSMedia.Build) -eq 22631) {$OSMedia.ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($($OSMedia.Build) -eq 26100) {$OSMedia.ReleaseId = '24H2'} # Windows 11 "Next Valley"
             if ($($OSMedia.Build) -eq 25398) {$OSMedia.ReleaseId = '23H2'} # Windows Server
         }
         #=================================================

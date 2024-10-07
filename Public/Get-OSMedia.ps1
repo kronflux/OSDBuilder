@@ -30,7 +30,7 @@ function Get-OSMedia {
         [string]$OSMajorVersion,
 
         #Filter the OSMedia by OS Release Id
-        [ValidateSet ('23H2','22H2','21H2')]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [string]$OSReleaseId,
 
         #Filter the OSMedia by Image Revision
@@ -168,6 +168,7 @@ function Get-OSMedia {
             if ($RegValueCurrentBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
             if ($RegValueCurrentBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
             if ($RegValueCurrentBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($RegValueCurrentBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
             if ($RegValueCurrentBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
 
             Write-Verbose "ReleaseId: $ReleaseId"

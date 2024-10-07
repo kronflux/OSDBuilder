@@ -107,7 +107,7 @@ function Initialize-OSDBuilder {
         NewOSBuildTaskContentLanguagePackages = $false
         NewOSBuildTaskContentPackages = $false
         NewOSBuildTaskContentScripts = $false
-        NewOSBuildTaskContentStartLayout = $false
+        NewOSBuildTaskContentStartLayouts = $false
         NewOSBuildTaskContentDefaultAppAssociations = $false
         NewOSBuildTaskContentUnattend = $false
         NewOSBuildTaskContentWinPEADK = $false
@@ -191,7 +191,7 @@ function Initialize-OSDBuilder {
     $global:GetOSDBuilder.PathContentOneDrive       = Join-Path $global:SetOSDBuilder.PathContent 'OneDrive'
     $global:GetOSDBuilder.PathContentPackages       = Join-Path $global:SetOSDBuilder.PathContent 'Packages'
     $global:GetOSDBuilder.PathContentScripts        = Join-Path $global:SetOSDBuilder.PathContent 'Scripts'
-    $global:GetOSDBuilder.PathContentStartLayout    = Join-Path $global:SetOSDBuilder.PathContent 'StartLayout'
+    $global:GetOSDBuilder.PathContentStartLayouts    = Join-Path $global:SetOSDBuilder.PathContent 'StartLayouts'
     $global:GetOSDBuilder.PathContentDefaultAppAssociations = Join-Path $global:SetOSDBuilder.PathContent 'DefaultAppAssociations'
     $global:GetOSDBuilder.PathContentUnattend       = Join-Path $global:SetOSDBuilder.PathContent 'Unattend'
     #=================================================
@@ -206,7 +206,7 @@ function Initialize-OSDBuilder {
     $global:GetOSDBuilderPathContentOneDrive    = $global:GetOSDBuilder.PathContentOneDrive
     $global:GetOSDBuilderPathContentPackages    = $global:GetOSDBuilder.PathContentPackages
     $global:GetOSDBuilderPathContentScripts     = $global:GetOSDBuilder.PathContentScripts
-    $global:GetOSDBuilderPathContentStartLayout = $global:GetOSDBuilder.PathContentStartLayout
+    $global:GetOSDBuilderPathContentStartLayouts = $global:GetOSDBuilder.PathContentStartLayouts
     $global:GetOSDBuilderPathContentDefaultAppAssociations = $global:GetOSDBuilder.PathContentDefaultAppAssociations
     $global:GetOSDBuilderPathContentUnattend    = $global:GetOSDBuilder.PathContentUnattend
     #=================================================

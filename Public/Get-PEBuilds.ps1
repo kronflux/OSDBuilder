@@ -125,6 +125,7 @@ function Get-PEBuilds {
             if ($OSMBuild -eq 22000) {$RegValueReleaseId = '21H2'} # Windows 11 "Sun Valley"
             if ($OSMBuild -eq 22621) {$RegValueReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
             if ($OSMBuild -eq 22631) {$RegValueReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($OSMBuild -eq 26100) {$RegValueReleaseId = '24H2'} # Windows 11 "Next Valley"
             if ($OSMBuild -eq 25398) {$RegValueReleaseId = '23H2'} # Windows Server
 
             Write-Verbose "ReleaseId: $RegValueReleaseId"
