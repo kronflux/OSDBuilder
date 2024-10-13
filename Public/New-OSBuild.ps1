@@ -100,6 +100,9 @@ function New-OSBuild {
         [Parameter(ParameterSetName='Taskless')]
         [switch]$SelectContentPacks = $global:SetOSDBuilder.NewOSBuildSelectContentPacks,
 
+        #Preselect Content Pack
+        [String[]]$UseContentPacks,
+
         #Allows you to select Updates to apply in GridView
         #Useful for Testing
         [switch]$SelectUpdates = $global:SetOSDBuilder.NewOSBuildSelectUpdates,
@@ -436,6 +439,8 @@ function New-OSBuild {
                 if ($EnableNetFX.IsPresent) {$EnableNetFX3 = $true}
                 if ((Get-IsContentPacksEnabled) -and ($SelectContentPacks.IsPresent)) {
                     $ContentPacks = (Get-TaskContentPacks -Select).Name
+                } else {
+                    $ContentPacks = $UseContentPacks
                 }
                 Show-TaskInfo
             }
