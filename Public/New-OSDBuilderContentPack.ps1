@@ -43,6 +43,9 @@ function New-OSDBuilderContentPack {
         'OSStartLayout\ALL'
         'OSStartLayout\x64'
         #'OSStartLayout\x86'
+        'OSDefaultAppAssociations\ALL'
+        'OSDefaultAppAssociations\x64'
+        #'OSDefaultAppAssociations\x86'
     )
 
     $PEContentPack = @(

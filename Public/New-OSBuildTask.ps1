@@ -58,6 +58,10 @@ function New-OSBuildTask {
         [Parameter(ParameterSetName='All')]
         [switch]$ContentStartLayout = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayout,
 
+        #Select a DefaultAppAssociations.xml in GridView from the Content\AppAssociations directory
+        [Parameter(ParameterSetName='All')]
+        [switch]$ContentAppAssociations = $global:SetOSDBuilder.NewOSBuildTaskAppAssociations,
+
         #Select an Unattend.xml file in GridView from the Content\Unattend directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentUnattend = $global:SetOSDBuilder.NewOSBuildTaskContentUnattend,
@@ -494,6 +498,22 @@ function New-OSBuildTask {
         }
         if (!($StartLayoutXML)) {if ($ExistingTask.StartLayoutXML) {$StartLayoutXML = $ExistingTask.StartLayoutXML}}
         #=================================================
+        #   Content AppAssociations
+        #=================================================
+        Write-Host "AppAssociations" -ForegroundColor Green
+        if ($ExistingTask.AppAssociationsXML) {
+            foreach ($Item in $ExistingTask.AppAssociationsXML) {
+                Write-Host "$Item" -ForegroundColor DarkGray
+            }
+        }
+        $AppAssociationsXML = $null
+        if ($ContentAppAssociations.IsPresent) {
+            if ($OSMedia.MajorVersion -eq 10) {$AppAssociationsXML = (Get-TaskContentAppAssociationsXML).FullName}
+        } else {
+            if ($ExistingTask.AppAssociationsXML) {$AppAssociationsXML = $ExistingTask.AppAssociationsXML}
+        }
+        if (!($AppAssociationsXML)) {if ($ExistingTask.AppAssociationsXML) {$AppAssociationsXML = $ExistingTask.AppAssociationsXML}}
+        #=================================================
         #   Content Unattend
         #=================================================
         Write-Host "Unattend" -ForegroundColor Green
@@ -928,6 +948,7 @@ function New-OSBuildTask {
             "PSModulesWinPE" = [string[]]$PSModulesWinPE;
             "Scripts" = [string[]]$Scripts;
             "StartLayoutXML" = [string]$StartLayoutXML;
+            "AppAssociationsXML" = [string]$AppAssociationsXML;
             "UnattendXML" = [string]$UnattendXML;
             #=================================================
             #   Content Packages

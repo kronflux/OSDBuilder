@@ -263,6 +263,7 @@ function New-OSBuild {
                 if (Test-Path "$SetOSDBuilderPathOSImport\$OSMediaName") {$OSMediaPath = "$SetOSDBuilderPathOSImport\$OSMediaName"}
                 $EnableNetFX3 = $Task.EnableNetFX3
                 $StartLayoutXML = $Task.StartLayoutXML
+                $AppAssociationsXML = $Task.AppAssociationsXML
                 $UnattendXML = $Task.UnattendXML
                 $WinPEAutoExtraFiles = $Task.WinPEAutoExtraFiles
                 $WinPEOSDCloud = $Task.WinPEOSDCloud
@@ -391,6 +392,7 @@ function New-OSBuild {
 
                     if (!($Task.EnableNetFX3 -eq $False)) {$EnableNetFX3 = $Task.EnableNetFX3}
                     if ($Task.StartLayoutXML) {$StartLayoutXML = $Task.StartLayoutXML}
+                    if ($Task.AppAssociationsXML) {$AppAssociationsXML = $Task.AppAssociationsXML}
                     if ($Task.UnattendXML) {$UnattendXML = $Task.UnattendXML}
                     if (!($Task.WinPEAutoExtraFiles -eq $False)) {$WinPEAutoExtraFiles = $Task.WinPEAutoExtraFiles}
                     if (!($Task.WinPEOSDCloud -eq $False)) {$WinPEOSDCloud = $Task.WinPEOSDCloud}
@@ -1021,6 +1023,7 @@ function New-OSBuild {
                 Add-ContentDriversOS
                 Add-ContentExtraFilesOS
                 Add-ContentStartLayout
+                Add-ContentAppAssociations
                 Add-ContentUnattend
                 Add-ContentScriptsOS
                 Import-RegistryRegOS
@@ -1031,6 +1034,7 @@ function New-OSBuild {
                 Add-ContentPack -PackType OSRegistry
                 Add-ContentPack -PackType OSScripts
                 Add-ContentPack -PackType OSStartLayout
+                Add-ContentPack -PackType OSAppAssociations
                 #=================================================
                 #   Updates
                 #=================================================

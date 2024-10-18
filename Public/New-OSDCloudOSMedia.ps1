@@ -481,6 +481,7 @@ function New-OSDCloudOSMedia {
             Add-ContentDriversOS
             Add-ContentExtraFilesOS
             Add-ContentStartLayout
+            Add-ContentAppAssociations
             Add-ContentUnattend
             Add-ContentScriptsOS
             Import-RegistryRegOS
@@ -491,6 +492,7 @@ function New-OSDCloudOSMedia {
             Add-ContentPack -PackType OSRegistry
             Add-ContentPack -PackType OSScripts
             Add-ContentPack -PackType OSStartLayout
+            Add-ContentPack -PackType OSAppAssociations
             #=======================================================================
             #   Mirror OSMedia and OSBuild
             #=======================================================================

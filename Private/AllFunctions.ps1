@@ -403,6 +403,30 @@ function Add-ContentStartLayout {
         Write-Warning "$ErrorMessage"
     }
 }
+function Add-ContentAppAssociations {
+    [CmdletBinding()]
+    param ()
+    #=================================================
+    #   Abort
+    #=================================================
+    if ($ScriptName -ne 'New-OSBuild') {Return}
+    if ($OSMajorVersion -ne 10) {Return}
+    if ([string]::IsNullOrWhiteSpace($AppAssociationsXML)) {Return}
+    #=================================================
+    #   TASK
+    #=================================================
+    Show-ActionTime; Write-Host -ForegroundColor Green "OS: Use Content AppAssociations"
+    Write-Host "    $SetOSDBuilderPathContent\$AppAssociationsXML" -ForegroundColor DarkGray
+    $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-ContentAppAssociations.log"
+    Write-Verbose "CurrentLog: $CurrentLog"
+    Try {
+        Dism /Image:"$MountDirectory" /Import-DefaultAppAssociations:"$SetOSDBuilderPathContent\$AppAssociationsXML" /LogPath:"$CurrentLog" | Out-Null
+    }
+    Catch {
+        $ErrorMessage = $_.Exception.Message
+        Write-Warning "$ErrorMessage"
+    }
+}
 function Add-ContentUnattEnd {
     [CmdletBinding()]
     param ()
@@ -448,6 +472,7 @@ function Add-ContentPack {
             'OSRegistry',
             'OSScripts',
             'OSStartLayout',
+            'OSAppAssociations',
             'PEADK',
             'PEADKLang',
             'PEDaRT',
@@ -640,6 +665,22 @@ function Add-ContentPack {
                 foreach ($ContentPath in $ContentPaths) {
                     if (! (Test-Path $ContentPath)) {New-Item -Path $ContentPath -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
                     Add-ContentPackOSStartLayouts -ContentPackContent $ContentPath
+                }
+            }
+        }
+        if ($PackType -eq 'OSAppAssociations') {
+            Show-ActionTime; Write-Host -ForegroundColor Green "OSAppAssociations ContentPack"
+            foreach ($ContentPack in $ContentPacks) {
+                $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSAppAssociations"
+
+                $ContentPaths = @(
+                    "$ContentPackPath\ALL"
+                    "$ContentPackPath\$OSArchitecture"
+                    "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture"
+                )
+                foreach ($ContentPath in $ContentPaths) {
+                    if (! (Test-Path $ContentPath)) {New-Item -Path $ContentPath -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
+                    Add-ContentPackOSAppAssociations -ContentPackContent $ContentPath
                 }
             }
         }
@@ -1347,6 +1388,37 @@ function Add-ContentPackOSStartLayouts {
         Write-Host -ForegroundColor Cyan "  $($ContentPackOSStartLayout.FullName)"
         Try {
             Copy-Item -Path "$($ContentPackOSStartLayout.FullName)" -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" -Recurse -Force | Out-Null
+        }
+        Catch {
+            $ErrorMessage = $_.Exception.Message
+            Write-Warning "$ErrorMessage"
+        }
+    }
+}
+function Add-ContentPackOSAppAssociations {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$ContentPackContent
+    )
+    #======================================================================================
+    #   TEST
+    #======================================================================================
+    if (!(Test-Path "$ContentPackContent\*")) {
+        Write-Host -ForegroundColor DarkGray "  $ContentPackContent"
+        Return
+    }
+    else {
+        Write-Host -ForegroundColor Gray "  $ContentPackContent"
+    }
+    #======================================================================================
+    #   BUILD
+    #======================================================================================
+    $ContentPackOSAppAssociations = Get-ChildItem "$ContentPackContent\*.xml" -File | Select-Object -Property FullName
+    foreach ($ContentPackOSDefaultAppAssociation in $ContentPackOSAppAssociations) {
+        Write-Host -ForegroundColor Cyan "  $($ContentPackOSDefaultAppAssociation.FullName)"
+        Try {
+            Dism /Image:"$MountDirectory" /Import-DefaultAppAssociations:"$SetOSDBuilderPathContent\$AppAssociationsXML" /LogPath:"$CurrentLog" | Out-Null
         }
         Catch {
             $ErrorMessage = $_.Exception.Message
@@ -3923,6 +3995,27 @@ function Get-TaskContentStartLayoutXML {
     foreach ($Item in $StartLayoutXML) {Write-Host "$($Item.FullName)" -ForegroundColor White}
     Return $StartLayoutXML
 }
+function Get-TaskContentAppAssociationsXML {
+    #=================================================
+    #   Content AppAssociations
+    #=================================================
+    [CmdletBinding()]
+    param ()
+    $AppAssociationsXML = Get-ChildItem -Path $GetOSDBuilderPathContentAppAssociations *.xml -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName, Length, CreationTime | Sort-Object -Property FullName
+    foreach ($Item in $AppAssociationsXML) {$Item.FullName = $($Item.FullName).replace("$SetOSDBuilderPathContent\",'')}
+
+    if ($null -eq $AppAssociationsXML) {Write-Warning "AppAssociationsXML: To select Default App Associations, add Content to $GetOSDBuilderPathContentAppAssociations"}
+    else {
+        if ($ExistingTask.AppAssociationsXML) {
+            foreach ($Item in $ExistingTask.AppAssociationsXML) {
+                $AppAssociationsXML = $AppAssociationsXML | Where-Object {$_.FullName -ne $Item}
+            }
+        }
+        $AppAssociationsXML = $AppAssociationsXML | Out-GridView -Title "AppAssociationsXML: Select a Default App Associations XML to apply and press OK (Esc or Cancel to Skip)" -OutputMode Single
+    }
+    foreach ($Item in $AppAssociationsXML) {Write-Host "$($Item.FullName)" -ForegroundColor White}
+    Return $AppAssociationsXML
+}
 function Get-TaskContentUnattendXML {
     #=================================================
     #   Content Unattend
@@ -4997,6 +5090,7 @@ function New-ItemDirectorySetOSDBuilderPathContent {
         #"$SetOSDBuilderPathContent\Registry"
         $GetOSDBuilderPathContentScripts
         $GetOSDBuilderPathContentStartLayout
+        $GetOSDBuilderPathContentAppAssociations
         $GetOSDBuilderPathContentUnattend
         #"$SetOSDBuilderPathContent\Updates"
         #"$SetOSDBuilderPathContent\Updates\Custom"
@@ -5354,6 +5448,7 @@ function Repair-OSBuildTask {
 
                 "EnableNetFX3" = [string]$Task.EnableNetFX3;
                 "StartLayoutXML" = [string]$Task.ImportStartLayout;
+                "AppAssociationsXML" = [string]$Task.ImportAppAssociations;
                 "UnattendXML" = [string]$Task.UseWindowsUnattend;
                 "WinPEAutoExtraFiles" = [string]"False";
                 "WinPEDaRT" = [string]$Task.WinPEAddDaRT;
@@ -6274,6 +6369,8 @@ function Show-TaskInfo {
 
     if ($StartLayoutXML)    {
     Write-Host "-Start Layout:              $SetOSDBuilderPathContent\$StartLayoutXML"}
+    if ($AppAssociationsXML)    {
+    Write-Host "-Default App Associations:              $SetOSDBuilderPathContent\$AppAssociationsXML"}
     if ($UnattendXML)       {
     Write-Host "-Unattend:                  $SetOSDBuilderPathContent\$UnattendXML"}
     if ($WinPEDaRT)         {
@@ -6394,6 +6491,7 @@ function Show-TaskInfo {
 
         "EnableNetFX3" = [string]$EnableNetFX3;
         "StartLayoutXML" = [string]$StartLayoutXML;
+        "AppAssociationsXML" = [string]$AppAssociationsXML;
         "UnattendXML" = [string]$UnattendXML;
         "WinPEAutoExtraFiles" = [string]$WinPEAutoExtraFiles;
         "WinPEOSDCloud" = [string]$WinPEOSDCloud;

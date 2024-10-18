@@ -53,6 +53,7 @@ function Initialize-OSDBuilder {
         PathContentPackages     = Join-Path $global:GetOSDBuilderHome 'Content\Packages'
         PathContentScripts      = Join-Path $global:GetOSDBuilderHome 'Content\Scripts'
         PathContentStartLayout  = Join-Path $global:GetOSDBuilderHome 'Content\StartLayout'
+        PathContentAppAssociations = Join-Path $global:GetOSDBuilderHome 'Content\AppAssociations'
         PathContentUnattend     = Join-Path $global:GetOSDBuilderHome 'Content\Unattend' #>
     }
 
@@ -118,6 +119,7 @@ function Initialize-OSDBuilder {
         NewOSBuildTaskContentPackages = $false
         NewOSBuildTaskContentScripts = $false
         NewOSBuildTaskContentStartLayout = $false
+        NewOSBuildTaskContentAppAssociations = $false
         NewOSBuildTaskContentUnattend = $false
         NewOSBuildTaskContentWinPEADK = $false
         NewOSBuildTaskContentWinPEDart = $false
@@ -217,6 +219,7 @@ function Initialize-OSDBuilder {
     $global:GetOSDBuilder.PathContentPackages       = Join-Path $global:SetOSDBuilder.PathContent 'Packages'
     $global:GetOSDBuilder.PathContentScripts        = Join-Path $global:SetOSDBuilder.PathContent 'Scripts'
     $global:GetOSDBuilder.PathContentStartLayout    = Join-Path $global:SetOSDBuilder.PathContent 'StartLayout'
+    $global:GetOSDBuilder.PathContentAppAssociations = Join-Path $global:SetOSDBuilder.PathContent 'AppAssociations'
     $global:GetOSDBuilder.PathContentUnattend       = Join-Path $global:SetOSDBuilder.PathContent 'Unattend'
     #=================================================
     #   Get Variables
@@ -231,6 +234,7 @@ function Initialize-OSDBuilder {
     $global:GetOSDBuilderPathContentPackages    = $global:GetOSDBuilder.PathContentPackages
     $global:GetOSDBuilderPathContentScripts     = $global:GetOSDBuilder.PathContentScripts
     $global:GetOSDBuilderPathContentStartLayout = $global:GetOSDBuilder.PathContentStartLayout
+    $global:GetOSDBuilderPathContentAppAssociations = $global:GetOSDBuilder.PathContentAppAssociations
     $global:GetOSDBuilderPathContentUnattend    = $global:GetOSDBuilder.PathContentUnattend
     #=================================================
     #   Set Variables
