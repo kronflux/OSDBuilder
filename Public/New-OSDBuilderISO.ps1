@@ -122,15 +122,6 @@ function New-OSDBuilderISO {
                 if ($Media.MajorVersion -eq 10) {
                     $OSImageName = "WinPE10 $($Media.Arch) $($Media.ReleaseId) $($Media.UBR)"
                     $ISOFile = "$ISODestinationFolder\WinPE10 $($Media.Arch) $($Media.ReleaseId) $($Media.UBR).iso"
-                } elseif ($Media.Version -like "6.3.*") {
-                    $OSImageName = "WinPE5 $($Media.Arch) $($Media.UBR)"
-                    $ISOFile = "$ISODestinationFolder\WinPE5 $($Media.Arch) $($Media.UBR).iso"
-                } elseif ($Media.Version -like "6.2.*") {
-                    $OSImageName = "WinPE4 $($Media.Arch) $($Media.UBR)"
-                    $ISOFile = "$ISODestinationFolder\WinPE4 $($Media.Arch) $($Media.UBR).iso"
-                } elseif ($Media.Version -like "6.1.*") {
-                    $OSImageName = "WinPE3 $($Media.Arch) $($Media.UBR)"
-                    $ISOFile = "$ISODestinationFolder\WinPE3 $($Media.Arch) $($Media.UBR).iso"
                 } else {
                     $OSImageName = "WinPE $($Media.Arch) $($Media.UBR)"
                     $ISOFile = "$ISODestinationFolder\WinPE5 $($Media.Arch) $($Media.UBR).iso"
@@ -142,15 +133,6 @@ function New-OSDBuilderISO {
                 if ($Media.MajorVersion -eq 10) {
                     $OSImageName = "Win10 $($Media.Arch) $($Media.ReleaseId) $($Media.UBR)"
                     $ISOFile = "$ISODestinationFolder\Win10 $($Media.Arch) $($Media.ReleaseId) $($Media.UBR).iso"
-                } elseif ($Media.Version -like "6.3.*") {
-                    $OSImageName = "Win8.1 $($Media.Arch) $($Media.UBR)"
-                    $ISOFile = "$ISODestinationFolder\Win8.1 $($Media.Arch) $($Media.UBR).iso"
-                } elseif ($Media.Version -like "6.2.*") {
-                    $OSImageName = "Win8 $($Media.Arch) $($Media.UBR)"
-                    $ISOFile = "$ISODestinationFolder\Win8 $($Media.Arch) $($Media.UBR).iso"
-                } elseif ($Media.Version -like "6.1.*") {
-                    $OSImageName = "Win7 $($Media.Arch) $($Media.UBR)"
-                    $ISOFile = "$ISODestinationFolder\Win7 $($Media.Arch) $($Media.UBR).iso"
                 } else {
                     $OSImageName = "Win $($Media.Arch) $($Media.UBR)"
                     $ISOFile = "$ISODestinationFolder\Win $($Media.Arch) $($Media.UBR).iso"

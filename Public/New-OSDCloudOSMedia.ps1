@@ -37,7 +37,7 @@ function New-OSDCloudOSMedia {
         #   OSDCloud
         #=======================================================================
         $BirdBox = @()
-        $BirdBox = Get-OSMedia -OSMajorVersion 10 | Where-Object {$_.MediaType -eq 'OSImport'} | Where-Object {$_.RegBuild -ge 19041}
+        $BirdBox = Get-OSMedia -OSMajorVersion 10 | Where-Object {$_.MediaType -eq 'OSImport'} | Where-Object {$_.RegBuild -ge 19044}
 
         $BirdBox = $BirdBox | Out-GridView -PassThru -Title "Select one or more OSImport to Build (Cancel to Exit) and press OK"
 
@@ -159,23 +159,16 @@ function New-OSDCloudOSMedia {
             Write-Verbose '19.1.1 Set ReleaseId'
             #=======================================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
-            if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 7600) {$ReleaseId = 7600}
-                if ($OSBuild -eq 7601) {$ReleaseId = 7601}
-                if ($OSBuild -eq 9600) {$ReleaseId = 9600}
-                if ($OSBuild -eq 10240) {$ReleaseId = 1507}
-                if ($OSBuild -eq 14393) {$ReleaseId = 1607}
-                if ($OSBuild -eq 15063) {$ReleaseId = 1703}
-                if ($OSBuild -eq 16299) {$ReleaseId = 1709}
-                if ($OSBuild -eq 17134) {$ReleaseId = 1803}
-                if ($OSBuild -eq 17763) {$ReleaseId = 1809}
-                #if ($OSBuild -eq 18362) {$ReleaseId = 1903}
-                #if ($OSBuild -eq 18363) {$ReleaseId = 1909}
-                #if ($OSBuild -eq 19041) {$ReleaseId = 2004}
-                #if ($OSBuild -eq 19042) {$ReleaseId = '20H2'}
-                #if ($OSBuild -eq 19043) {$ReleaseId = '21H1'}
-                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'}
-            }
+<#          if ($null -eq $ReleaseId) {
+                if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
+                if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
+                if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+                if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+                if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
+                if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
+            } #>
 
             Write-Verbose "ReleaseId: $ReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"

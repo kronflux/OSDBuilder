@@ -96,14 +96,6 @@ function Import-OSMedia {
         #Windows 10 Pro N for Workstations
         #Windows Server Standard
         #Windows Server Datacenter
-        #Windows Server 2016 Standard
-        #Windows Server 2016 Standard (Desktop Experience)
-        #Windows Server 2016 Datacenter
-        #Windows Server 2016 Datacenter (Desktop Experience)
-        #Windows Server 2019 Standard
-        #Windows Server 2019 Standard (Desktop Experience)
-        #Windows Server 2019 Datacenter
-        #Windows Server 2019 Datacenter (Desktop Experience)
         #Windows Server 2022 Standard
         #Windows Server 2022 Standard (Desktop Experience)
         #Windows Server 2022 Datacenter
@@ -138,15 +130,7 @@ function Import-OSMedia {
             'Windows 11 Pro Education N',`
             'Windows 11 Pro N for Workstations',`
             'Windows Server Standard',`
-            'Windows Server Datacenter',
-            'Windows Server 2016 Standard',`
-            'Windows Server 2016 Standard (Desktop Experience)',`
-            'Windows Server 2016 Datacenter',`
-            'Windows Server 2016 Datacenter (Desktop Experience)',
-            'Windows Server 2019 Standard',`
-            'Windows Server 2019 Standard (Desktop Experience)',`
-            'Windows Server 2019 Datacenter',`
-            'Windows Server 2019 Datacenter (Desktop Experience)',
+            'Windows Server Datacenter',`
             'Windows Server 2022 Standard',`
             'Windows Server 2022 Standard (Desktop Experience)',`
             'Windows Server 2022 Datacenter',`
@@ -206,9 +190,9 @@ function Import-OSMedia {
         #=================================================
         Show-ActionTime; Write-Host 'Get-OSDBuilder: Validating OSDBuilder Content'
         Show-ActionTime; Write-Warning 'This version of OSDBuilder supports:'
-        Show-ActionTime; Write-Warning 'Windows 10 1607 - 21H2 x64'
+        Show-ActionTime; Write-Warning 'Windows 10 21H2 - 22H2 x64'
         Show-ActionTime; Write-Warning 'Windows 11 21H2 - 24H2 x64'
-        #Show-ActionTime; Write-Warning 'Windows Server 2016 1607 - Windows Server 2022 21H1'
+        #Show-ActionTime; Write-Warning 'Windows Server 2022 21H1'
         Get-OSDBuilder -CreatePaths -HideDetails
         #=================================================
         #   Block
@@ -297,9 +281,8 @@ function Import-OSMedia {
         #=================================================
         #   AllowUnsupportedOS
         #   Major Version gt 10
-        #   Build ge 1809
         #=================================================
-        Write-Verbose "Filtering Windows Major Version gt 10 and Build ge 1809"
+        Write-Verbose "Filtering Windows Major Version gt 10"
         $ImportOSMediaWindowsImages = $ImportOSMediaWindowsImages | Where-Object {($_.MajorVersion -eq '10')}
         #=================================================
         #   ImportOSMediaWindowsImages Filter

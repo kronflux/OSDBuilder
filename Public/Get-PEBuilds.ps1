@@ -119,21 +119,14 @@ function Get-PEBuilds {
             [string]$RegValueReleaseId = ($RegKeyCurrentVersion).ReleaseId
             if ($RegValueDisplayVersion) {$RegValueReleaseId = $RegValueDisplayVersion}
 
-            if ($OSMBuild -eq 7600) {$RegValueReleaseId = 7600}
-            if ($OSMBuild -eq 7601) {$RegValueReleaseId = 7601}
-            if ($OSMBuild -eq 9600) {$RegValueReleaseId = 9600}
-            if ($OSMBuild -eq 10240) {$RegValueReleaseId = 1507}
-            if ($OSMBuild -eq 14393) {$RegValueReleaseId = 1607}
-            if ($OSMBuild -eq 15063) {$RegValueReleaseId = 1703}
-            if ($OSMBuild -eq 16299) {$RegValueReleaseId = 1709}
-            if ($OSMBuild -eq 17134) {$RegValueReleaseId = 1803}
-            if ($OSMBuild -eq 17763) {$RegValueReleaseId = 1809}
-            #if ($OSMBuild -eq 18362) {$RegValueReleaseId = 1903}
-            #if ($OSMBuild -eq 18363) {$RegValueReleaseId = 1909}
-            #if ($OSMBuild -eq 19041) {$RegValueReleaseId = 2004}
-            #if ($OSMBuild -eq 19042) {$RegValueReleaseId = '20H2'}
-            #if ($OSMBuild -eq 19043) {$RegValueReleaseId = '21H1'}
-            #if ($OSMBuild -eq 19044) {$RegValueReleaseId = '21H2'}
+            #if ($OSMBuild -eq 19044) {$RegValueReleaseId = '21H2'} # Windows 10 "21H2"
+            #if ($OSMBuild -eq 19045) {$RegValueReleaseId = '22H2'} # Windows 10 "22H2"
+            #if ($OSMBuild -eq 20348) {$RegValueReleaseId = '21H2'} # Windows Server 2022
+            #if ($OSMBuild -eq 22000) {$RegValueReleaseId = '21H2'} # Windows 11 "Sun Valley"
+            #if ($OSMBuild -eq 22621) {$RegValueReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+            #if ($OSMBuild -eq 22631) {$RegValueReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            #if ($OSMBuild -eq 26100) {$RegValueReleaseId = '24H2'} # Windows 11 "Next Valley"
+            #if ($OSMBuild -eq 25398) {$RegValueReleaseId = '23H2'} # Windows Server
 
             Write-Verbose "ReleaseId: $RegValueReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"

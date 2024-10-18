@@ -40,7 +40,6 @@ function New-OSBuild {
         #Separate multiple items with a comma -Exclude LCU,SSU
         #Enclose Groups with spaces with a single quote -Exclude 'ComponentDU Critical',LCU
         [ValidateSet(`
-            'AdobeSU',`
             'ComponentDU',`
             'ComponentDU Critical',`
             'ComponentDU SafeOS',`
@@ -72,7 +71,6 @@ function New-OSBuild {
         #Separate multiple items with a comma -Include LCU,SSU
         #Enclose Groups with spaces with a single quote -Include 'ComponentDU Critical',LCU
         [ValidateSet(`
-            'AdobeSU',`
             'ComponentDU',`
             'ComponentDU Critical',`
             'ComponentDU SafeOS',`
@@ -220,14 +218,9 @@ function New-OSBuild {
                     $BirdBox = Get-OSMedia -Revision OK -Updates Update
                 }
                 if ($UpdateNeeded.IsPresent) {
-                    if ($BirdBox | Where-Object {$_.MajorVersion -eq 6}) {
-                        Write-Warning "UpdateNeeded does not support Legacy Operating Systems"
-                        Write-Warning "Legacy Operating Systems have been removed from the results"
-                        $BirdBox = $BirdBox | Where-Object {$_.MajorVersion -eq 10}
-                    }
-                    $BirdBox = $BirdBox | Where-Object {($_.Servicing -eq '') -or ($_.Cumulative -eq '') -or ($_.Adobe -eq '')}
+                    $BirdBox = $BirdBox | Where-Object {($_.Servicing -eq '') -or ($_.Cumulative -eq '')}
                 }
-                $BirdBox = $BirdBox | Where-Object {($_.MajorVersion -eq 10) -or ($_.InstallationType -like "*Client*" -and $_.Version -like "6.1.7601*") -or ($_.InstallationType -like "*Server*" -and $_.Version -like "6.3*")}
+                $BirdBox = $BirdBox | Where-Object {($_.MajorVersion -eq 10)}
                 $BirdBox = $BirdBox | Out-GridView -PassThru -Title "Select one or more OSMedia to Update (Cancel to Exit) and press OK"
             }
         }
@@ -520,23 +513,16 @@ function New-OSBuild {
             Write-Verbose '19.1.1 Set ReleaseId'
             #=================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
-            if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 7600) {$ReleaseId = 7600}
-                if ($OSBuild -eq 7601) {$ReleaseId = 7601}
-                if ($OSBuild -eq 9600) {$ReleaseId = 9600}
-                if ($OSBuild -eq 10240) {$ReleaseId = 1507}
-                if ($OSBuild -eq 14393) {$ReleaseId = 1607}
-                if ($OSBuild -eq 15063) {$ReleaseId = 1703}
-                if ($OSBuild -eq 16299) {$ReleaseId = 1709}
-                if ($OSBuild -eq 17134) {$ReleaseId = 1803}
-                if ($OSBuild -eq 17763) {$ReleaseId = 1809}
-                #if ($OSBuild -eq 18362) {$ReleaseId = 1903}
-                #if ($OSBuild -eq 18363) {$ReleaseId = 1909}
-                #if ($OSBuild -eq 19041) {$ReleaseId = 2004}
-                #if ($OSBuild -eq 19042) {$ReleaseId = '20H2'}
-                #if ($OSBuild -eq 19043) {$ReleaseId = '21H1'}
-                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'}
-            }
+<#          if ($null -eq $ReleaseId) {
+                if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
+                if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
+                if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+                if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+                if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
+                if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
+            } #>
 
             Write-Verbose "ReleaseId: $ReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"
@@ -661,7 +647,6 @@ function New-OSBuild {
             #=================================================
             #   Update Filters
             #=================================================
-            if ($OSInstallationType -match 'Core'){$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -ne 'AdobeSU'}}
             if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $OSMajorVersion -eq 10) {
                 $OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -ne ''}
                 $OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -ne 'Optional'}
@@ -761,43 +746,11 @@ function New-OSBuild {
             $OSDUpdateLCU = @()
             $OSDUpdateLCU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}
             #=================================================
-            #   AdobeSU
-            #=================================================
-            $OSDUpdateAdobeSU = @()
-            if ($OSMajorVersion -eq 10) {
-                $OSDUpdateAdobeSU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'AdobeSU'}
-            }
-            #=================================================
             #   DotNet
             #=================================================
             $OSDUpdateDotNet = @()
             if ($OSMajorVersion -eq 10) {
                 $OSDUpdateDotNet = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}
-            }
-            #=================================================
-            #   OSDBuilder Seven
-            #=================================================
-            $OSDUpdateWinSeven = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows 7') {
-                $OSDUpdateWinSeven = $OSDUpdates
-            }
-            #=================================================
-            #   OSDBuilder EightOne
-            #=================================================
-            $OSDUpdateWinEightOne = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows 8.1') {
-                $OSDUpdateWinEightOne = $OSDUpdates
-                $OSDUpdateWinEightOne = $OSDUpdateWinEightOne | Where-Object {$_.UpdateGroup -ne 'SetupDU'}
-                $OSDUpdateWinEightOne = $OSDUpdateWinEightOne | Where-Object {$_.UpdateGroup -notlike "ComponentDU*"}
-            }
-            #=================================================
-            #   OSDBuilder Twelve
-            #=================================================
-            $OSDUpdateWinTwelveR2 = @()
-            if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia' -and $UpdateOS -eq 'Windows Server 2012 R2') {
-                $OSDUpdateWinTwelveR2 = $OSDUpdates
-                $OSDUpdateWinTwelveR2 = $OSDUpdateWinTwelveR2 | Where-Object {$_.UpdateGroup -ne 'SetupDU'}
-                $OSDUpdateWinTwelveR2 = $OSDUpdateWinTwelveR2 | Where-Object {$_.UpdateGroup -notlike "ComponentDU*"}
             }
             #=================================================
             #   Optional
@@ -974,11 +927,6 @@ function New-OSBuild {
                 Show-ActionTime; Write-Host -ForegroundColor Green "OS: Update Build Revision $UBRPre (Pre-LCU)"
                 if ($global:ReapplyLCU -eq $true) {Update-CumulativeOS -Force} else {Update-CumulativeOS}
                 #=================================================
-                #   Update-OSMedia
-                #=================================================
-                Update-WindowsSevenOS
-                Update-WindowsServer2012R2OS
-                #=================================================
                 #   Install.wim UBR Post-Update
                 #=================================================
                 $RegKeyCurrentVersion = Get-RegCurrentVersion -Path $MountDirectory
@@ -998,7 +946,6 @@ function New-OSBuild {
                 #=================================================
                 #   Update-OSMedia and New-OSBuild
                 #=================================================
-                Update-AdobeOS
                 Update-DotNetOS
                 Update-OptionalOS
                 #=================================================
@@ -1170,21 +1117,14 @@ function New-OSBuild {
                     [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
                     if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
                 }
-                if ($OSBuild -eq 7600) {$ReleaseId = 7600}
-                if ($OSBuild -eq 7601) {$ReleaseId = 7601}
-                if ($OSBuild -eq 9600) {$ReleaseId = 9600}
-                if ($OSBuild -eq 10240) {$ReleaseId = 1507}
-                if ($OSBuild -eq 14393) {$ReleaseId = 1607}
-                if ($OSBuild -eq 15063) {$ReleaseId = 1703}
-                if ($OSBuild -eq 16299) {$ReleaseId = 1709}
-                if ($OSBuild -eq 17134) {$ReleaseId = 1803}
-                if ($OSBuild -eq 17763) {$ReleaseId = 1809}
-                #if ($OSBuild -eq 18362) {$ReleaseId = 1903}
-                #if ($OSBuild -eq 18363) {$ReleaseId = 1909}
-                #if ($OSBuild -eq 19041) {$ReleaseId = 2004}
-                #if ($OSBuild -eq 19042) {$ReleaseId = '20H2'}
-                #if ($OSBuild -eq 19043) {$ReleaseId = '21H1'}
-                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'}
+                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
+                #if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
+                #if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
+                #if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+                #if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+                #if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+                #if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
+                #if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
 
                 if ($OSMajorVersion -eq 10) {
                     if ($WorkingName -like "build*") {$NewOSMediaName = "$OSImageName $OSArchitecture $ReleaseId $UBR"}

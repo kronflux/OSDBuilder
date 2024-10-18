@@ -41,17 +41,14 @@ Year of the Release
 .PARAMETER URL
 Download link of the Update
 
-.PARAMETER WinPE
-Apply the Update to WinPE (Windows 7 only)
 #>
 function Use-OSDUpdateBuilder {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
         [ValidateSet(
-            'Windows 7',
             'Windows 10 Custom',
-            'Windows Server 2012 R2 Custom',
+            'Windows 11 Custom',
             'Windows Server 2016 Custom',
             'Windows Server 2019 Custom')]
         [string]$Catalog,
@@ -63,7 +60,7 @@ function Use-OSDUpdateBuilder {
         [string]$KBNumber,
 
         [Parameter(Mandatory)]
-        [ValidateSet('Windows 7','Windows 10','Windows Server 2012 R2','Windows Server 2016','Windows Server 2019')]
+        [ValidateSet('Windows 11','Windows 10','Windows Server 2022')]
         [string]$UpdateOS,
 
         [Parameter(Mandatory)]
@@ -71,10 +68,10 @@ function Use-OSDUpdateBuilder {
         [string]$UpdateArch,
 
         [Parameter(Mandatory)]
-        [ValidateSet (1903,1809,1803,1709,1703,1607,1511,1507,9800,7601)]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [string]$UpdateBuild,
 
-        [ValidateSet('AdobeSU','DotNet','DotNetCU','LCU','SSU')]
+        [ValidateSet('DotNet','DotNetCU','LCU','SSU')]
         [string]$UpdateGroup,
 
         [datetime]$ReleaseDate,
@@ -87,7 +84,7 @@ function Use-OSDUpdateBuilder {
         [string]$ReleaseMonth,
 
 
-        [ValidateSet('2019','2018','2017','2016','2015','2014','2013','2012','2011')]
+        [ValidateSet('2024','2023','2022','2021','2020','2019','2018','2017')]
         [string]$ReleaseYear,
 
         [Parameter(Mandatory)]
@@ -114,10 +111,6 @@ function Use-OSDUpdateBuilder {
         #   Join DateTime Property
         #=================================================
         #$ReleaseDate = [datetime]::ParseExact("$ReleaseDay/$ReleaseMonth/$ReleaseYear", "dd/MM/yyyy", $null)
-        #=================================================
-        #   UpdateOS
-        #=================================================
-        if ($UpdateOS -eq 'Windows 7') {$OSDCore = $true}
         #=================================================
         #   Create Custom Object
         #=================================================

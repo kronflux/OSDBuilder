@@ -45,7 +45,7 @@ function Save-OSDBuilderDownload {
 
         #Feature Update Build
         [Parameter(ParameterSetName = 'FeatureUpdates')]
-        [ValidateSet ('24H2','23H2','22H2','21H2','21H1','20H2',2004,1909,1903,1809)]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [string]$FeatureBuild,
 
         #Feature Update Edition
@@ -82,7 +82,7 @@ function Save-OSDBuilderDownload {
 
         #Filter Microsoft Updates for a specific ReleaseId
         [Parameter(ParameterSetName='OSDUpdate')]
-        [ValidateSet ('24H2','23H2','22H2','21H2','21H1','20H2',2004,1909,1903,1809,1803,1709,1703,1607,1511,1507,7601,7603)]
+        [ValidateSet ('24H2','23H2','22H2','21H2')]
         [Alias('ReleaseId')]
         [string]$UpdateBuild,
 
@@ -93,7 +93,6 @@ function Save-OSDBuilderDownload {
             'LCU Latest Cumulative Update',
             'DUSU Setup Dynamic Update',
             'DUCU Component Dynamic Update',
-            'Adobe Flash Player',
             'DotNet Framework',
             'Optional')]
         [string]$UpdateGroup,
@@ -147,7 +146,6 @@ function Save-OSDBuilderDownload {
         #=================================================
         if ($FeatureUpdates.IsPresent) {
             #Write-Warning "FeatureUpdates are downloaded using BITS Transfer"
-            #Write-Warning "Windows Server 2016 (1607) does not support decompressing ESD Files"
             #=================================================
             #   Get FeatureUpdateDownloads
             #=================================================
@@ -358,7 +356,6 @@ function Save-OSDBuilderDownload {
             #=================================================
             #   UpdateGroup
             #=================================================
-            if ($UpdateGroup -like "*Adobe*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'AdobeSU'}}
             if ($UpdateGroup -like "*DotNet*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}}
             if ($UpdateGroup -like "*DUCU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}}
             if ($UpdateGroup -like "*DUSU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SetupDU'}}

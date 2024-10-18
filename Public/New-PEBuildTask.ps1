@@ -116,20 +116,10 @@ function New-PEBuildTask {
 
         if ($TaskName -match 'x64') {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x64'}}
         if ($TaskName -match 'x86') {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x86'}}
-        if ($TaskName -match '1511') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1511'}}
-        if ($TaskName -match '1607') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1607'}}
-        if ($TaskName -match '1703') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1703'}}
-        if ($TaskName -match '1709') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1709'}}
-        if ($TaskName -match '1803') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1803'}}
-        if ($TaskName -match '1809') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1809'}}
-        if ($TaskName -match '1903') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1903'}}
-        if ($TaskName -match '1909') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1909'}}
-        if ($TaskName -match '2004') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '2004'}}
-        if ($TaskName -match '2009') {$OSMedia = $OSMedia | Where-Object {($_.ReleaseId -eq '2009') -or ($_.ReleaseId -eq '20H2')}}
-        if ($TaskName -match '20H2') {$OSMedia = $OSMedia | Where-Object {($_.ReleaseId -eq '2009') -or ($_.ReleaseId -eq '20H2')}}
-        if ($TaskName -match '21H1') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H1'}}
         if ($TaskName -match '21H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
         if ($TaskName -match '22H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
+        if ($TaskName -match '23H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '23H2'}}
+        if ($TaskName -match '24H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '24H2'}}
 
         Try {
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "Select a Source OSMedia to use for this Task (Cancel to Exit)"
@@ -190,21 +180,16 @@ function New-PEBuildTask {
         #=================================================
         Write-Verbose '19.10.29 Set-OSMedia.ReleaseId'
         #=================================================
-        if ($null -eq $($OSMedia.ReleaseId)) {
-            if ($($OSMedia.Build) -eq 7601) {$OSMedia.ReleaseId = 7601}
-            if ($($OSMedia.Build) -eq 10240) {$OSMedia.ReleaseId = 1507}
-            if ($($OSMedia.Build) -eq 14393) {$OSMedia.ReleaseId = 1607}
-            if ($($OSMedia.Build) -eq 15063) {$OSMedia.ReleaseId = 1703}
-            if ($($OSMedia.Build) -eq 16299) {$OSMedia.ReleaseId = 1709}
-            if ($($OSMedia.Build) -eq 17134) {$OSMedia.ReleaseId = 1803}
-            if ($($OSMedia.Build) -eq 17763) {$OSMedia.ReleaseId = 1809}
-            #if ($($OSMedia.Build) -eq 18362) {$OSMedia.ReleaseId = 1903}
-            #if ($($OSMedia.Build) -eq 18363) {$OSMedia.ReleaseId = 1909}
-            #if ($($OSMedia.Build) -eq 19041) {$OSMedia.ReleaseId = 2004}
-            #if ($($OSMedia.Build) -eq 19042) {$OSMedia.ReleaseId = '20H2'}
-            #if ($($OSMedia.Build) -eq 19043) {$OSMedia.ReleaseId = '21H1'}
-            #if ($($OSMedia.Build) -eq 19043) {$OSMedia.ReleaseId = '21H2'}
-        }
+<#      if ($null -eq $($OSMedia.ReleaseId)) {
+            if ($($OSMedia.Build) -eq 19044) {$OSMedia.ReleaseId = '21H2'} # Windows 10 "21H2"
+            if ($($OSMedia.Build) -eq 19045) {$OSMedia.ReleaseId = '22H2'} # Windows 10 "22H2"
+            if ($($OSMedia.Build) -eq 20348) {$OSMedia.ReleaseId = '21H2'} # Windows Server 2022
+            if ($($OSMedia.Build) -eq 22000) {$OSMedia.ReleaseId = '21H2'} # Windows 11 "Sun Valley"
+            if ($($OSMedia.Build) -eq 22621) {$OSMedia.ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
+            if ($($OSMedia.Build) -eq 22631) {$OSMedia.ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
+            if ($($OSMedia.Build) -eq 26100) {$OSMedia.ReleaseId = '24H2'} # Windows 11 "Next Valley"
+            if ($($OSMedia.Build) -eq 25398) {$OSMedia.ReleaseId = '23H2'} # Windows Server
+        } #>
         #=================================================
         Write-Host '========================================================================================' -ForegroundColor DarkGray
         #=================================================
