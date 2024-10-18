@@ -49,15 +49,15 @@ function New-OSBuildTask {
         #Select Packages in GridView from the Content\Packages directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentPackages = $global:SetOSDBuilder.NewOSBuildTaskContentPackages,
-        
+
         #Select PowerShell Script in GridView from the Content\Scripts directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentScripts = $global:SetOSDBuilder.NewOSBuildTaskContentScripts,
-        
+
         #Select a StartLayout.xml in GridView from the Content\StartLayout directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentStartLayout = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayout,
-        
+
         #Select an Unattend.xml file in GridView from the Content\Unattend directory
         [Parameter(ParameterSetName='All')]
         [switch]$ContentUnattend = $global:SetOSDBuilder.NewOSBuildTaskContentUnattend,
@@ -176,7 +176,7 @@ function New-OSBuildTask {
         Block-StandardUser
         #=================================================
     }
-    
+
     Process {
         Write-Host '========================================================================================' -ForegroundColor DarkGray
         Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) PROCESS"
@@ -227,7 +227,7 @@ function New-OSBuildTask {
         if (!$OSMedia) {
             $OSMedia = @()
             $OSMedia = Get-OSMedia -Revision OK -OSMajorVersion 10
-    
+
             if ($TaskName -match 'x64') {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x64'}}
             if ($TaskName -match 'x86') {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x86'}}
             if ($TaskName -match '1511') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1511'}}
@@ -244,7 +244,7 @@ function New-OSBuildTask {
             if ($TaskName -match '21H1') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H1'}}
             if ($TaskName -match '21H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '21H2'}}
             if ($TaskName -match '22H2') {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '22H2'}}
-    
+
             Try {
                 $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title 'Select a Source OSMedia to use for this Task (Cancel to Exit)'
             }
@@ -254,7 +254,7 @@ function New-OSBuildTask {
             }
         } elseif ($OSMedia.MediaType -ne 'OSImport' -and $OSMedia.MediaType -ne 'OSMedia') {
             Write-Warning "Source OSMedia media type is not correct . . . Exiting!"
-            Break   
+            Break
         }
 
         #=================================================
@@ -337,7 +337,7 @@ function New-OSBuildTask {
         if ($AddContentPacks.IsPresent) {
             if (Get-IsContentPacksEnabled) {
                 [array]$ContentPacks = (Get-TaskContentPacks).Name
-            
+
                 $ContentPacks = [array]$ContentPacks + [array]$ExistingTask.ContentPacks
                 $ContentPacks = $ContentPacks | Sort-Object -Unique
             } else {
@@ -430,7 +430,7 @@ function New-OSBuildTask {
         $EnableWindowsOptionalFeature = $null
         if ($EnableFeature.IsPresent) {
             [array]$EnableWindowsOptionalFeature = (Get-TaskEnableWindowsOptionalFeature).FeatureName
-            
+
             $EnableWindowsOptionalFeature = [array]$EnableWindowsOptionalFeature + [array]$ExistingTask.EnableWindowsOptionalFeature
             $EnableWindowsOptionalFeature = $EnableWindowsOptionalFeature | Sort-Object -Unique
         } else {
@@ -452,7 +452,7 @@ function New-OSBuildTask {
         $Drivers = $null
         if ($ContentDrivers.IsPresent) {
             [array]$Drivers = (Get-TaskContentDrivers).FullName
-            
+
             $Drivers = [array]$Drivers + [array]$ExistingTask.Drivers
             $Drivers = $Drivers | Sort-Object -Unique
         } else {
@@ -470,7 +470,7 @@ function New-OSBuildTask {
         $ExtraFiles = $null
         if ($ContentExtraFiles.IsPresent) {
             [array]$ExtraFiles = (Get-TaskContentExtraFiles).FullName
-            
+
             $ExtraFiles = [array]$ExtraFiles + [array]$ExistingTask.ExtraFiles
             $ExtraFiles = $ExtraFiles | Sort-Object -Unique
         } else {
@@ -488,7 +488,7 @@ function New-OSBuildTask {
         $Scripts = $null
         if ($ContentScripts.IsPresent) {
             [array]$Scripts = (Get-TaskContentScripts).FullName
-            
+
             $Scripts = [array]$Scripts + [array]$ExistingTask.Scripts
             $Scripts = $Scripts | Sort-Object -Unique
         } else {
@@ -538,7 +538,7 @@ function New-OSBuildTask {
         $AddWindowsPackage = $null
         if ($ContentPackages.IsPresent) {
             [array]$AddWindowsPackage = (Get-TaskContentAddWindowsPackage).FullName
-            
+
             $AddWindowsPackage = [array]$AddWindowsPackage + [array]$ExistingTask.AddWindowsPackage
             $AddWindowsPackage = $AddWindowsPackage | Sort-Object -Unique
         } else {
@@ -574,7 +574,7 @@ function New-OSBuildTask {
             $AddFeatureOnDemand = $null
             if ($ContentFeaturesOnDemand.IsPresent) {
                 [array]$AddFeatureOnDemand = (Get-TaskContentAddFeatureOnDemand).FullName
-                
+
                 $AddFeatureOnDemand = [array]$AddFeatureOnDemand + [array]$ExistingTask.AddFeatureOnDemand
                 $AddFeatureOnDemand = $AddFeatureOnDemand | Sort-Object -Unique
             } else {
@@ -592,7 +592,7 @@ function New-OSBuildTask {
             $LanguagePack = $null
             if ($ContentLanguagePackages.IsPresent) {
                 [array]$LanguagePack = (Get-TaskContentLanguagePack).FullName
-                
+
                 $LanguagePack = [array]$LanguagePack + [array]$ExistingTask.LanguagePack
                 $LanguagePack = $LanguagePack | Sort-Object -Unique
             } else {
@@ -610,7 +610,7 @@ function New-OSBuildTask {
             $LanguageFeature = $null
             if ($ContentLanguagePackages.IsPresent) {
                 [array]$LanguageFeature = (Get-TaskContentLanguageFeature).FullName
-                
+
                 $LanguageFeature = [array]$LanguageFeature + [array]$ExistingTask.LanguageFeature
                 $LanguageFeature = $LanguageFeature | Sort-Object -Unique
             } else {
@@ -628,7 +628,7 @@ function New-OSBuildTask {
             $LanguageInterfacePack = $null
             if ($ContentLanguagePackages.IsPresent) {
                 [array]$LanguageInterfacePack = (Get-TaskContentLanguageInterfacePack).FullName
-                
+
                 $LanguageInterfacePack = [array]$LanguageInterfacePack + [array]$ExistingTask.LanguageInterfacePack
                 $LanguageInterfacePack = $LanguageInterfacePack | Sort-Object -Unique
             } else {
@@ -646,7 +646,7 @@ function New-OSBuildTask {
             $LocalExperiencePacks = $null
             if ($ContentLanguagePackages.IsPresent) {
                 [array]$LocalExperiencePacks = (Get-TaskContentLocalExperiencePacks).FullName
-                
+
                 $LocalExperiencePacks = [array]$LocalExperiencePacks + [array]$ExistingTask.LocalExperiencePacks
                 $LocalExperiencePacks = $LocalExperiencePacks | Sort-Object -Unique
             } else {
@@ -667,7 +667,7 @@ function New-OSBuildTask {
         $LanguageCopySources = $null
         if ($SourcesLanguageCopy.IsPresent) {
             [array]$LanguageCopySources = (Get-TaskContentLanguageCopySources).OSMFamily
-            
+
             $LanguageCopySources = [array]$LanguageCopySources + [array]$ExistingTask.LanguageCopySources
             $LanguageCopySources = $LanguageCopySources | Sort-Object -Unique
         } else {
@@ -703,7 +703,7 @@ function New-OSBuildTask {
         $WinPEADKPE = $null
         if ($ContentWinPEADK.IsPresent) {
             [array]$WinPEADKPE = (Get-TaskWinPEADKPE).FullName
-            
+
             $WinPEADKPE = [array]$WinPEADKPE + [array]$ExistingTask.WinPEADKPE
             $WinPEADKPE = $WinPEADKPE | Sort-Object -Unique | Sort-Object Length
         } else {
@@ -721,7 +721,7 @@ function New-OSBuildTask {
         $WinPEADKRE = $null
         if ($ContentWinPEADK.IsPresent) {
             [array]$WinPEADKRE = (Get-TaskWinPEADKRE).FullName
-            
+
             $WinPEADKRE = [array]$WinPEADKRE + [array]$ExistingTask.WinPEADKRE
             $WinPEADKRE = $WinPEADKRE | Sort-Object -Unique | Sort-Object Length
         } else {
@@ -739,7 +739,7 @@ function New-OSBuildTask {
         $WinPEADKSE = $null
         if ($ContentWinPEADK.IsPresent) {
             [array]$WinPEADKSE = (Get-TaskWinPEADKSE).FullName
-            
+
             $WinPEADKSE = [array]$WinPEADKSE + [array]$ExistingTask.WinPEADKSE
             $WinPEADKSE = $WinPEADKSE | Sort-Object -Unique | Sort-Object Length
         } else {
@@ -757,7 +757,7 @@ function New-OSBuildTask {
         $WinPEDrivers = $null
         if ($ContentWinPEDrivers.IsPresent) {
             [array]$WinPEDrivers = (Get-TaskWinPEDrivers).FullName
-            
+
             $WinPEDrivers = [array]$WinPEDrivers + [array]$ExistingTask.WinPEDrivers
             $WinPEDrivers = $WinPEDrivers | Sort-Object -Unique
         } else {
@@ -775,7 +775,7 @@ function New-OSBuildTask {
         $WinPEExtraFilesPE = $null
         if ($ContentWinPEExtraFiles.IsPresent) {
             [array]$WinPEExtraFilesPE = (Get-TaskWinPEExtraFilesPE).FullName
-            
+
             $WinPEExtraFilesPE = [array]$WinPEExtraFilesPE + [array]$ExistingTask.WinPEExtraFilesPE
             $WinPEExtraFilesPE = $WinPEExtraFilesPE | Sort-Object -Unique
         } else {
@@ -793,7 +793,7 @@ function New-OSBuildTask {
         $WinPEExtraFilesRE = $null
         if ($ContentWinPEExtraFiles.IsPresent) {
             [array]$WinPEExtraFilesRE = (Get-TaskWinPEExtraFilesRE).FullName
-            
+
             $WinPEExtraFilesRE = [array]$WinPEExtraFilesRE + [array]$ExistingTask.WinPEExtraFilesRE
             $WinPEExtraFilesRE = $WinPEExtraFilesRE | Sort-Object -Unique
         } else {
@@ -811,7 +811,7 @@ function New-OSBuildTask {
         $WinPEExtraFilesSE = $null
         if ($ContentWinPEExtraFiles.IsPresent) {
             [array]$WinPEExtraFilesSE = (Get-TaskWinPEExtraFilesSE).FullName
-            
+
             $WinPEExtraFilesSE = [array]$WinPEExtraFilesSE + [array]$ExistingTask.WinPEExtraFilesSE
             $WinPEExtraFilesSE = $WinPEExtraFilesSE | Sort-Object -Unique
         } else {
@@ -829,7 +829,7 @@ function New-OSBuildTask {
         $WinPEScriptsPE = $null
         if ($ContentWinPEScripts.IsPresent) {
             [array]$WinPEScriptsPE = (Get-TaskWinPEScriptsPE).FullName
-            
+
             $WinPEScriptsPE = [array]$WinPEScriptsPE + [array]$ExistingTask.WinPEScriptsPE
             $WinPEScriptsPE = $WinPEScriptsPE | Sort-Object -Unique
         } else {
@@ -847,7 +847,7 @@ function New-OSBuildTask {
         $WinPEScriptsRE = $null
         if ($ContentWinPEScripts.IsPresent) {
             [array]$WinPEScriptsRE = (Get-TaskWinPEScriptsRE).FullName
-            
+
             $WinPEScriptsRE = [array]$WinPEScriptsRE + [array]$ExistingTask.WinPEScriptsRE
             $WinPEScriptsRE = $WinPEScriptsRE | Sort-Object -Unique
         } else {
@@ -865,7 +865,7 @@ function New-OSBuildTask {
         $WinPEScriptsSE = $null
         if ($ContentWinPEScripts.IsPresent) {
             [array]$WinPEScriptsSE = (Get-TaskWinPEScriptsSE).FullName
-            
+
             $WinPEScriptsSE = [array]$WinPEScriptsSE + [array]$ExistingTask.WinPEScriptsSE
             $WinPEScriptsSE = $WinPEScriptsSE | Sort-Object -Unique
         } else {
@@ -898,7 +898,7 @@ function New-OSBuildTask {
             "TaskType" = [string]"OSBuild";
             "TaskVersion" = [string]$global:GetOSDBuilder.VersionOSDBuilder;
             "TaskGuid" = [string]$(New-Guid);
-            
+
             "TaskName" = [string]$TaskName;
             "CustomName" = [string]$CustomName;
             #=================================================

@@ -18,7 +18,7 @@ function Save-OSDBuilderDownload {
             'OneDriveSetup Production',
             'OneDriveSetup Enterprise')]
         [string]$ContentDownload,
-        
+
         #Download the selected Microsoft Updates
         #By default, updates are not downloaded
         [Parameter(ParameterSetName='OSDUpdate')]
@@ -69,7 +69,7 @@ function Save-OSDBuilderDownload {
         #Display the results in a GridView with PassThru enabled
         [Parameter(ParameterSetName='OSDUpdate')]
         [switch]$GridView,
-        
+
         #Remove Superseded Updates that are no longer needed
         [Parameter(ParameterSetName = 'OSDUpdateSuperseded', Mandatory = $True)]
         [ValidateSet ('List','Remove')]
@@ -97,7 +97,7 @@ function Save-OSDBuilderDownload {
             'DotNet Framework',
             'Optional')]
         [string]$UpdateGroup,
-        
+
         #Filter Microsoft Updates for a specific OS
         [Parameter(ParameterSetName='OSDUpdate')]
         [ValidateSet(
@@ -156,9 +156,9 @@ function Save-OSDBuilderDownload {
             #=================================================
             #   Filters
             #=================================================
-            if ($FeatureOS) { $FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object { $_.UpdateOS -eq $FeatureOS}}
-            if ($FeatureArch) { $FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object { $_.UpdateArch -eq $FeatureArch}}
-            if ($FeatureBuild) { $FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object { $_.UpdateBuild -eq $FeatureBuild}}
+            if ($FeatureOS) {$FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object {$_.UpdateOS -eq $FeatureOS}}
+            if ($FeatureArch) {$FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object {$_.UpdateArch -eq $FeatureArch}}
+            if ($FeatureBuild) {$FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object {$_.UpdateBuild -eq $FeatureBuild}}
             if ($FeatureEdition) {$FeatureUpdateDownloads = $FeatureUpdateDownloads | Where-Object {$_.FileName -match $FeatureEdition}}
             if ($FeatureLang) {
                 $regex = $FeatureLang.ForEach({ [RegEx]::Escape($_) }) -join '|'
@@ -231,7 +231,7 @@ function Save-OSDBuilderDownload {
                     }
                     Write-Host "Creating $esddirectory" -ForegroundColor Cyan
                     New-Item -Path "$esddirectory" -Force -ItemType Directory | Out-Null
-                    
+
                     foreach ($image in $esdinfo) {
                         if ($image.ImageName -eq 'Windows Setup Media') {
                             Write-Host "Expanding Index $($image.ImageIndex) $($image.ImageName) ..." -ForegroundColor Cyan
@@ -333,7 +333,7 @@ function Save-OSDBuilderDownload {
                 foreach ($Update in $ExistingUpdates) {
                     if ($OSDUpdates.Title -NotContains $Update.Name) {$SupersededUpdates += $Update.FullName}
                 }
-            
+
                 if ($Superseded -eq 'List') {
                     Write-Warning 'Superseded Updates:'
                     foreach ($Update in $SupersededUpdates) {
@@ -377,7 +377,7 @@ function Save-OSDBuilderDownload {
             #   Download Updates
             #=================================================
             if ($Download.IsPresent) {
-				if ($WebClient.IsPresent) {
+                if ($WebClient.IsPresent) {
                     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls1
                     $WebClientObj = New-Object System.Net.WebClient
                 }
@@ -413,7 +413,7 @@ function Save-OSDBuilderDownload {
                             $DeriredHash = Convert-ByteArrayToHex -Bytes $($update.Hash -split " ")
                             Write-Verbose "Desired SHA1 Hash: [$DeriredHash], Actual Hash [$ActualHash]"
                             if ($ActualHash -ne $DeriredHash) {
-                                Write-Error -Exception "Hashes don't match - please investigate!" 
+                                Write-Error -Exception "Hashes don't match - please investigate!"
                             }
                             else {
                                 Write-Verbose -Message "Hashes match."

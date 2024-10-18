@@ -260,7 +260,7 @@ function Add-ContentDriversPE {
         foreach ($MountPath in $MountPaths) {
             $CurrentLog = "$PEInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-ContentDriversPE-Task.log"
             Write-Verbose "CurrentLog: $CurrentLog"
-    
+
             if ($OSMajorVersion -eq 6) {
                 dism /Image:"$MountPath" /Add-Driver /Driver:"$SetOSDBuilderPathContent\$WinPEDriver" /Recurse /ForceUnsigned /LogPath:"$CurrentLog"
             } else {
@@ -282,7 +282,7 @@ function Add-ContentExtraFilesOS {
     if ($ExtraFiles) {
         Show-ActionTime; Write-Host -ForegroundColor Green "OS: Extra Files TASK"
         foreach ($ExtraFile in $ExtraFiles) {
-        
+
             $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-ContentExtraFilesOS-Task.log"
             Write-Verbose "CurrentLog: $CurrentLog"
 
@@ -296,7 +296,7 @@ function Add-ContentExtraFilesOS {
     if ($ExtraFilesTemplates) {
         Show-ActionTime; Write-Host -ForegroundColor Green "OS: Extra Files TEMPLATE"
         foreach ($ExtraFile in $ExtraFilesTemplates) {
-        
+
             $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-ContentExtraFilesOS-Template.log"
             Write-Verbose "CurrentLog: $CurrentLog"
 
@@ -449,7 +449,7 @@ function Add-ContentUnattEnd {
     Write-Host "    $SetOSDBuilderPathContent\$UnattendXML" -ForegroundColor DarkGray
     if (!(Test-Path "$MountDirectory\Windows\Panther")) {New-Item -Path "$MountDirectory\Windows\Panther" -ItemType Directory -Force | Out-Null}
     Copy-Item -Path "$SetOSDBuilderPathContent\$UnattendXML" -Destination "$MountDirectory\Windows\Panther\Unattend.xml" -Force
-    
+
     $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-ContentUnattend.log"
     Write-Verbose "CurrentLog: $CurrentLog"
 
@@ -576,7 +576,7 @@ function Add-ContentPack {
             Show-ActionTime; Write-Host -ForegroundColor Green "OSLanguageFeatures ContentPack"
             foreach ($ContentPack in $ContentPacks) {
                 $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSLanguageFeatures"
-                
+
                 if (! (Test-Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture")) {New-Item -Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture" -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
                 Add-ContentPackOSLanguageFeatures -ContentPackContent "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture"
             }
@@ -585,7 +585,7 @@ function Add-ContentPack {
             Show-ActionTime; Write-Host -ForegroundColor Green "OSLanguagePacks ContentPack"
             foreach ($ContentPack in $ContentPacks) {
                 $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSLanguagePacks"
-                
+
                 if (! (Test-Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture")) {New-Item -Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture" -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
                 Add-ContentPackOSLanguagePacks -ContentPackContent "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture"
             }
@@ -594,7 +594,7 @@ function Add-ContentPack {
             Show-ActionTime; Write-Host -ForegroundColor Green "OSLocalExperiencePacks ContentPack"
             foreach ($ContentPack in $ContentPacks) {
                 $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSLocalExperiencePacks"
-                
+
                 if (! (Test-Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture")) {New-Item -Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture" -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
                 Add-ContentPackOSLocalExperiencePacks -ContentPackContent "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture"
             }
@@ -603,7 +603,7 @@ function Add-ContentPack {
             Show-ActionTime; Write-Host -ForegroundColor Green "OSPackages ContentPack"
             foreach ($ContentPack in $ContentPacks) {
                 $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSPackages"
-                
+
                 if (! (Test-Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture")) {New-Item -Path "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture" -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
                 Add-ContentPackOSPackages -ContentPackContent "$ContentPackPath\$UpdateOS $ReleaseID $OSArchitecture"
             }
@@ -747,7 +747,7 @@ function Add-ContentPack {
             }
             foreach ($ContentPack in $ContentPacks) {
                 $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\PEPoshMods"
-                
+
                 if (! (Test-Path "$ContentPackPath\System")) {New-Item -Path "$ContentPackPath\System" -ItemType Directory -Force -ErrorAction Ignore | Out-Null}
                 Add-ContentPackPEPoshModsSystem -ContentPackContent "$ContentPackPath\System"
             }
@@ -896,7 +896,7 @@ function Add-ContentPackOSCapability {
                 Get-WindowsCapability -Path $MountDirectory -LimitAccess | Where-Object {$_.Name -match 'RSAT'} | Where-Object {$_.State -eq 'NotPresent'} | foreach {
                     $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-ContentPackOSCapability-$($_.Name).log"
                     Write-Verbose "CurrentLog: $CurrentLog"
-            
+
                     Write-Host -ForegroundColor DarkGray "  $($_.Name)"
                     Try {
                         Add-WindowsCapability -Path $MountDirectory -Name $_.Name -Source $ContentPackContent -LimitAccess -LogPath $CurrentLog | Out-Null
@@ -916,7 +916,7 @@ function Add-ContentPackOSCapability {
                 Get-WindowsCapability -Path $MountDirectory | Where-Object {$_.Name -match 'RSAT'} | Where-Object {$_.State -eq 'NotPresent'} | foreach {
                     $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-ContentPackOSCapability-$($_.Name).log"
                     Write-Verbose "CurrentLog: $CurrentLog"
-            
+
                     Write-Host -ForegroundColor DarkGray "  $($_.Name)"
                     Try {
                         Add-WindowsCapability -Path $MountDirectory -Name $_.Name -Source $ContentPackContent -LogPath $CurrentLog | Out-Null
@@ -938,7 +938,7 @@ function Add-ContentPackOSCapability {
                 Get-WindowsCapability -Path $MountDirectory -LimitAccess | Where-Object {$_.Name -notmatch 'Language'} | Where-Object {$_.Name -notmatch 'RSAT'} | Where-Object {$_.State -eq 'NotPresent'} | foreach {
                     $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-ContentPackOSCapability-$($_.Name).log"
                     Write-Verbose "CurrentLog: $CurrentLog"
-            
+
                     Write-Host -ForegroundColor DarkGray "  $($_.Name)"
                     Try {
                         Add-WindowsCapability -Path $MountDirectory -Name $_.Name -Source $ContentPackContent -LimitAccess -LogPath $CurrentLog | Out-Null
@@ -958,7 +958,7 @@ function Add-ContentPackOSCapability {
                 Get-WindowsCapability -Path $MountDirectory | Where-Object {$_.Name -notmatch 'Language'} | Where-Object {$_.Name -notmatch 'RSAT'} | Where-Object {$_.State -eq 'NotPresent'} | foreach {
                     $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-ContentPackOSCapability-$($_.Name).log"
                     Write-Verbose "CurrentLog: $CurrentLog"
-            
+
                     Write-Host -ForegroundColor DarkGray "  $($_.Name)"
                     Try {
                         Add-WindowsCapability -Path $MountDirectory -Name $_.Name -Source $ContentPackContent -LogPath $CurrentLog | Out-Null
@@ -1266,19 +1266,19 @@ function Add-ContentPackOSRegistry {
     #======================================================================================
     if (($MountDirectory) -and (Test-Path "$MountDirectory" -ErrorAction SilentlyContinue)) {
         if (Test-Path "$MountDirectory\Users\Default\NTUser.dat") {
-            Write-Verbose "Loading Offline Registry Hive Default User" 
+            Write-Verbose "Loading Offline Registry Hive Default User"
             Start-Process reg -ArgumentList "load HKLM\OfflineDefaultUser $MountDirectory\Users\Default\NTUser.dat" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path "$MountDirectory\Windows\System32\Config\DEFAULT") {
-            Write-Verbose "Loading Offline Registry Hive DEFAULT" 
+            Write-Verbose "Loading Offline Registry Hive DEFAULT"
             Start-Process reg -ArgumentList "load HKLM\OfflineDefault $MountDirectory\Windows\System32\Config\DEFAULT" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path "$MountDirectory\Windows\System32\Config\SOFTWARE") {
-            Write-Verbose "Loading Offline Registry Hive SOFTWARE" 
+            Write-Verbose "Loading Offline Registry Hive SOFTWARE"
             Start-Process reg -ArgumentList "load HKLM\OfflineSoftware $MountDirectory\Windows\System32\Config\SOFTWARE" -Wait -WindowStyle Hidden -ErrorAction Stop
         }
         if (Test-Path "$MountDirectory\Windows\System32\Config\SYSTEM") {
-            Write-Verbose "Loading Offline Registry Hive SYSTEM" 
+            Write-Verbose "Loading Offline Registry Hive SYSTEM"
             Start-Process reg -ArgumentList "load HKLM\OfflineSystem $MountDirectory\Windows\System32\Config\SYSTEM" -Wait -WindowStyle Hidden -ErrorAction Stop
         }
         $OSDContentPackTemp = "$env:TEMP\$(Get-Random)"
@@ -1292,7 +1292,7 @@ function Add-ContentPackOSRegistry {
     [array]$ContentPackContentFiles = Get-ChildItem "$ContentPackContent" *.reg -Recurse | Select-Object -Property Name, BaseName, Extension, Directory, FullName
 
     #======================================================================================
-    #	Add-ContentPackOSRegistryFiles
+    #   Add-ContentPackOSRegistryFiles
     #======================================================================================
     foreach ($OSDRegistryRegFile in $ContentPackContentFiles) {
         $OSDRegistryImportFile = $OSDRegistryRegFile.FullName
@@ -1318,16 +1318,16 @@ function Add-ContentPackOSRegistry {
         }
         Start-Process reg -ArgumentList ('import',"`"$OSDRegistryImportFile`"") -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
     }
-    
+
     #======================================================================================
-    #	Remove-OSDContentPackTemp
+    #   Remove-OSDContentPackTemp
     #======================================================================================
     if ($MountDirectory) {
         if (Test-Path $OSDContentPackTemp) {Remove-Item -Path "$OSDContentPackTemp" -Recurse -Force | Out-Null}
     }
 
     #======================================================================================
-    #	Dismount-RegistryHives
+    #   Dismount-RegistryHives
     #======================================================================================
     Dismount-OSDOfflineRegistry -MountPath $MountDirectory
 }
@@ -1835,7 +1835,7 @@ function Add-ContentPackPERegistry {
     [array]$ContentPackContentFiles = @()
     [array]$ContentPackContentFiles = Get-ChildItem "$ContentPackContent" *.reg -Recurse | Select-Object -Property Name, BaseName, Extension, Directory, FullName
     #======================================================================================
-    #	Add-ContentPackPERegistryFiles
+    #   Add-ContentPackPERegistryFiles
     #======================================================================================
     foreach ($OSDRegistryRegFile in $ContentPackContentFiles) {
         $OSDRegistryImportFile = $OSDRegistryRegFile.FullName
@@ -1862,7 +1862,7 @@ function Add-ContentPackPERegistry {
         Start-Process reg -ArgumentList ('import',"`"$OSDRegistryImportFile`"") -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
     }
     #======================================================================================
-    #	Remove-OSDContentPackTemp
+    #   Remove-OSDContentPackTemp
     #======================================================================================
     if ($MountWinPE) {
         if (Test-Path $OSDContentPackTemp) {
@@ -1870,7 +1870,7 @@ function Add-ContentPackPERegistry {
         }
     }
     #======================================================================================
-    #	Dismount-RegistryHives
+    #   Dismount-RegistryHives
     #======================================================================================
     Dismount-OSDOfflineRegistry -MountPath $MountWinPE
     #======================================================================================
@@ -1890,7 +1890,7 @@ function Add-ContentPackPERegistry {
     [array]$ContentPackContentFiles = @()
     [array]$ContentPackContentFiles = Get-ChildItem "$ContentPackContent" *.reg -Recurse | Select-Object -Property Name, BaseName, Extension, Directory, FullName
     #======================================================================================
-    #	Add-ContentPackPERegistryFiles
+    #   Add-ContentPackPERegistryFiles
     #======================================================================================
     foreach ($OSDRegistryRegFile in $ContentPackContentFiles) {
         $OSDRegistryImportFile = $OSDRegistryRegFile.FullName
@@ -1917,16 +1917,16 @@ function Add-ContentPackPERegistry {
         Start-Process reg -ArgumentList ('import',"`"$OSDRegistryImportFile`"") -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
     }
     #======================================================================================
-    #	Remove-OSDContentPackTemp
+    #   Remove-OSDContentPackTemp
     #======================================================================================
     if ($MountWinRE) {
         if (Test-Path $OSDContentPackTemp) {Remove-Item -Path "$OSDContentPackTemp" -Recurse -Force | Out-Null}
     }
     #======================================================================================
-    #	Dismount-RegistryHives
+    #   Dismount-RegistryHives
     #======================================================================================
     Dismount-OSDOfflineRegistry -MountPath $MountWinRE
-        #======================================================================================
+    #======================================================================================
     #   Mount-OfflineRegistryHives
     #======================================================================================
     if (($MountWinSE) -and (Test-Path "$MountWinSE" -ErrorAction SilentlyContinue)) {
@@ -1945,7 +1945,7 @@ function Add-ContentPackPERegistry {
     [array]$ContentPackContentFiles = @()
     [array]$ContentPackContentFiles = Get-ChildItem "$ContentPackContent" *.reg -Recurse | Select-Object -Property Name, BaseName, Extension, Directory, FullName
     #======================================================================================
-    #	Add-ContentPackPERegistryFiles
+    #   Add-ContentPackPERegistryFiles
     #======================================================================================
     foreach ($OSDRegistryRegFile in $ContentPackContentFiles) {
         $OSDRegistryImportFile = $OSDRegistryRegFile.FullName
@@ -1971,15 +1971,15 @@ function Add-ContentPackPERegistry {
         }
         Start-Process reg -ArgumentList ('import',"`"$OSDRegistryImportFile`"") -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
     }
-    
+
     #======================================================================================
-    #	Remove-OSDContentPackTemp
+    #   Remove-OSDContentPackTemp
     #======================================================================================
     if ($MountWinSE) {
         if (Test-Path $OSDContentPackTemp) {Remove-Item -Path "$OSDContentPackTemp" -Recurse -Force | Out-Null}
     }
     #======================================================================================
-    #	Dismount-RegistryHives
+    #   Dismount-RegistryHives
     #======================================================================================
     Dismount-OSDOfflineRegistry -MountPath $MountWinSE
 }
@@ -2324,40 +2324,40 @@ function Dismount-OSDOfflineRegistry {
         [string]$MountPath
     )
     #======================================================================================
-    #	Dismount-RegistryHives
+    #   Dismount-RegistryHives
     #======================================================================================
     if (($MountPath) -and (Test-Path "$MountPath" -ErrorAction SilentlyContinue)) {
         if (Test-Path -Path "HKLM:\OfflineDefaultUser") {
-            Write-Verbose "Unloading Registry HKLM\OfflineDefaultUser" 
+            Write-Verbose "Unloading Registry HKLM\OfflineDefaultUser"
             Start-Process reg -ArgumentList "unload HKLM\OfflineDefaultUser" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path -Path "HKLM:\OfflineDefault") {
-            Write-Verbose "Unloading Registry HKLM\OfflineDefault" 
+            Write-Verbose "Unloading Registry HKLM\OfflineDefault"
             Start-Process reg -ArgumentList "unload HKLM\OfflineDefault" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path -Path "HKLM:\OfflineSoftware") {
-            Write-Verbose "Unloading Registry HKLM\OfflineSoftware" 
+            Write-Verbose "Unloading Registry HKLM\OfflineSoftware"
             Start-Process reg -ArgumentList "unload HKLM\OfflineSoftware" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path -Path "HKLM:\OfflineSystem") {
-            Write-Verbose "Unloading Registry HKLM\OfflineSystem" 
+            Write-Verbose "Unloading Registry HKLM\OfflineSystem"
             Start-Process reg -ArgumentList "unload HKLM\OfflineSystem" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
 
         if (Test-Path -Path "HKLM:\OfflineDefaultUser") {
-            Write-Verbose "Unloading Registry HKLM\OfflineDefaultUser (Second Attempt)" 
+            Write-Verbose "Unloading Registry HKLM\OfflineDefaultUser (Second Attempt)"
             Start-Process reg -ArgumentList "unload HKLM\OfflineDefaultUser" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path -Path "HKLM:\OfflineDefault") {
-            Write-Verbose "Unloading Registry HKLM\OfflineDefault (Second Attempt)" 
+            Write-Verbose "Unloading Registry HKLM\OfflineDefault (Second Attempt)"
             Start-Process reg -ArgumentList "unload HKLM\OfflineDefault" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path -Path "HKLM:\OfflineSoftware") {
-            Write-Verbose "Unloading Registry HKLM\OfflineSoftware (Second Attempt)" 
+            Write-Verbose "Unloading Registry HKLM\OfflineSoftware (Second Attempt)"
             Start-Process reg -ArgumentList "unload HKLM\OfflineSoftware" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path -Path "HKLM:\OfflineSystem") {
-            Write-Verbose "Unloading Registry HKLM\OfflineSystem (Second Attempt)" 
+            Write-Verbose "Unloading Registry HKLM\OfflineSystem (Second Attempt)"
             Start-Process reg -ArgumentList "unload HKLM\OfflineSystem" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
 
@@ -2393,7 +2393,7 @@ function Dismount-WimsPE {
     #   Execute
     #=================================================
     Start-Sleep -Seconds 10
-    
+
     Write-Verbose "$MountWinPE"
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Dismount-WimsPE-WinPE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
@@ -2405,7 +2405,7 @@ function Dismount-WimsPE {
         Start-Sleep -Seconds 30
         Dismount-WindowsImage -Path "$MountWinPE" -Save -LogPath "$CurrentLog" | Out-Null
     }
-    
+
     Write-Verbose "$MountWinRE"
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Dismount-WimsPE-WinRE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
@@ -2417,7 +2417,7 @@ function Dismount-WimsPE {
         Start-Sleep -Seconds 30
         Dismount-WindowsImage -Path "$MountWinRE" -Save -LogPath "$CurrentLog" | Out-Null
     }
-    
+
     Write-Verbose "$MountWinSE"
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Dismount-WimsPE-WinSE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
@@ -2565,7 +2565,7 @@ function Enable-WinPEOSDCloud {
         $MountWinSE
     )
     #=======================================================================
-    #	PowerShell Execution Policy
+    #   PowerShell Execution Policy
     #=======================================================================
     Show-ActionTime; Write-Host -ForegroundColor Green "Set WinPE PowerShell ExecutionPolicy to Bypass"
     foreach ($MountPath in $MountPaths) {
@@ -2782,7 +2782,7 @@ function Export-PEBootWim {
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage-WinPE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
     Export-WindowsImage -SourceImagePath "$OSMediaPath\WimTemp\winpe.wim" -SourceIndex 1 -DestinationImagePath "$OSMediaPath\WinPE\boot.wim" -LogPath "$CurrentLog" | Out-Null
-    
+
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage-WinSE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
     Export-WindowsImage -SourceImagePath "$OSMediaPath\WimTemp\winse.wim" -SourceIndex 1 -DestinationImagePath "$OSMediaPath\WinPE\boot.wim" -Setbootable -LogPath "$CurrentLog" | Out-Null
@@ -2804,7 +2804,7 @@ function Export-PEWims {
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage-WinPE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
     Export-WindowsImage -SourceImagePath "$OSMediaPath\WimTemp\winpe.wim" -SourceIndex 1 -DestinationImagePath "$OSMediaPath\WinPE\winpe.wim" -LogPath "$CurrentLog" | Out-Null
-    
+
     $CurrentLog = "$OSMediaPath\WinPE\info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage-WinRE.log"
     Write-Verbose "CurrentLog: $CurrentLog"
     Export-WindowsImage -SourceImagePath "$OSMediaPath\WimTemp\winre.wim" -SourceIndex 1 -DestinationImagePath "$OSMediaPath\WinPE\winre.wim" -LogPath "$CurrentLog" | Out-Null
@@ -2833,7 +2833,7 @@ function Export-SessionsXmlOS {
             Status = $_.Status
         }
     }
-    
+
     $Sessions = $Sessions | Where-Object {$_.Id -like "Package*"}
     $Sessions = $Sessions | Select-Object -Property Id, KBNumber, TargetState, Client, Status, Complete | Sort-Object Complete -Descending
 
@@ -2937,7 +2937,7 @@ function Get-OSBuildTask {
 
             $OSBTaskProps = @()
             $OSBTaskProps = Get-Item "$($Item.FullName)" | Select-Object -Property *
-            
+
             if ([System.Version]$OSBTask.TaskVersion -lt [System.Version]"19.1.3.0") {
                 $ObjectProperties = @{
                     LastWriteTime       = $OSBTaskProps.LastWriteTime
@@ -3019,8 +3019,8 @@ function Get-OSDFromJson
         {
             Write-Verbose "Get-Value: value is PSCustomObject"
             $result = @{}
-            $value.psobject.properties | ForEach-Object { 
-                $result[$_.Name] = Get-Value -value $_.Value 
+            $value.psobject.properties | ForEach-Object {
+                $result[$_.Name] = Get-Value -value $_.Value
             }
         }
         elseif ($value -is [System.Object[]])
@@ -3082,7 +3082,7 @@ function Get-OSDUpdateDownloads {
         $DownloadPath = $SetOSDBuilderPathUpdates
         $DownloadFullPath = Join-Path $DownloadPath $(Split-Path $Update.OriginUri -Leaf)
         #=================================================
-        #	Download
+        #   Download
         #=================================================
         $SourceUrl = $Update.OriginUri
         $SourceUrl = [Uri]::EscapeUriString($SourceUrl)
@@ -3288,21 +3288,21 @@ function Get-OSTemplateExtraFiles {
     $ExtraFilesTemplates = @()
 
     #Write-Host "   $SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\Global" -ForegroundColor DarkGray
-    [array]$ExtraFilesTemplates = Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\Global" | Where-Object {$_.PSIsContainer -eq $true} 
+    [array]$ExtraFilesTemplates = Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\Global" | Where-Object {$_.PSIsContainer -eq $true}
 
     #Write-Host "   $SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\Global $OSArchitecture" -ForegroundColor DarkGray
-    [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\Global $OSArchitecture" | Where-Object {$_.PSIsContainer -eq $true} 
+    [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\Global $OSArchitecture" | Where-Object {$_.PSIsContainer -eq $true}
 
     #Write-Host "   $SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS" -ForegroundColor DarkGray
-    [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS" | Where-Object {$_.PSIsContainer -eq $true} 
+    [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS" | Where-Object {$_.PSIsContainer -eq $true}
 
     if ($OSInstallationType -notlike "*Server*") {
         #Write-Host "   $SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS $OSArchitecture" -ForegroundColor DarkGray
-        [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS $OSArchitecture" | Where-Object {$_.PSIsContainer -eq $true} 
+        [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS $OSArchitecture" | Where-Object {$_.PSIsContainer -eq $true}
     }
     if ($OSInstallationType -notlike "*Server*" -and $OSMajorVersion -eq 10) {
         #Write-Host "   $SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS $OSArchitecture $ReleaseId" -ForegroundColor DarkGray
-        [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS $OSArchitecture $ReleaseId" | Where-Object {$_.PSIsContainer -eq $true} 
+        [array]$ExtraFilesTemplates += Get-ChildItem "$SetOSDBuilderPathTemplates\ExtraFiles\AutoApply\$UpdateOS $OSArchitecture $ReleaseId" | Where-Object {$_.PSIsContainer -eq $true}
     }
     Return $ExtraFilesTemplates
 }
@@ -3318,7 +3318,7 @@ function Get-OSTemplateRegistryReg {
     #=================================================
     $RegistryTemplatesRegOriginal = @()
     $RegistryTemplatesRegOriginal = Get-ChildItem "$SetOSDBuilderPathTemplates\Registry\AutoApply" *.reg -Recurse | Select-Object -Property Name, BaseName, Extension, Directory, FullName
-    
+
     foreach ($REG in $RegistryTemplatesRegOriginal) {
         if (!(Test-Path "$($REG.FullName).Offline")) {
            Write-Host "Creating $($REG.FullName).Offline" -ForegroundColor DarkGray
@@ -3447,13 +3447,13 @@ function Get-PEBuildTask {
             #=================================================
             $PEBuildTaskPath = $($Item.FullName)
             Write-Verbose "PEBuildTask Full Path: $PEBuildTaskPath"
-            
+
             $PEBTask = @()
             $PEBTask = Get-Content "$($Item.FullName)" | ConvertFrom-Json
 
             $PEBTaskProps = @()
             $PEBTaskProps = Get-Item "$($Item.FullName)" | Select-Object -Property *
-            
+
             if ([System.Version]$PEBTask.TaskVersion -lt [System.Version]"19.1.3.0") {
                 $ObjectProperties = @{
                     LastWriteTime       = $PEBTaskProps.LastWriteTime
@@ -3574,7 +3574,7 @@ function Get-TaskContentAddFeatureOnDemand {
     if (Test-Path "$SetOSDBuilderPathContent\Updates\FeatureOnDemand") {
         $FeaturesOnDemandUpdatesDir = Get-ChildItem -Path "$SetOSDBuilderPathContent\Updates\FeatureOnDemand" *.cab -Recurse | Select-Object -Property Name, FullName
     }
-    
+
     $AddFeatureOnDemand = [array]$FeaturesOnDemandIsoExtractDir + [array]$FeaturesOnDemandUpdatesDir
 
     if ($OSMedia.InstallationType -eq 'Client') {$AddFeatureOnDemand = $AddFeatureOnDemand | Where-Object {$_.FullName -notlike "*Windows Server*"}}
@@ -3640,7 +3640,7 @@ function Get-TaskContentAddWindowsPackage {
 }
 function Get-TaskContentDrivers {
     #=================================================
-    #   Content Drivers 
+    #   Content Drivers
     #=================================================
     [CmdletBinding()]
     param ()
@@ -3835,7 +3835,7 @@ function Get-TaskContentLanguageInterfacePack {
             }
         }
     }
-    
+
     [array]$LanguageInterfacePack = [array]$LanguageLipIsoExtractDir + [array]$LanguageLipUpdatesDir
     if ($null -eq $LanguageInterfacePack) {Write-Warning "Install.wim Language Interface Packs: Not Found"}
     else {
@@ -3938,7 +3938,7 @@ function Get-TaskContentLocalExperiencePacks {
 }
 function Get-TaskContentPacks {
     #=================================================
-    #   Content Box 
+    #   Content Box
     #=================================================
     [CmdletBinding()]
     param (
@@ -4013,7 +4013,7 @@ function Get-TaskContentUnattendXML {
     param ()
     $UnattendXML = Get-ChildItem -Path $GetOSDBuilderPathContentUnattend *.xml -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName, Length, CreationTime | Sort-Object -Property FullName
     foreach ($Item in $UnattendXML) {$Item.FullName = $($Item.FullName).replace("$SetOSDBuilderPathContent\",'')}
-    
+
     if ($null -eq $UnattendXML) {Write-Warning "UnattendXML: To select an Unattend XML, add Content to $GetOSDBuilderPathContentUnattend"}
     else {
         if ($ExistingTask.UnattendXML) {
@@ -4135,7 +4135,7 @@ function Get-TaskWinPEADK {
     param ()
     $WinPEADK = Get-ChildItem -Path ("$SetOSDBuilderPathContent\WinPE\ADK\*","$GetOSDBuilderPathContentADK\*\Windows Preinstallation Environment\*\WinPE_OCs") *.cab -Recurse -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName
     foreach ($Pack in $WinPEADK) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
-    
+
     if ($($OSMedia.ReleaseId) -eq 1909) {
         $WinPEADK = $WinPEADK | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
     }
@@ -4185,7 +4185,7 @@ function Get-TaskWinPEADKPE {
     param ()
     $WinPEADKPE = Get-ChildItem -Path ("$SetOSDBuilderPathContent\WinPE\ADK\*","$GetOSDBuilderPathContentADK\*\Windows Preinstallation Environment\*\WinPE_OCs") *.cab -Recurse -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName
     foreach ($Pack in $WinPEADKPE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
-    
+
     if ($($OSMedia.ReleaseId) -eq 1909) {
         $WinPEADKPE = $WinPEADKPE | Where-Object {$_.FullName -match '1903' -or $_.FullName -match '1909'}
     }
@@ -4234,7 +4234,7 @@ function Get-TaskWinPEADKRE {
     [CmdletBinding()]
     param ()
     $WinPEADKRE = Get-ChildItem -Path ("$SetOSDBuilderPathContent\WinPE\ADK\*","$GetOSDBuilderPathContentADK\*\Windows Preinstallation Environment\*\WinPE_OCs") *.cab -Recurse -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName
-    
+
     foreach ($Pack in $WinPEADKRE) {$Pack.FullName = $($Pack.FullName).replace("$SetOSDBuilderPathContent\",'')}
 
     if ($($OSMedia.ReleaseId) -eq 1909) {
@@ -4547,8 +4547,8 @@ function Get-Value {
         {
             Write-Verbose "Get-Value: value is PSCustomObject"
             $result = @{}
-            $value.psobject.properties | ForEach-Object { 
-                $result[$_.Name] = Get-Value -value $_.Value 
+            $value.psobject.properties | ForEach-Object {
+                $result[$_.Name] = Get-Value -value $_.Value
             }
         }
         elseif ($value -is [System.Object[]])
@@ -4622,7 +4622,7 @@ function Import-RegistryRegOS {
             Start-Process reg -ArgumentList "load HKLM\OfflineSystem $MountDirectory\Windows\System32\Config\SYSTEM" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         #======================================================================================
-        #	Process Registry REG
+        #   Process Registry REG
         #======================================================================================
         foreach ($RegistryREG in $RegistryTemplatesReg) {
             Write-Host "Processing $($RegistryREG.FullName)"
@@ -4634,7 +4634,7 @@ function Import-RegistryRegOS {
             Start-Process reg -ArgumentList ('import',"`"$($RegistryREG.FullName)`"") -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         #======================================================================================
-        #	Unload Registry Hives
+        #   Unload Registry Hives
         #======================================================================================
         if (Test-Path -Path "HKLM:\OfflineDefaultUser") {
             Write-Host "Unloading Registry HKLM\OfflineDefaultUser" -ForegroundColor DarkGray
@@ -4721,7 +4721,7 @@ function Import-RegistryXmlOS {
             Start-Process reg -ArgumentList "load HKLM\OfflineSystem $MountDirectory\Windows\System32\Config\SYSTEM" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         #======================================================================================
-        #	Process Registry XML
+        #   Process Registry XML
         #======================================================================================
         foreach ($RegistryXml in $RegistryTemplatesXml) {
             $RegistrySettings = @()
@@ -4769,7 +4769,7 @@ function Import-RegistryXmlOS {
                 $RegPath = $RegPath -replace 'HKEY_LOCAL_MACHINE\\SOFTWARE','HKEY_LOCAL_MACHINE\OfflineSoftware'
                 $RegPath = $RegPath -replace 'HKEY_LOCAL_MACHINE\\SYSTEM','HKEY_LOCAL_MACHINE\OfflineSystem'
                 $RegPath = $RegPath -replace 'HKEY_USERS\\.DEFAULT','HKEY_LOCAL_MACHINE\OfflineDefault'
-                
+
                 if ($RegAction -eq "D") {
                     Write-Host "Remove-ItemProperty -LiteralPath $RegPath" -ForegroundColor Red
                     if ($RegDefault -eq '0' -and $RegName -eq '' -and $RegValue -eq '') {
@@ -4796,7 +4796,7 @@ function Import-RegistryXmlOS {
             }
         }
         #======================================================================================
-        #	Unload Registry Hives
+        #   Unload Registry Hives
         #======================================================================================
         if (Test-Path -Path "HKLM:\OfflineDefaultUser") {
             Write-Host "Unloading Registry HKLM\OfflineDefaultUser" -ForegroundColor DarkGray
@@ -4942,19 +4942,19 @@ function Mount-OSDOfflineRegistryPE {
     )
     if (($MountPath) -and (Test-Path "$MountPath" -ErrorAction SilentlyContinue)) {
         if (Test-Path "$MountPath\Windows\ServiceProfiles\LocalService\NTUser.dat") {
-            Write-Verbose "Loading Offline Registry Hive System Profile" 
+            Write-Verbose "Loading Offline Registry Hive System Profile"
             Start-Process reg -ArgumentList "load HKLM\OfflineDefaultUser $MountPath\Windows\ServiceProfiles\LocalService\NTUser.dat" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path "$MountPath\Windows\System32\Config\DEFAULT") {
-            Write-Verbose "Loading Offline Registry Hive DEFAULT" 
+            Write-Verbose "Loading Offline Registry Hive DEFAULT"
             Start-Process reg -ArgumentList "load HKLM\OfflineDefault $MountPath\Windows\System32\Config\DEFAULT" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
         }
         if (Test-Path "$MountPath\Windows\System32\Config\SOFTWARE") {
-            Write-Verbose "Loading Offline Registry Hive SOFTWARE" 
+            Write-Verbose "Loading Offline Registry Hive SOFTWARE"
             Start-Process reg -ArgumentList "load HKLM\OfflineSoftware $MountPath\Windows\System32\Config\SOFTWARE" -Wait -WindowStyle Hidden -ErrorAction Stop
         }
         if (Test-Path "$MountPath\Windows\System32\Config\SYSTEM") {
-            Write-Verbose "Loading Offline Registry Hive SYSTEM" 
+            Write-Verbose "Loading Offline Registry Hive SYSTEM"
             Start-Process reg -ArgumentList "load HKLM\OfflineSystem $MountPath\Windows\System32\Config\SYSTEM" -Wait -WindowStyle Hidden -ErrorAction Stop
         }
     }
@@ -5094,12 +5094,12 @@ function New-ItemDirectorySetOSDBuilderPathContent {
         #"$SetOSDBuilderPathContent\LanguagePacks"
         $SetOSDBuilderPathMount
         $GetOSDBuilderPathContentOneDrive
-		$SetOSDBuilderPathUpdates
+        $SetOSDBuilderPathUpdates
         $GetOSDBuilderPathContentPackages
         #"$GetOSDBuilderPathContentPackages\Win10 x64 1809"
         #"$SetOSDBuilderPathContent\Provisioning"
         #"$SetOSDBuilderPathContent\Registry"
-		$GetOSDBuilderPathContentScripts
+        $GetOSDBuilderPathContentScripts
         $GetOSDBuilderPathContentStartLayout
         $GetOSDBuilderPathContentUnattend
         #"$SetOSDBuilderPathContent\Updates"
@@ -5231,10 +5231,10 @@ function Rename-OSMedia {
             #=================================================
             $RenameOSMediaPath = $($Item.FullName)
             Write-Verbose "OSMedia Full Path: $RenameOSMediaPath"
-            
+
             $OSMWindowsImage = @()
             $OSMWindowsImage = Import-Clixml -Path "$RenameOSMediaPath\info\xml\Get-WindowsImage.xml"
-            
+
             $OSMVersion = $($OSMWindowsImage.Version)
             Write-Verbose "Version: $OSMVersion"
 
@@ -5282,7 +5282,7 @@ function Rename-OSMedia {
 
             $OSMUBR = $($OSMWindowsImage.UBR)
             Write-Verbose "UBR: $OSMUBR"
-			
+
             #   OSMFamily V1
             $OSMFamilyV1 = $(Get-Date -Date $($OSMWindowsImage.CreatedTime)).ToString("yyyyMMddHHmmss") + $OSMEditionID
             #   OSMFamily V2
@@ -5351,7 +5351,7 @@ function Rename-OSMedia {
                 #Write-Verbose '19.1.1 Object Properties'
                 #=================================================
                 $ObjectProperties = @{
-                    
+
                     FullNameFormat      = $FullNameFormat
                     Name                = $Item.Name
                     FullName            = $Item.FullName
@@ -5396,7 +5396,7 @@ function Repair-OSBuildTask {
         $OSBuildTask = @()
         $OSBuildTask = Get-OSBuildTask | Where-Object {$null -eq $_.OSMGuid}
     }
-    
+
     Process {
         #Write-Host '========================================================================================' -ForegroundColor DarkGray
         Write-Host "$($MyInvocation.MyCommand.Name) PROCESS"
@@ -5415,7 +5415,7 @@ function Repair-OSBuildTask {
                 Write-Warning "Error: OSBuild Task does not need a Repair . . . Exiting!"
                 Return
             }
-    
+
             Write-Host "Select the OSMedia that will be used with this OSBuild Task"
             Write-Host "Previous OSMedia: $($Task.MediaName)"
             $OSMedia = Get-OSMedia
@@ -5428,9 +5428,9 @@ function Repair-OSBuildTask {
             if ($Task.MediaName -like "*1709*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1709'}}
             if ($Task.MediaName -like "*1803*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1803'}}
             if ($Task.MediaName -like "*1809*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1809'}}
-            
+
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "$($Task.TaskName): Select the OSMedia used with this OSBuild Task"
-    
+
             if ($null -eq $OSMedia) {
                 Write-Warning "Error: OSMedia was not selected . . . Exiting!"
                 Return
@@ -5447,7 +5447,7 @@ function Repair-OSBuildTask {
                 "TaskVersion" = [string]$global:GetOSDBuilder.VersionOSDBuilder;
                 "TaskGuid" = [string]$(New-Guid);
                 "CustomName" = [string]$Task.BuildName;
-    
+
                 "OSMFamily" = [string]$OSMedia.OSMFamily;
                 "OSMGuid" = [string]$OSMedia.OSMGuid;
                 "Name" = [string]$OSMedia.Name;
@@ -5461,7 +5461,7 @@ function Repair-OSBuildTask {
                 "Build" = [string]$OSMedia.Build;
                 "CreatedTime" = [datetime]$OSMedia.CreatedTime;
                 "ModifiedTime" = [datetime]$OSMedia.ModifiedTime;
-    
+
                 "EnableNetFX3" = [string]$Task.EnableNetFX3;
                 "StartLayoutXML" = [string]$Task.ImportStartLayout;
                 "UnattendXML" = [string]$Task.UseWindowsUnattend;
@@ -5471,7 +5471,7 @@ function Repair-OSBuildTask {
                 "ExtraFiles" = [string[]]$Task.RobocopyExtraFiles;
                 "Scripts" = [string[]]$Task.InvokeScript;
                 "Drivers" = [string[]]$Task.AddWindowsDriver;
-    
+
                 "AddWindowsPackage" = [string[]]$Task.AddWindowsPackage;
                 "RemoveWindowsPackage" = [string[]]$Task.RemoveWindowsPackage;
                 "AddFeatureOnDemand" = [string[]]$Task.AddFeatureOnDemand;
@@ -5479,7 +5479,7 @@ function Repair-OSBuildTask {
                 "DisableWindowsOptionalFeature" = [string[]]$Task.DisableWindowsOptionalFeature;
                 "RemoveAppxProvisionedPackage" = [string[]]$Task.RemoveAppxProvisionedPackage;
                 "RemoveWindowsCapability" = [string[]]$Task.RemoveWindowsCapability;
-    
+
                 "WinPEDrivers" = [string[]]$Task.WinPEAddWindowsDriver;
                 "WinPEScriptsPE" = [string[]]$Task.WinPEInvokeScriptPE;
                 "WinPEScriptsRE" = [string[]]$Task.WinPEInvokeScriptRE;
@@ -5490,7 +5490,7 @@ function Repair-OSBuildTask {
                 "WinPEADKPE" = [string[]]$Task.WinPEAddADKPE;
                 "WinPEADKRE" = [string[]]$Task.WinPEAddADKRE;
                 "WinPEADKSE" = [string[]]$Task.WinPEAddADKSetup;
-    
+
                 "LangSetAllIntl" = [string]$Task.LangSetAllIntl;
                 "LangSetInputLocale" = [string]$Task.LangSetInputLocale;
                 "LangSetSKUIntlDefaults" = [string]$Task.LangSetSKUIntlDefaults;
@@ -5503,7 +5503,7 @@ function Repair-OSBuildTask {
                 "LanguageInterfacePack" = [string[]]$Task.AddLanguageInterfacePack;
                 "LanguagePack" = [string[]]$Task.AddLanguagePack;
             }
-			
+
             #=================================================
             Write-Verbose '19.1.7 Create Backup'
             #=================================================
@@ -5515,7 +5515,7 @@ function Repair-OSBuildTask {
                 Write-Host "Creating Backup $($TaskFile.Directory)\Repair\$($TaskFile.Name)"
                 Copy-Item -Path "$($TaskFile.FullName)" -Destination "$($TaskFile.Directory)\Repair\$($TaskFile.Name)" -Force
             }
-    
+
             #=================================================
             Write-Verbose '19.1.1 New-OSBuildTask Complete'
             #=================================================
@@ -5549,7 +5549,7 @@ function Repair-PEBuildTask {
         $PEBuildTask = @()
         $PEBuildTask = Get-PEBuildTask | Where-Object {$null -eq $_.OSMGuid}
     }
-    
+
     Process {
         #Write-Host '========================================================================================' -ForegroundColor DarkGray
         Write-Host "$($MyInvocation.MyCommand.Name) PROCESS"
@@ -5568,11 +5568,11 @@ function Repair-PEBuildTask {
                 Write-Warning "Error: PEBuild Task does not need a Repair . . . Exiting!"
                 Return
             }
-    
+
             Write-Host "Select the OSMedia that will be used with this PEBuild Task"
             Write-Host "Previous OSMedia: $($Task.MediaName)"
             $OSMedia = Get-OSMedia
-            
+
             if ($Task.MediaName -like "*x64*") {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x64'}}
             if ($Task.MediaName -like "*x86*") {$OSMedia = $OSMedia | Where-Object {$_.Arch -eq 'x86'}}
             if ($Task.MediaName -like "*1511*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1511'}}
@@ -5583,7 +5583,7 @@ function Repair-PEBuildTask {
             if ($Task.MediaName -like "*1809*") {$OSMedia = $OSMedia | Where-Object {$_.ReleaseId -eq '1809'}}
 
             $OSMedia = $OSMedia | Out-GridView -OutputMode Single -Title "$($Task.TaskName): Select the OSMedia used with this PEBuild Task"
-    
+
             if ($null -eq $OSMedia) {
                 Write-Warning "Error: OSMedia was not selected . . . Exiting!"
                 Return
@@ -5599,7 +5599,7 @@ function Repair-PEBuildTask {
                 "TaskName" = [string]$Task.TaskName;
                 "TaskVersion" = [string]$global:GetOSDBuilder.VersionOSDBuilder;
                 "TaskGuid" = [string]$(New-Guid);
-    
+
                 "OSMFamily" = [string]$OSMedia.OSMFamily;
                 "OSMGuid" = [string]$OSMedia.OSMGuid;
                 "Name" = [string]$OSMedia.Name;
@@ -5626,7 +5626,7 @@ function Repair-PEBuildTask {
                 "WinPEScripts" = [string[]]$Task.WinPEInvokeScript;
                 "WinPEADK" = [string[]]$Task.WinPEAddADK;
             }
-    
+
             #=================================================
             Write-Verbose '19.1.7 Create Backup'
             #=================================================
@@ -5638,7 +5638,7 @@ function Repair-PEBuildTask {
                 Write-Host "Creating Backup $($TaskFile.Directory)\Repair\$($TaskFile.Name)"
                 Copy-Item -Path "$($TaskFile.FullName)" -Destination "$($TaskFile.Directory)\Repair\$($TaskFile.Name)" -Force
             }
-            
+
             #=================================================
             Write-Verbose '19.1.7 New-PEBuildTask Complete'
             #=================================================
@@ -5686,14 +5686,14 @@ function Save-AutoExtraFilesOS {
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" tskill.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" winver.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" tar.exe /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
-   
+
     #AeroLite Theme
     robocopy "$MountDirectory\Windows\Resources" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\Resources" aerolite*.* /s /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\Resources" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\Resources" shellstyle*.* /s /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
-    
+
     # BCP47
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" bcp47*.dll /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
-    
+
     # Browse Dialog
     robocopy "$MountDirectory\Windows\Resources\Themes\aero\shell\normalcolor" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" shellstyle*.* /s /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" explorerframe*.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
@@ -5703,15 +5703,15 @@ function Save-AutoExtraFilesOS {
     # Magnify
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" magnify*.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" magnification*.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
-    
+
     # On Screen Keyboard
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" osk*.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
-    
+
     # RDP
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" mstsc*.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" pdh.dll* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" srpapi.dll* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
-    
+
     # Shutdown
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" shutdown.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
     robocopy "$MountDirectory\Windows\System32" "$OSMediaPath\WinPE\AutoExtraFiles\Windows\System32" shutdownext.* /s /xd rescache servicing /ndl /b /np /ts /tee /r:0 /w:0 /log+:"$AEFLog" | Out-Null
@@ -6272,7 +6272,7 @@ function Show-OSDBuilderHomeMap {
     [CmdletBinding()]
     param ()
     Write-Host ""
-    
+
     if (Test-Path $GetOSDBuilderHome)            {Write-Host "OSDBuilder Home:                                    $GetOSDBuilderHome" -ForegroundColor White}
     else                                        {Write-Host "OSDBuilder Home:                                    $GetOSDBuilderHome (does not exist)" -ForegroundColor White}
     if (Get-IsContentPacksEnabled) {
@@ -6349,11 +6349,11 @@ function Show-TaskInfo {
     Write-Host "-OSMedia Path:              $OSMediaPath"
     if ($CustomName) {
     Write-Host "-Custom Name:               $CustomName"}
-    
+
     if ((Get-IsContentPacksEnabled) -and (!($SkipContentPacks.IsPresent))) {
         Write-Host "-ContentPacks:" -ForegroundColor Cyan
         foreach ($item in $ContentPacks)       {Write-Host "   $SetOSDBuilderPathContentPacks\$item" -ForegroundColor Cyan}}
-    
+
     if ($EnableNetFX3 -eq $true) {
     Write-Host "-Enable NetFx3:             $EnableNetFX3"}
     if ($WinPEAutoExtraFiles -eq $true) {
@@ -6374,11 +6374,11 @@ function Show-TaskInfo {
     if ($RemoveAppx) {
         Write-Host "-Remove Appx:"
         foreach ($item in $RemoveAppx)          {Write-Host -ForegroundColor Cyan "   $item"}}
-    
+
     if ($RemoveCapability) {
         Write-Host "-Remove Capability:"
         foreach ($item in $RemoveCapability)    {Write-Host -ForegroundColor Cyan "   $item"}}
-        
+
     if ($RemovePackage) {
         Write-Host "-Remove Packages:"
         foreach ($item in $RemovePackage)       {Write-Host -ForegroundColor Cyan "   $item"}}
@@ -6394,7 +6394,7 @@ function Show-TaskInfo {
     if ($Drivers) {
         Write-Host "-Drivers:"
         foreach ($item in $Drivers)             {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($ExtraFiles) {
         Write-Host "-Extra Files:"
         foreach ($item in $ExtraFiles)          {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
@@ -6402,7 +6402,7 @@ function Show-TaskInfo {
     if ($FeaturesOnDemand) {
         Write-Host "-Features On Demand:"
         foreach ($item in $FeaturesOnDemand)    {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($Packages) {
         Write-Host "-Packages:"
         foreach ($item in $Packages)            {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
@@ -6414,39 +6414,39 @@ function Show-TaskInfo {
     if ($WinPEDrivers) {
         Write-Host "-WinPE Drivers:"
         foreach ($item in $WinPEDrivers)        {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEADKPE) {
         Write-Host "-WinPE ADK Packages:"
         foreach ($item in $WinPEADKPE)          {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEADKRE) {
         Write-Host "-WinRE ADK Packages:"
         foreach ($item in $WinPEADKRE)          {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEADKSE) {
         Write-Host "-WinSE ADK Packages:"
         foreach ($item in $WinPEADKSE)          {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEExtraFilesPE) {
         Write-Host "-WinPE Extra Files:"
         foreach ($item in $WinPEExtraFilesPE)   {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEExtraFilesRE) {
         Write-Host "-WinRE Extra Files:"
         foreach ($item in $WinPEExtraFilesRE)   {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEExtraFilesSE) {
         Write-Host "-WinSE Extra Files:"
         foreach ($item in $WinPEExtraFilesSE)   {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEScriptsPE) {
         Write-Host "-WinPE Scripts:"
         foreach ($item in $WinPEScriptsPE)      {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEScriptsRE) {
         Write-Host "-WinRE Scripts:"
         foreach ($item in $WinPEScriptsRE)      {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
-    
+
     if ($WinPEScriptsSE) {
         Write-Host "-WinSE Scripts:"
         foreach ($item in $WinPEScriptsSE)      {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
@@ -6463,19 +6463,19 @@ function Show-TaskInfo {
     if ($LanguageFeatures) {
         Write-Host "-Language Features:"
         foreach ($item in $LanguageFeatures)        {Write-Host -ForegroundColor Cyan "   $item"}}
-    
+
     if ($LanguageInterfacePacks) {
         Write-Host "-Language Interface Packs:"
         foreach ($item in $LanguageInterfacePacks)  {Write-Host -ForegroundColor Cyan "   $item"}}
-    
+
     if ($LanguagePacks) {
         Write-Host "-Language Packs:"
         foreach ($item in $LanguagePacks)           {Write-Host -ForegroundColor Cyan "   $item"}}
-    
+
     if ($LocalExperiencePacks) {
         Write-Host "-Local Experience Packs:"
         foreach ($item in $LocalExperiencePacks)    {Write-Host -ForegroundColor Cyan "   $item"}}
-    
+
     if ($LanguageCopySources) {
         Write-Host "-Language Sources Copy:"
         foreach ($item in $LanguageCopySources)     {Write-Host -ForegroundColor Cyan "   $item"}}
@@ -6592,7 +6592,7 @@ function Update-AdobeOS {
 
         if ($null -eq $UpdateASU) {Write-Warning "Update-AdobeOS is Null"; Continue}
         if (!(Test-Path "$UpdateASU")) {Write-Warning "Update-AdobeOS was not found"; Continue}
-        
+
         if (! ($Force.IsPresent)) {
             if (Get-SessionsXml -Path $MountDirectory -KBNumber $Update.FileKBNumber | Where-Object {$_.TargetState -eq 'Installed'}) {
                 Write-Host -ForegroundColor Gray "INSTALLED         $($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"; Continue
@@ -6695,7 +6695,7 @@ function Update-CumulativeOS {
         $UpdateLCU = $(Get-ChildItem -Path $SetOSDBuilderPathUpdates -File -Recurse | Where-Object {$_.Name -match $(Split-Path $Update.OriginUri -Leaf)}).FullName | Select-Object -First 1
         if ($null -eq $UpdateLCU) {Write-Warning "Update-CumulativeOS is Null"; Continue}
         if (!(Test-Path "$UpdateLCU")) {Write-Warning "Update-CumulativeOS was not found"; Continue}
-        
+
         if (!($Force.IsPresent)) {
             if (Get-SessionsXml -Path $MountDirectory -KBNumber $Update.FileKBNumber | Where-Object {$_.TargetState -eq 'Installed'}) {
                 Write-Host -ForegroundColor Gray "INSTALLED         $($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"; Continue
@@ -6713,7 +6713,7 @@ function Update-CumulativeOS {
         else {
             $TestWindowsPackageCAB = Test-WindowsPackageCAB -Path $MountDirectory -PackagePath $UpdateLCU
         }
-	
+
         #=================================================
         #   CombinedMSU
         #   This is for Windows 11 need to run as an MSU
@@ -6736,7 +6736,7 @@ function Update-CumulativeOS {
         if ($TestWindowsPackageCAB -eq 'CombinedLCU') {
             $CurrentLog = "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-WindowsPackageSSU-KB$($Update.FileKBNumber).log"
             Write-Verbose "CurrentLog: $CurrentLog"
-    
+
             Add-WindowsPackageSSU -Path "$MountDirectory" -PackagePath "$UpdateLCU" -LogPath "$CurrentLog" | Out-Null
 
             $MountedWindowsImage = Get-WindowsImage -Mounted | Where-Object {$_.Path -eq $MountDirectory}
@@ -6817,7 +6817,7 @@ function Update-CumulativePE {
 
         $CurrentLog = "$PEInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-WindowsPackageSSU-KB$($Update.KBNumber)-WinPE.log"
         Write-Verbose "CurrentLog: $CurrentLog"
-        
+
         Add-WindowsPackageSSU -Path "$MountDirectory" -PackagePath "$UpdateLCU" -LogPath "$CurrentLog" | Out-Null
 
         $CurrentLog = "$PEInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Update-CumulativePE-KB$($Update.KBNumber)-WinPE.log"
@@ -6887,7 +6887,7 @@ function Update-CumulativePE {
     #=================================================
     Show-ActionTime
     Write-Host -ForegroundColor Green "WinSE: (LCU) Latest Cumulative Update"
-    
+
     if (($OSMajorVersion -eq 10) -and ($ReleaseId -ge 1903)) {Write-Warning 'Not adding LCU to WinSE to resolve Setup issues'; Return}
     foreach ($Update in $OSDUpdateLCU) {
         $UpdateLCU = $(Get-ChildItem -Path $SetOSDBuilderPathUpdates -File -Recurse | Where-Object {$_.Name -match $(Split-Path $Update.OriginUri -Leaf)}).FullName | Select-Object -First 1
@@ -6954,7 +6954,7 @@ function Update-DotNetOS {
         $UpdateNetCU = $(Get-ChildItem -Path $SetOSDBuilderPathUpdates -File -Recurse | Where-Object {$_.Name -match $(Split-Path $Update.OriginUri -Leaf)}).FullName | Select-Object -First 1
         if ($null -eq $UpdateNetCU) {Write-Warning "Update-DotNetOS is Null"; Continue}
         if (!(Test-Path "$UpdateNetCU")) {Write-Warning "Update-DotNetOS was not found"; Continue}
-        
+
         if (! ($Force.IsPresent)) {
             if (Get-SessionsXml -Path $MountDirectory -KBNumber $Update.FileKBNumber | Where-Object {$_.TargetState -eq 'Installed'}) {
                 Write-Host -ForegroundColor Gray "INSTALLED         $($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"; Continue
@@ -6963,7 +6963,7 @@ function Update-DotNetOS {
                 Write-Host -ForegroundColor Gray "INSTALLED         $($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"; Continue
             }
         }
-        
+
         Write-Host -ForegroundColor Cyan "INSTALLING        " -NoNewline
         Write-Host -ForegroundColor Gray "$($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"
 
@@ -6988,7 +6988,7 @@ function Update-DotNetOS {
         $UpdateNetCU = $(Get-ChildItem -Path $SetOSDBuilderPathUpdates -File -Recurse | Where-Object {$_.Name -match $(Split-Path $Update.OriginUri -Leaf)}).FullName | Select-Object -First 1
         if ($null -eq $UpdateNetCU) {Write-Warning "Update-DotNetOS is Null"; Continue}
         if (!(Test-Path "$UpdateNetCU")) {Write-Warning "Update-DotNetOS was not found"; Continue}
-        
+
         if (! ($Force.IsPresent)) {
             if (Get-SessionsXml -Path $MountDirectory -KBNumber $Update.FileKBNumber | Where-Object {$_.TargetState -eq 'Installed'}) {
                 Write-Host -ForegroundColor Gray "INSTALLED         $($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"; Continue
@@ -6997,7 +6997,7 @@ function Update-DotNetOS {
                 Write-Host -ForegroundColor Gray "INSTALLED         $($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"; Continue
             }
         }
-        
+
         Write-Host -ForegroundColor Cyan "INSTALLING        " -NoNewline
         Write-Host -ForegroundColor Gray "$($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"
 
@@ -7287,7 +7287,7 @@ function Update-ServicingStackPE {
 
         Write-Host -ForegroundColor Cyan "INSTALLING        " -NoNewline
         Write-Host -ForegroundColor Gray "$($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"
-        
+
         $CurrentLog = "$PEInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Update-ServicingStackPE-KB$($Update.KBNumber)-WinRE.log"
         Write-Verbose "CurrentLog: $CurrentLog"
         Try {Add-WindowsPackage -Path "$MountWinRE" -PackagePath "$UpdateSSU" -LogPath "$CurrentLog" | Out-Null}
@@ -7319,7 +7319,7 @@ function Update-ServicingStackPE {
 
         Write-Host -ForegroundColor Cyan "INSTALLING        " -NoNewline
         Write-Host -ForegroundColor Gray "$($Update.Title) - $(Split-Path $Update.OriginUri -Leaf)"
-        
+
         $CurrentLog = "$PEInfo\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Update-ServicingStackPE-KB$($Update.KBNumber)-WinSE.log"
         Write-Verbose "CurrentLog: $CurrentLog"
         Try {Add-WindowsPackage -Path "$MountWinSE" -PackagePath "$UpdateSSU" -LogPath "$CurrentLog" | Out-Null}
@@ -7598,4 +7598,4 @@ Function Convert-ByteArrayToHex {
     }
 
     $HexString.ToString()
-} 
+}

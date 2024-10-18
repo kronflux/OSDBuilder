@@ -28,7 +28,7 @@ function New-OSBuild {
         #oscdimg.exe from Windows ADK is required
         [Alias('ISO','OSDISO')]
         [switch]$CreateISO = $global:SetOSDBuilder.NewOSBuildCreateISO,
-        
+
         #Use the OSMedia specified in the Task
         [switch]$DontUseNewestMedia = $global:SetOSDBuilder.NewOSBuildDontUseNewestMedia,
 
@@ -123,7 +123,7 @@ function New-OSBuild {
 
         #Create a new OSBuild without applying Templates
         [switch]$SkipTemplates = $global:SetOSDBuilder.NewOSBuildSkipTemplates,
-        
+
         #Allows you to skip all Updates from being applied
         #Useful for Testing
         [switch]$SkipUpdates = $global:SetOSDBuilder.NewOSBuildSkipUpdates,
@@ -294,7 +294,7 @@ function New-OSBuild {
                 $WinPEADKPE = $Task.WinPEADKPE
                 $WinPEADKRE = $Task.WinPEADKRE
                 $WinPEADKSE = $Task.WinPEADKSE
-                
+
                 $SetAllIntl = $Task.LangSetAllIntl
                 $SetInputLocale = $Task.LangSetInputLocale
                 $SetSKUIntlDefaults = $Task.LangSetSKUIntlDefaults
@@ -308,7 +308,7 @@ function New-OSBuild {
                 $LanguageInterfacePacks = $Task.LanguageInterfacePack
                 $LocalExperiencePacks = $Task.LocalExperiencePacks
                 $LanguageCopySources = $Task.LanguageCopySources
-                
+
                 if (!($TaskName -eq 'Taskless')) {Show-TaskInfo}
             }
             #=================================================
@@ -367,7 +367,7 @@ function New-OSBuild {
                     Return
                 } #>
             }
-            
+
             #=================================================
             #   OSBuild
             Write-Verbose '19.1.22 Templates'
@@ -400,11 +400,11 @@ function New-OSBuild {
                     if (!($Task.WinPEOSDCloud -eq $False)) {$WinPEOSDCloud = $Task.WinPEOSDCloud}
                     if (!($Task.WinREWiFi -eq $False)) {$WinREWiFi = $Task.WinREWiFi}
                     if ($Task.WinPEDaRT) {$WinPEDaRT = $Task.WinPEDaRT}
-                    
+
                     $ExtraFiles += @($Task.ExtraFiles | Where-Object {$_})
                     $Scripts += @($Task.Scripts | Where-Object {$_})
                     $Drivers += @($Task.Drivers | Where-Object {$_})
-    
+
                     $Packages += @($Task.AddWindowsPackage | Where-Object {$_})
                     $RemovePackage += @($Task.RemoveWindowsPackage | Where-Object {$_})
                     $FeaturesOnDemand += @($Task.AddFeatureOnDemand | Where-Object {$_})
@@ -412,7 +412,7 @@ function New-OSBuild {
                     $DisableFeature += @($Task.DisableWindowsOptionalFeature | Where-Object {$_})
                     $RemoveAppx += @($Task.RemoveAppxProvisionedPackage | Where-Object {$_})
                     $RemoveCapability += @($Task.RemoveWindowsCapability | Where-Object {$_})
-    
+
                     $WinPEDrivers += @($Task.WinPEDrivers | Where-Object {$_})
                     $WinPEScriptsPE += @($Task.WinPEScriptsPE | Where-Object {$_})
                     $WinPEScriptsRE += @($Task.WinPEScriptsRE | Where-Object {$_})
@@ -423,7 +423,7 @@ function New-OSBuild {
                     $WinPEADKPE += @($Task.WinPEADKPE | Where-Object {$_})
                     $WinPEADKRE += @($Task.WinPEADKRE | Where-Object {$_})
                     $WinPEADKSE += @($Task.WinPEADKSE | Where-Object {$_})
-                    
+
                     if ($Task.SetAllIntl) {$SetAllIntl = $Task.SetAllIntl}
                     if ($Task.LangSetInputLocale) {$SetInputLocale = $Task.LangSetInputLocale}
                     if ($Task.LangSetSKUIntlDefaults) {$SetSKUIntlDefaults = $Task.LangSetSKUIntlDefaults}
@@ -510,7 +510,7 @@ function New-OSBuild {
             $RegValueCurrentBuild = $null
             if (Test-Path "$OSMediaPath\info\xml\CurrentVersion.xml") {
                 $RegKeyCurrentVersion = Import-Clixml -Path "$OSMediaPath\info\xml\CurrentVersion.xml"
-                
+
                 [string]$RegValueCurrentBuild = ($RegKeyCurrentVersion).CurrentBuild
                 [string]$RegValueDisplayVersion = ($RegKeyCurrentVersion).DisplayVersion
                 [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
@@ -1053,7 +1053,7 @@ function New-OSBuild {
                     Write-Host -ForegroundColor Cyan "  Save-OSDBuilderDownload -ContentDownload 'OneDriveSetup Production'"
                 }
                 #=================================================
-                #	DismCleanupImage
+                #   DismCleanupImage
                 #=================================================
                 if ($global:ReapplyLCU -eq $true) {Update-CumulativeOS -Force}
                 if ($HideCleanupProgress.IsPresent) {Invoke-DismCleanupImage -HideCleanupProgress} else {Invoke-DismCleanupImage}
@@ -1080,11 +1080,11 @@ function New-OSBuild {
                 Add-ContentPack -PackType OSScripts
                 Add-ContentPack -PackType OSStartLayout
                 #=================================================
-                #	Updates
+                #   Updates
                 #=================================================
                 #Update-ServicingStackOS -Force
                 #=================================================
-                #	Mirror OSMedia and OSBuild
+                #   Mirror OSMedia and OSBuild
                 #=================================================
                 Save-AutoExtraFilesOS -OSMediaPath "$WorkingPath"
                 Save-SessionsXmlOS -OSMediaPath "$WorkingPath"
@@ -1118,7 +1118,7 @@ function New-OSBuild {
                 $GetWindowsImage | ConvertTo-Json | Out-File "$Info\json\Get-WindowsImage.json"
                 $GetWindowsImage | ConvertTo-Json | Out-File "$Info\json\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Get-WindowsImage.json"
                 (Get-Content "$WorkingPath\WindowsImage.txt") | Where-Object {$_.Trim(" `t")} | Set-Content "$WorkingPath\WindowsImage.txt"
-                
+
                 #=================================================
                 #    OSD-Export
                 #=================================================
@@ -1200,7 +1200,7 @@ function New-OSBuild {
                 if ($MyInvocation.MyCommand.Name -eq 'New-OSBuild') {
                     if ($CustomName) {$NewOSMediaName = "$CustomName $UBR"}
                 }
-                
+
                 if ($MyInvocation.MyCommand.Name -eq 'Update-OSMedia') {$NewOSMediaPath = "$SetOSDBuilderPathOSMedia\$NewOSMediaName"}
                 if ($MyInvocation.MyCommand.Name -eq 'New-OSBuild') {$NewOSMediaPath = "$SetOSDBuilderPathOSBuilds\$NewOSMediaName"}
                 #=================================================
@@ -1231,8 +1231,8 @@ function New-OSBuild {
                 #=================================================
                 #   Complete Update
                 #=================================================
-				Show-ActionTime
-				Write-Host -ForegroundColor Green "Media: Renaming ""$WorkingPath"" to ""$NewOSMediaName"""
+                Show-ActionTime
+                Write-Host -ForegroundColor Green "Media: Renaming ""$WorkingPath"" to ""$NewOSMediaName"""
                 Write-Host '========================================================================================' -ForegroundColor DarkGray
                 Stop-Transcript | Out-Null
                 try {

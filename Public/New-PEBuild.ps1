@@ -174,7 +174,7 @@ $MDTUnattendPEx86 = @'
             if (Get-IsContentPacksEnabled) {
                 Write-Host "-ContentPacks:" -ForegroundColor Cyan
                 foreach ($item in $ContentPacks)       {Write-Host "   $SetOSDBuilderPathTemplates\$item" -ForegroundColor Cyan}}
-    
+
             Write-Host "-MDT Deployment Share:          $MDTDeploymentShare"
             Write-Host "-WinPE Auto ExtraFiles:         $WinPEAutoExtraFiles"
             Write-Host "-WinPE OSDCloud:                $WinPEOSDCloud"
@@ -210,7 +210,7 @@ $MDTUnattendPEx86 = @'
                 Write-Warning "Recreate this Task using New-PEBuildTask or Repair-PEBuildTask"
                 Return
             }
-            
+
             #=================================================
             Write-Verbose '19.3.22 Select Latest OSMedia'
             #=================================================
@@ -239,7 +239,7 @@ $MDTUnattendPEx86 = @'
                 Write-Warning "Unable to find a matching OSMFamily $TaskOSMFamily"
                 Return
             }
-            
+
             #=================================================
             Write-Verbose '19.1.1 Set Proper Paths'
             #=================================================
@@ -453,7 +453,7 @@ $MDTUnattendPEx86 = @'
                 Dism /Export-Image /SourceImageFile:"$OSSourcePath\WinPE\$SourceWim.wim" /SourceIndex:1 /DestinationImageFile:"$WorkingWim" /DestinationName:"$DestinationName" /Bootable /CheckIntegrity | Out-Null
                 #Copy-Item -Path "$OSSourcePath\WinPE\$SourceWim.wim" -Destination "$WorkingWim" -Force | Out-Null
                 if (!(Test-Path "$Sources")) {New-Item "$Sources" -ItemType Directory -Force | Out-Null}
-                
+
                 #=================================================
                 #   Mount-WindowsImage
                 #=================================================
@@ -770,7 +770,7 @@ $MDTUnattendPEx86 = @'
                 Write-Host '========================================================================================' -ForegroundColor DarkGray
                 Write-Host "Export Boot.wim to $OS\sources\boot.wim" -ForegroundColor Green
                 Export-WindowsImage -SourceImagePath "$WimTemp\boot.wim" -SourceIndex 1 -DestinationImagePath "$OS\sources\boot.wim" -Setbootable -DestinationName "$TaskName" -LogPath "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage.log" | Out-Null
-                
+
                 if ($WinPEOutput -eq 'MDT') {
                     Export-WindowsImage -SourceImagePath "$WimTemp\boot.wim" -SourceIndex 1 -DestinationImagePath "$WorkingPath\LiteTouchPE_$OSArchitecture.wim" -Setbootable -DestinationName "$TaskName" -LogPath "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Export-WindowsImage.log" | Out-Null
                 }
@@ -815,7 +815,7 @@ $MDTUnattendPEx86 = @'
                 #=================================================
                 if (Test-Path "$WimTemp") {Remove-Item -Path "$WimTemp" -Force -Recurse | Out-Null}
                 if (Test-Path "$MountDirectory") {Remove-Item -Path "$MountDirectory" -Force -Recurse | Out-Null}
-                
+
                 #=================================================
                 Write-Verbose '19.1.1 New-OSDBuilderISO'
                 #=================================================
@@ -823,7 +823,7 @@ $MDTUnattendPEx86 = @'
                     Write-Host '========================================================================================' -ForegroundColor DarkGray
                     New-OSDBuilderISO -FullName "$WorkingPath"
                 }
-                
+
                 #=================================================
                 Write-Verbose '19.1.1 Show-OSDBuilderInfo'
                 #=================================================

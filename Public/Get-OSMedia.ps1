@@ -13,11 +13,11 @@ function Get-OSMedia {
     Param (
         #Displays results in GridView with PassThru
         [switch]$GridView,
-        
+
         #Filter the OSMedia by OS Architecture
         [ValidateSet('x64','x86')]
         [string]$OSArch,
-        
+
         #Returns the latest OSMedia
         [switch]$Newest,
 
@@ -32,7 +32,7 @@ function Get-OSMedia {
         #Filter the OSMedia by OS Release Id
         [ValidateSet ('22H2','21H2','21H1','20H2',2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
         [string]$OSReleaseId,
-        
+
         #Filter the OSMedia by Image Revision
         [ValidateSet('OK','Superseded')]
         [string]$Revision,

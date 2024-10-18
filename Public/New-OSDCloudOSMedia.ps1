@@ -110,7 +110,7 @@ function New-OSDCloudOSMedia {
             else {
                 $AdkPaths = Get-AdkPaths -Arch 'x86'
             }
-    
+
             if ($null -eq $AdkPaths) {
                 Write-Host -ForegroundColor DarkGray "========================================================================="
                 Write-Warning "Could not get ADK going, sorry"
@@ -122,7 +122,7 @@ function New-OSDCloudOSMedia {
             #=======================================================================
             $ErrorActionPreference = 'Ignore'
             $WinPEOCs = $AdkPaths.WinPEOCs
-    
+
             $OCPackages = @(
                 'WMI'
                 'HTA'
@@ -149,7 +149,7 @@ function New-OSDCloudOSMedia {
             $RegValueCurrentBuild = $null
             if (Test-Path "$OSMediaPath\info\xml\CurrentVersion.xml") {
                 $RegKeyCurrentVersion = Import-Clixml -Path "$OSMediaPath\info\xml\CurrentVersion.xml"
-                
+
                 [string]$RegValueCurrentBuild = ($RegKeyCurrentVersion).CurrentBuild
                 [string]$RegValueDisplayVersion = ($RegKeyCurrentVersion).DisplayVersion
                 [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
@@ -271,11 +271,11 @@ function New-OSDCloudOSMedia {
                     $CurrentLog = "$TemplateLogs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-$PackageName WinPE.log"
                     Try {Add-WindowsPackage -Path $MountWinPE -PackagePath $SourceFile -LogPath "$CurrentLog" | Out-Null}
                     Catch {Write-Host -ForegroundColor Red $CurrentLog}
-                    
+
                     $CurrentLog = "$TemplateLogs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-$PackageName WinRE.log"
                     Try {Add-WindowsPackage -Path $MountWinRE -PackagePath $SourceFile -LogPath "$CurrentLog" | Out-Null}
                     Catch {Write-Host -ForegroundColor Red $CurrentLog}
-                    
+
                     $CurrentLog = "$TemplateLogs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-$PackageName WinSE.log"
                     Try {Add-WindowsPackage -Path $MountWinSE -PackagePath $SourceFile -LogPath "$CurrentLog" | Out-Null}
                     Catch {Write-Host -ForegroundColor Red $CurrentLog}
@@ -374,7 +374,7 @@ function New-OSDCloudOSMedia {
 
             $WinPEOSDCloud = $true
             Enable-WinPEOSDCloud
-            
+
             $WinREWiFi = $true
             Enable-WinREWiFi
             #=======================================================================
@@ -499,7 +499,7 @@ function New-OSDCloudOSMedia {
             Add-ContentPack -PackType OSScripts
             Add-ContentPack -PackType OSStartLayout
             #=======================================================================
-            #	Mirror OSMedia and OSBuild
+            #   Mirror OSMedia and OSBuild
             #=======================================================================
             Save-AutoExtraFilesOS -OSMediaPath "$WorkingPath"
             Save-SessionsXmlOS -OSMediaPath "$WorkingPath"
