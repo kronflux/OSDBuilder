@@ -58,11 +58,6 @@ function New-PEBuildTask {
 
     Begin {
         #=================================================
-        #   Header
-        #=================================================
-        #   Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #   Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-        #=================================================
         #   Get-OSDBuilder
         #=================================================
         Get-OSDBuilder -CreatePaths -HideDetails
@@ -177,19 +172,6 @@ function New-PEBuildTask {
                 }
             }
         }
-        #=================================================
-        Write-Verbose '19.10.29 Set-OSMedia.ReleaseId'
-        #=================================================
-<#      if ($null -eq $($OSMedia.ReleaseId)) {
-            if ($($OSMedia.Build) -eq 19044) {$OSMedia.ReleaseId = '21H2'} # Windows 10 "21H2"
-            if ($($OSMedia.Build) -eq 19045) {$OSMedia.ReleaseId = '22H2'} # Windows 10 "22H2"
-            if ($($OSMedia.Build) -eq 20348) {$OSMedia.ReleaseId = '21H2'} # Windows Server 2022
-            if ($($OSMedia.Build) -eq 22000) {$OSMedia.ReleaseId = '21H2'} # Windows 11 "Sun Valley"
-            if ($($OSMedia.Build) -eq 22621) {$OSMedia.ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
-            if ($($OSMedia.Build) -eq 22631) {$OSMedia.ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
-            if ($($OSMedia.Build) -eq 26100) {$OSMedia.ReleaseId = '24H2'} # Windows 11 "Next Valley"
-            if ($($OSMedia.Build) -eq 25398) {$OSMedia.ReleaseId = '23H2'} # Windows Server
-        } #>
         #=================================================
         Write-Host '========================================================================================' -ForegroundColor DarkGray
         #=================================================
@@ -382,7 +364,5 @@ function New-PEBuildTask {
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
     }
 }

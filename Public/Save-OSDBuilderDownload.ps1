@@ -145,7 +145,6 @@ function Save-OSDBuilderDownload {
         #   FeatureUpdates
         #=================================================
         if ($FeatureUpdates.IsPresent) {
-            #Write-Warning "FeatureUpdates are downloaded using BITS Transfer"
             #=================================================
             #   Get FeatureUpdateDownloads
             #=================================================
@@ -282,17 +281,12 @@ function Save-OSDBuilderDownload {
             }
             elseif ($UseCurl -eq $true) {
                 if ($host.name -match 'ConsoleHost') {
-                    #Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadFullPath`" --url `"$($Item.OriginUri)`""
                     Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadPath\$DownloadFile`" --url `"$DownloadUrl`""
                 }
                 else {
                     #PowerShell ISE will display a NativeCommandError, so progress will not be displayed
-                    #$Quiet = Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadFullPath`" --url `"$($Item.OriginUri)`" 2>&1"
                     $Quiet = Invoke-Expression "& curl.exe --insecure --location --output `"$DownloadPath\$DownloadFile`" --url `"$DownloadUrl`" 2>&1"
                 }
-            }
-            else {
-                #Start-BitsTransfer -Source $Item.OriginUri -Destination $DownloadFullPath -ErrorAction Stop
             }
 
             if (Test-Path "$DownloadPath\$DownloadFile") {
@@ -417,7 +411,6 @@ function Save-OSDBuilderDownload {
                             }
                         }
                     } else {
-                        #Write-Warning "Exists: $($Update.Title)"
                     }
                 }
             } else {

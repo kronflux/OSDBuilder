@@ -200,7 +200,6 @@ function Get-OSMedia {
             #=================================================
             #   Guid
             #=================================================
-            #   $XmlWindowsImage | ForEach {$_.PSObject.Properties.Remove('Guid')}
             $OSMGuid = $($XmlWindowsImage.OSMGuid)
             if (-not ($OSMGuid)) {
                 $OSMGuid = $(New-Guid)

@@ -119,9 +119,6 @@ $MDTUnattendPEx86 = @'
         #   PEBuild
         #=================================================
         $GetPEBuildTask = @()
-        #$GetPEBuildTask = Get-ChildItem -Path $SetOSDBuilderPathTasks *.json -File | Select-Object -Property BaseName, FullName, Length, CreationTime, LastWriteTime | Sort-Object -Property BaseName
-        #$GetPEBuildTask = $GetPEBuildTask | Where-Object {$_.BaseName -like "MDT*" -or $_.BaseName -like "Recovery*" -or $_.BaseName -like "WinPE*"}
-        #$GetPEBuildTask = $GetPEBuildTask | Out-GridView -Title "OSDBuilder Tasks: Select one or more Tasks to execute and press OK (Cancel to Exit)" -Passthru
         $GetPEBuildTask = Get-PEBuildTask
         
         if($TaskName) {
@@ -183,8 +180,6 @@ $MDTUnattendPEx86 = @'
             Write-Host "-TaskName:                      $TaskName"
             Write-Host "-TaskVersion:                   $TaskVersion"
             Write-Host "-TaskType:                      $TaskType"
-            #Write-Host "-OSMediaName:                   $OSMediaName"
-            #Write-Host "-OSMediaPath:                   $OSMediaPath"
             Write-Host "-WinPE Output:                  $WinPEOutput"
             Write-Host "-Custom Name:                   $CustomName"
 
@@ -207,16 +202,6 @@ $MDTUnattendPEx86 = @'
             if ($WinPEScripts) {foreach ($item in $WinPEScripts) {Write-Host -ForegroundColor DarkGray "$item"}}
             Write-Host "-WinPE ADK Pkgs:"
             if ($WinPEADK) {foreach ($item in $WinPEADK) {Write-Host -ForegroundColor DarkGray "$item"}}
-
-<#             #=================================================
-            Write-Verbose '19.1.1 Validate Proper TaskVersion'
-            #=================================================
-            if ([System.Version]$TaskVersion -lt [System.Version]"18.10.10") {
-                Write-Host '========================================================================================' -ForegroundColor DarkGray
-                Write-Warning "PEBuild Tasks need to be version 18.10.10 or newer"
-                Write-Warning "Recreate this Task using New-PEBuildTask"
-                Return
-            } #>
 
             #=================================================
             Write-Verbose '19.1.1 Validate Proper TaskVersion'
@@ -366,7 +351,6 @@ $MDTUnattendPEx86 = @'
             #=================================================
             Write-Verbose '19.1.1 Set Working Path'
             #=================================================
-            #$BuildName = "build$((Get-Date).ToString('mmss'))"
             $WorkingPath = "$SetOSDBuilderPathPEBuilds\$Taskname $($LatestOSMedia.UBR)"
             if ($CustomName) {
                 $WorkingPath = "$SetOSDBuilderPathPEBuilds\$CustomName"
@@ -459,7 +443,6 @@ $MDTUnattendPEx86 = @'
                 Copy-Item -Path "$OSSourcePath\OS\boot\" -Destination "$OS\boot\" -Recurse -Force | Out-Null
                 Copy-Item -Path "$OSSourcePath\OS\efi\" -Destination "$OS\efi\" -Recurse -Force | Out-Null
                 Dism /Export-Image /SourceImageFile:"$OSSourcePath\WinPE\$SourceWim.wim" /SourceIndex:1 /DestinationImageFile:"$WorkingWim" /DestinationName:"$DestinationName" /Bootable /CheckIntegrity | Out-Null
-                #Copy-Item -Path "$OSSourcePath\WinPE\$SourceWim.wim" -Destination "$WorkingWim" -Force | Out-Null
                 if (!(Test-Path "$Sources")) {New-Item "$Sources" -ItemType Directory -Force | Out-Null}
 
                 #=================================================
@@ -476,8 +459,6 @@ $MDTUnattendPEx86 = @'
                 $RegKeyCurrentVersion = Get-RegCurrentVersion -Path $MountDirectory
 
                 $RegValueDisplayVersion = ($RegKeyCurrentVersion).DisplayVersion
-                #$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
-                #if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
                 #=================================================
                 #   Get Registry and UBR
                 #=================================================
@@ -502,97 +483,10 @@ $MDTUnattendPEx86 = @'
                 if (Get-IsContentPacksEnabled) {
                     Add-ContentPack -PackType PEDaRT
                     Add-ContentPack -PackType PEADK
-                    #Add-ContentPack -PackType PEADK -WinPEOutput $WinPEOutput -SourceWim $SourceWim
-                    #Add-ContentPack -PackType PEDrivers
-                    #Add-ContentPack -PackType PEExtraFiles
-                    #Add-ContentPack -PackType PEPoshMods
-                    #Add-ContentPack -PackType PERegistry
-                    #Add-ContentPack -PackType PEScripts
                 }
                 $WinPEADKPE = $WinPEADK
                 Add-ContentADKWinPE
                 Expand-DaRTPE
-                #=================================================
-                Write-Verbose '19.1.1 WinPE: ADK Optional Components'
-                #=================================================
-<#                 Write-Host '========================================================================================' -ForegroundColor DarkGray
-                Write-Host "WinPE: ADK Optional Components" -ForegroundColor Green
-                if ([string]::IsNullOrEmpty($WinPEADK) -or [string]::IsNullOrWhiteSpace($WinPEADK)) {
-                    # Do Nothing
-                } else {
-                    foreach ($PackagePath in $WinPEADK) {
-                        if ($PackagePath -like "*NetFx*") {
-                            Write-Host "$SetOSDBuilderPathContent\$PackagePath" -ForegroundColor Green
-                            Add-WindowsPackage -PackagePath "$SetOSDBuilderPathContent\$PackagePath" -Path "$MountDirectory" -LogPath "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-WindowsPackage.log" | Out-Null
-                        }
-                    }
-                    $WinPEADK = $WinPEADK | Where-Object {$_ -notlike "*NetFx*"}
-                    foreach ($PackagePath in $WinPEADK) {
-                        if ($PackagePath -like "*WinPE-PowerShell*") {
-                            Write-Host "$SetOSDBuilderPathContent\$PackagePath" -ForegroundColor Green
-                            Add-WindowsPackage -PackagePath "$SetOSDBuilderPathContent\$PackagePath" -Path "$MountDirectory" -LogPath "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-WindowsPackage.log" | Out-Null
-                        }
-                    }
-                    $WinPEADK = $WinPEADK | Where-Object {$_ -notlike "*PowerShell*"}
-                    foreach ($PackagePath in $WinPEADK) {
-                        Write-Host "$SetOSDBuilderPathContent\$PackagePath" -ForegroundColor Green
-                        Add-WindowsPackage -PackagePath "$SetOSDBuilderPathContent\$PackagePath" -Path "$MountDirectory" -LogPath "$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Add-WindowsPackage.log" | Out-Null
-                    }
-                } #>
-
-<#                 #=================================================
-                Write-Verbose '19.1.1 WinPE: WinPE DaRT'
-                #=================================================
-                Write-Host '========================================================================================' -ForegroundColor DarkGray
-                Write-Host "WinPE: Microsoft DaRT" -ForegroundColor Green
-                if ($WinPEDaRT) {
-                    if ([string]::IsNullOrEmpty($WinPEDaRT) -or [string]::IsNullOrWhiteSpace($WinPEDaRT)) {Write-Warning "Skipping WinPE DaRT"}
-                    elseif (Test-Path "$SetOSDBuilderPathContent\$WinPEDaRT") {
-                        #=================================================
-                        if (Test-Path $(Join-Path $(Split-Path "$SetOSDBuilderPathContent\$WinPEDart") 'DartConfig.dat')) {
-                            Write-Host "$SetOSDBuilderPathContent\$WinPEDaRT"
-                            expand.exe "$SetOSDBuilderPathContent\$WinPEDaRT" -F:*.* "$MountDirectory"
-                            #if (Test-Path "$MountDirectory\Windows\System32\winpeshl.ini") {Remove-Item -Path "$MountDirectory\Windows\System32\winpeshl.ini" -Force}
-                            #=================================================
-                            Write-Host "Copying DartConfig.dat to $MountDirectory\Windows\System32\DartConfig.dat"
-                            Copy-Item -Path $(Join-Path $(Split-Path "$SetOSDBuilderPathContent\$WinPEDart") 'DartConfig.dat') -Destination "$MountDirectory\Windows\System32\DartConfig.dat" -Force | Out-Null
-                            #=================================================
-                        } elseif (Test-Path $(Join-Path $(Split-Path $SetOSDBuilderPathContent\$WinPEDart) 'DartConfig8.dat')) {
-                            Write-Host "$SetOSDBuilderPathContent\$WinPEDaRT"
-                            expand.exe "$SetOSDBuilderPathContent\$WinPEDaRT" -F:*.* "$MountDirectory"
-                            #if (Test-Path "$MountDirectory\Windows\System32\winpeshl.ini") {Remove-Item -Path "$MountDirectory\Windows\System32\winpeshl.ini" -Force}
-                            #=================================================
-                            Write-Host "Copying DartConfig8.dat to $MountDirectory\Windows\System32\DartConfig.dat"
-                            Copy-Item -Path $(Join-Path $(Split-Path "$SetOSDBuilderPathContent\$WinPEDart") 'DartConfig8.dat') -Destination "$MountDirectory\Windows\System32\DartConfig.dat" -Force | Out-Null
-                            #=================================================
-                        } else {
-                            Write-Warning "DartConfig.dat or DartConfig8.dat were not found. Unable to integrate"
-                        }
-                        #=================================================
-                        Write-Verbose '19.1.1 WinPE Edit winpeshl.ini'
-                        #=================================================
-                        if ($WinPEOutput -eq 'Recovery') {
-                            Write-Host '========================================================================================' -ForegroundColor DarkGray
-                            Write-Host "WinPE: Edit winpeshl.ini" -ForegroundColor Green
-                            if (Test-Path "$MountDirectory\Windows\System32\winpeshl.ini") {
-                                Remove-Item -Path "$MountDirectory\Windows\System32\winpeshl.ini" -Force | Out-Null
-                            }
-                            $DaRTwinpeshl | Out-File "$MountDirectory\Windows\System32\winpeshl.ini" -Force
-                        }
-                        #=================================================
-                    } else {Write-Warning "WinPE DaRT do not exist in $SetOSDBuilderPathContent\$WinPEDart"}
-                } #>
-<#                 #=================================================
-                Write-Verbose '19.1.1 WinPE Remove winpeshl.ini'
-                #=================================================
-                if ($WinPEOutput -ne 'Recovery') {
-                    Write-Host '========================================================================================' -ForegroundColor DarkGray
-                    Write-Host "WinPE: Remove winpeshl.ini" -ForegroundColor Green
-                    if (Test-Path "$MountDirectory\Windows\System32\winpeshl.ini") {
-                        Remove-Item -Path "$MountDirectory\Windows\System32\winpeshl.ini" -Force | Out-Null
-                    }
-                } #>
-                
                 #=================================================
                 Write-Verbose '19.1.1 Copy MDT'
                 #=================================================
@@ -688,7 +582,6 @@ $MDTUnattendPEx86 = @'
                 #=================================================
                 if ($WinPEAutoExtraFiles -eq $true) {
                     Show-ActionTime; Write-Host -ForegroundColor Green "WinPE: Copy Auto ExtraFiles from $OSSourcePath\WinPE\AutoExtraFiles"
-                    #robocopy "$OSSourcePath\WinPE\AutoExtraFiles" "$MountDirectory" *.* /s /ndl /xf bcp47*.dll /xx /b /np /ts /tee /r:0 /w:0 /Log+:"$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-AutoExtraFiles.log" | Out-Null
                 }
                 #=================================================
                 #   Enable-WinPEOSDCloud
@@ -705,8 +598,6 @@ $MDTUnattendPEx86 = @'
                     Show-ActionTime; Write-Host -ForegroundColor Green "WinPE: Task PEExtraFiles"
                     foreach ($ExtraFile in $WinPEExtraFiles) {
                         Write-Host "Source: $SetOSDBuilderPathContent\$ExtraFile" -ForegroundColor DarkGray
-                        #robocopy "$SetOSDBuilderPathContent\$ExtraFile" "$MountDirectory" *.* /s /ndl /xx /b /np /ts /tee /r:0 /w:0 /Log+:"$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-ExtraFiles.log" | Out-Null
-                        #robocopy "$SetOSDBuilderPathContent\$ExtraFile" "$MountDirectory" *.* /XD "WindowsPowerShell" /S /ZB /COPY:D /NODCOPY /XJ /NDL /NP /TEE /TS /XX /R:0 /W:0 /LOG+:"$Info\logs\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-ExtraFiles.log" | Out-Null
                     }
                 }
                 if (Get-IsContentPacksEnabled) {

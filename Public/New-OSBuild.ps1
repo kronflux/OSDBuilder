@@ -337,12 +337,6 @@ function New-OSBuild {
                 if ($TaskOSMedia) {
                     $OSMediaName = $TaskOSMedia.Name
                     $OSMediaPath = $TaskOSMedia.FullName
-                    #Write-Host '========================================================================================' -ForegroundColor DarkGray
-                    #Write-Host "Task Source OSMedia" -ForegroundColor Green
-                    #Write-Host "-OSMedia Name:                  $OSMediaName"
-                    #Write-Host "-OSMedia Path:                  $OSMediaPath"
-                    #Write-Host "-OSMedia Family:                $TaskOSMFamily"
-                    #Write-Host "-OSMedia Guid:                  $TaskOSMGuid"
                 }
                 $LatestOSMedia = Get-OSMedia -Revision OK | Where-Object {$_.OSMFamily -eq $TaskOSMFamily}
                 if ($LatestOSMedia) {
@@ -358,11 +352,6 @@ function New-OSBuild {
                     Write-Warning "Unable to find a matching OSMFamily $TaskOSMFamily"
                     Return
                 }
-
-<#                 if ($null -eq $OSMediaPath) {
-                    Write-Warning "Unable to find a matching OSMedia"
-                    Return
-                } #>
             }
 
             #=================================================
@@ -520,16 +509,6 @@ function New-OSBuild {
             Write-Verbose '19.1.1 Set ReleaseId'
             #=================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
-<#          if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
-                if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
-                if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
-                if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
-                if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
-                if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
-                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
-                if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
-            } #>
 
             Write-Verbose "ReleaseId: $ReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"
@@ -723,7 +702,6 @@ function New-OSBuild {
                     }
                     foreach ($Update in $UpdatesNotDownloaded) {
                         Write-Host "$($Update.CreationDate) - $($Update.UpdateGroup) - $($Update.Title)" -ForegroundColor Cyan
-                        #Get-OSDUpdateDownloads -OSDGuid $Update.OSDGuid
                         Get-OSDUpdateDownloads -FileName $Update.FileName
                     }
                 }
@@ -913,8 +891,6 @@ function New-OSBuild {
                 Add-ContentPack -PackType MEDIA
                 if ($LanguagePacks -or $LanguageInterfacePacks -or $LanguageFeatures -or $LocalExperiencePacks -or ($global:UpdateLanguageContent -eq $true)) {
                     Set-LanguageSettingsOS
-                    #Update-CumulativeOS -Force
-                    #if ($HideCleanupProgress.IsPresent) {Invoke-DismCleanupImage -HideCleanupProgress} else {Invoke-DismCleanupImage}
                 }
                 #=================================================
                 #   Optional Content
@@ -975,11 +951,6 @@ function New-OSBuild {
                             $OneDriveSetupDownload = $true
                         }
                     }
-<#                     if ($OneDriveSetupDownload -eq $true) {
-                        $WebClient = New-Object System.Net.WebClient
-                        Write-Host "Downloading to $OneDriveSetup" -ForegroundColor Gray
-                        $WebClient.DownloadFile('https://go.microsoft.com/fwlink/p/?LinkId=248256',"$OneDriveSetup")
-                    } #>
 
                     if ($OSArchitecture -eq 'x86') {
                         if (Test-Path "$MountDirectory\Windows\System32\OneDriveSetup.exe") {
@@ -1035,10 +1006,6 @@ function New-OSBuild {
                 Add-ContentPack -PackType OSScripts
                 Add-ContentPack -PackType OSStartLayout
                 Add-ContentPack -PackType OSAppAssociations
-                #=================================================
-                #   Updates
-                #=================================================
-                #Update-ServicingStackOS -Force
                 #=================================================
                 #   Mirror OSMedia and OSBuild
                 #=================================================
@@ -1126,14 +1093,6 @@ function New-OSBuild {
                     [string]$ReleaseId = ($RegKeyCurrentVersion).ReleaseId
                     if ($RegValueDisplayVersion) {$ReleaseId = $RegValueDisplayVersion}
                 }
-                #if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
-                #if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
-                #if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
-                #if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
-                #if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
-                #if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
-                #if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
-                #if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
 
                 if ($OSMajorVersion -eq 10) {
                     if ($WorkingName -like "build*") {$NewOSMediaName = "$OSImageName $OSArchitecture $ReleaseId $UBR"}
@@ -1199,17 +1158,10 @@ function New-OSBuild {
                         Write-Warning "Could not rename the the Build directory ..."
                     }
                 }
-<#                 if (Test-Path "$NewOSMediaPath") {
-                    Return (Get-OSMedia | Where-Object {$_.FullName -eq $NewOSMediaPath})
-                } else {
-                    Return (Get-OSMedia | Where-Object {$_.FullName -eq $WorkingPath})
-                } #>
             }
         }
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
     }
 }

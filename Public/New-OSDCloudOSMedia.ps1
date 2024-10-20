@@ -159,16 +159,6 @@ function New-OSDCloudOSMedia {
             Write-Verbose '19.1.1 Set ReleaseId'
             #=======================================================================
             if ($null -ne $RegValueCurrentBuild) {$OSBuild = $RegValueCurrentBuild}
-<#          if ($null -eq $ReleaseId) {
-                if ($OSBuild -eq 19044) {$ReleaseId = '21H2'} # Windows 10 "21H2"
-                if ($OSBuild -eq 19045) {$ReleaseId = '22H2'} # Windows 10 "22H2"
-                if ($OSBuild -eq 20348) {$ReleaseId = '21H2'} # Windows Server 2022
-                if ($OSBuild -eq 22000) {$ReleaseId = '21H2'} # Windows 11 "Sun Valley"
-                if ($OSBuild -eq 22621) {$ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
-                if ($OSBuild -eq 22631) {$ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
-                if ($OSBuild -eq 26100) {$ReleaseId = '24H2'} # Windows 11 "Next Valley"
-                if ($OSBuild -eq 25398) {$ReleaseId = '23H2'} # Windows Server
-            } #>
 
             Write-Verbose "ReleaseId: $ReleaseId"
             Write-Verbose "CurrentBuild: $RegValueCurrentBuild"
@@ -442,11 +432,6 @@ function New-OSDCloudOSMedia {
                         $OneDriveSetupDownload = $true
                     }
                 }
-<#                     if ($OneDriveSetupDownload -eq $true) {
-                    $WebClient = New-Object System.Net.WebClient
-                    Write-Host "Downloading to $OneDriveSetup" -ForegroundColor Gray
-                    $WebClient.DownloadFile('https://go.microsoft.com/fwlink/p/?LinkId=248256',"$OneDriveSetup")
-                } #>
 
                 if ($OSArchitecture -eq 'x86') {
                     $OneDriveSetupInfo = Get-Item -Path "$MountDirectory\Windows\System32\OneDriveSetup.exe" | Select-Object -Property *
@@ -528,10 +513,6 @@ function New-OSDCloudOSMedia {
             $GetWindowsImage | ConvertTo-Json | Out-File "$Info\json\Get-WindowsImage.json"
             $GetWindowsImage | ConvertTo-Json | Out-File "$Info\json\$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-Get-WindowsImage.json"
             (Get-Content "$WorkingPath\WindowsImage.txt") | Where-Object {$_.Trim(" `t")} | Set-Content "$WorkingPath\WindowsImage.txt"
-            #=======================================================================
-            #    OSD-Export
-            #=======================================================================
-            #Save-WindowsImageContentPE
             #=======================================================================
             Write-Verbose '19.3.17 UBR Validation'
             #=======================================================================

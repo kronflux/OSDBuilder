@@ -62,7 +62,6 @@ function Get-OSDBuilder {
     #   OSDBuilder.Public*
     #=================================================
     $global:GetOSDBuilder.PublicJson                = $null
-    #$global:GetOSDBuilder.PublicJsonURL             = "https://raw.githubusercontent.com/OSDeploy/OSDBuilder.Public/master/OSDBuilder.json"
     $global:GetOSDBuilder.PublicJsonURL             = "https://raw.githubusercontent.com/OSDeploy/OSD.Public/master/OSD.json"
     #=================================================
     #   OSDBuilder.Version*
@@ -120,7 +119,6 @@ function Get-OSDBuilder {
         Write-Host "-Tasks              $global:SetOSDBuilderPathTasks" -ForegroundColor Gray
         Write-Host "-Templates          $global:SetOSDBuilderPathTemplates" -ForegroundColor Gray
         Write-Host "-Updates            $global:SetOSDBuilderPathUpdates" -ForegroundColor Gray
-        #Show-OSDBuilderHomeMap
     }
     #=================================================
     #   Verify Single Version of OSDBuilder
@@ -192,9 +190,6 @@ function Get-OSDBuilder {
                 Write-Host
                 Write-Host "OSDBuilder Release Preview" -ForegroundColor Green
                 Write-Host "The current Public version is $($global:GetOSDBuilder.VersionOSDBuilderPublic)" -ForegroundColor DarkGray
-            } elseif ($global:GetOSDBuilder.VersionOSDBuilder -eq $global:GetOSDBuilder.VersionOSDBuilderPublic) {
-                #Write-Host "OSDBuilder is up to date" -ForegroundColor Green
-                #""
             } else {
                 Write-Host
                 Write-Warning "OSDBuilder can be updated to $($global:GetOSDBuilder.VersionOSDBuilderPublic)"
@@ -205,8 +200,6 @@ function Get-OSDBuilder {
                 Write-Host
                 Write-Host "OSD Release Preview" -ForegroundColor Green
                 Write-Host "The current Public version is $($global:GetOSDBuilder.VersionOSDPublic)" -ForegroundColor DarkGray
-            } elseif ($global:GetOSDBuilder.VersionOSD -eq $global:GetOSDBuilder.VersionOSDPublic) {
-                #Write-Host "OSD is up to date" -ForegroundColor Green
             } else {
                 Write-Host
                 Write-Warning "OSD can be updated to $($global:GetOSDBuilder.VersionOSDPublic)"

@@ -36,11 +36,6 @@ function New-OSDBuilderVHD {
 
     Begin {
         #=================================================
-        #   Header
-        #=================================================
-        #   Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #   Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-        #=================================================
         #   Get-OSDBuilder
         #=================================================
         Get-OSDBuilder -CreatePaths -HideDetails
@@ -198,7 +193,6 @@ function New-OSDBuilderVHD {
 
             Write-Host '========================================================================================' -ForegroundColor DarkGray
             Write-Host "Set Disk $DiskNumber Partition $($PartitionSystem.PartitionNumber) Set ID=c12a7328-f81f-11d2-ba4b-00a0c93ec93b OVERRIDE" -ForegroundColor Green
-            #$PartitionSystem | Set-Partition –DiskNumber $DiskNumber –PartitionNumber $PartitionSystem.PartitionNumber –GptType '{c12a7328-f81f-11d2-ba4b-00a0c93ec93b}'
             $DiskPartTextFile = New-Item "$env:Temp\OSDBuilderVHD.txt" -Type File -Force
             Set-Content $DiskPartTextFile "Select Disk $DiskNumber"
             Add-Content $DiskPartTextFile "Select Partition $($PartitionSystem.PartitionNumber)"

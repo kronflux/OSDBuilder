@@ -19,11 +19,6 @@ function New-OSBuildMultiLang {
 
     Begin {
         #=================================================
-        #   Header
-        #=================================================
-        #   Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #   Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-        #=================================================
         #   Get-OSDBuilder
         #=================================================
         Get-OSDBuilder -CreatePaths -HideDetails
@@ -199,7 +194,5 @@ function New-OSBuildMultiLang {
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
     }
 }

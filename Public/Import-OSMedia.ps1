@@ -13,8 +13,6 @@ function Import-OSMedia {
     param (
         #Unsupported
         #Allows the import of an unsupported OS
-        #THIS PARAMETER IS NOT A GUARANTEE OF ANY FUNCTIONALITY
-        #THIS PARAMETER IS A GUARANTEE OF BEING GHOSTED IF YOU CONTACT THE DEV FOR SUPPORT
         [switch]$AllowUnsupportedOS = $global:SetOSDBuilder.ImportOSMediaAllowUnsupportedOS,
 
         #Creates an OSBuild with NetFX enabled
@@ -28,24 +26,6 @@ function Import-OSMedia {
         #The Operating System EditionId to import
         #Import-OSMedia -EditionId Enterprise
         #Import-OSMedia -EditionId Enterprise -SkipGrid
-        #Values:
-        #Education
-        #EducationN
-        #Enterprise
-        #EnterpriseN
-        #EnterpriseS
-        #EnterpriseSN
-        #Professional
-        #ProfessionalEducation
-        #ProfessionalEducationN
-        #ProfessionalN
-        #ProfessionalWorkstation
-        #ProfessionalWorkstationN
-        #ServerDatacenter
-        #ServerDatacenterACor
-        #ServerRdsh
-        #ServerStandard
-        #ServerStandardACor
         [ValidateSet(`
             'Education',`
             'Enterprise',`
@@ -79,27 +59,6 @@ function Import-OSMedia {
         #The Operating System ImageName to Import
         #Import-OSMedia -ImageName 'Windows 10 Enterprise'
         #Import-OSMedia -ImageName 'Windows 10 Enterprise' -SkipGrid
-        #Values:
-        #Windows 10 Education
-        #Windows 10 Enterprise
-        #Windows 10 Enterprise for Virtual Desktops
-        #Windows 10 Enterprise 2016 LTSB
-        #Windows 10 Enterprise LTSC
-        #Windows 10 Pro
-        #Windows 10 Pro Education
-        #Windows 10 Pro for Workstations
-        #Windows 10 Education N
-        #Windows 10 Enterprise N
-        #Windows 10 Enterprise N LTSC
-        #Windows 10 Pro N
-        #Windows 10 Pro Education N
-        #Windows 10 Pro N for Workstations
-        #Windows Server Standard
-        #Windows Server Datacenter
-        #Windows Server 2022 Standard
-        #Windows Server 2022 Standard (Desktop Experience)
-        #Windows Server 2022 Datacenter
-        #Windows Server 2022 Datacenter (Desktop Experience)
         [ValidateSet(`
             'Windows 10 Education',`
             'Windows 10 Enterprise',`

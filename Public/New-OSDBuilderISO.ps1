@@ -25,11 +25,6 @@ function New-OSDBuilderISO {
 
     Begin {
         #=================================================
-        #   Header
-        #=================================================
-        #   Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #   Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-        #=================================================
         #   Get-OSDBuilder
         #=================================================
         Get-OSDBuilder -CreatePaths -HideDetails
@@ -101,10 +96,7 @@ function New-OSDBuilderISO {
             $ISODestinationFolder = "$($Media.FullName)\ISO"
             if (!(Test-Path $ISODestinationFolder)) {New-Item $ISODestinationFolder -ItemType Directory -Force | Out-Null}
 
-            #$ISOFile = "$ISODestinationFolder\$($Media.Name).iso"
-
             $PEImage = Import-CliXml -Path "$($Media.FullName)\info\xml\Get-WindowsImage.xml"
-            #$PEImage = $PEImage
 
             $OSArchitecture = $($PEImage.Architecture)
             if ($OSArchitecture -eq '0') {$OSArchitecture = 'x86'}
@@ -200,8 +192,6 @@ function New-OSDBuilderISO {
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
         if($PassThru)
         {
             return $results

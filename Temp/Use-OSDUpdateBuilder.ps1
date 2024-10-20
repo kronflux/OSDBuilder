@@ -94,9 +94,6 @@ function Use-OSDUpdateBuilder {
     )
 
     Begin {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-
         #=================================================
         Write-Verbose '19.1.1 Initialize OSDBuilder'
         #=================================================
@@ -107,10 +104,6 @@ function Use-OSDUpdateBuilder {
         Write-Host '========================================================================================' -ForegroundColor DarkGray
         Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) PROCESS"
 
-        #=================================================
-        #   Join DateTime Property
-        #=================================================
-        #$ReleaseDate = [datetime]::ParseExact("$ReleaseDay/$ReleaseMonth/$ReleaseYear", "dd/MM/yyyy", $null)
         #=================================================
         #   Create Custom Object
         #=================================================
@@ -173,7 +166,5 @@ function Use-OSDUpdateBuilder {
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
     }
 }

@@ -166,11 +166,6 @@ function New-OSBuildTask {
 
     Begin {
         #=================================================
-        #   Header
-        #=================================================
-        #   Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #   Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-        #=================================================
         #   Get-OSDBuilder
         #=================================================
         Get-OSDBuilder -CreatePaths -HideDetails
@@ -193,7 +188,6 @@ function New-OSBuildTask {
         $TaskName = "$TaskName"
         if ($SaveAs -eq 'Task') {$TaskPath = "$SetOSDBuilderPathTasks\OSBuild $TaskName.json"}
         if ($SaveAs -eq 'Template') {$TaskPath = "$SetOSDBuilderPathTemplates\OSBuild $TaskName.json"}
-        #if ($SaveAs -eq 'GlobalTemplate') {$TaskPath = "$SetOSDBuilderPathTemplates\OSBuild Global $TaskName.json"}
         #=================================================
         #   Existing Task
         #=================================================
@@ -299,17 +293,6 @@ function New-OSBuildTask {
         #=================================================
         Write-Verbose '19.10.29 Set-OSMedia.ReleaseId'
         #=================================================
-<#      if ($null -eq $($OSMedia.ReleaseId)) {
-            if ($($OSMedia.Build) -eq 19044) {$OSMedia.ReleaseId = '21H2'} # Windows 10 "21H2"
-            if ($($OSMedia.Build) -eq 19045) {$OSMedia.ReleaseId = '22H2'} # Windows 10 "22H2"
-            if ($($OSMedia.Build) -eq 20348) {$OSMedia.ReleaseId = '21H2'} # Windows Server 2022
-            if ($($OSMedia.Build) -eq 22000) {$OSMedia.ReleaseId = '21H2'} # Windows 11 "Sun Valley"
-            if ($($OSMedia.Build) -eq 22621) {$OSMedia.ReleaseId = '22H2'} # Windows 11 "Sun Valley 2"
-            if ($($OSMedia.Build) -eq 22631) {$OSMedia.ReleaseId = '23H2'} # Windows 11 "Sun Valley 3"
-            if ($($OSMedia.Build) -eq 26100) {$OSMedia.ReleaseId = '24H2'} # Windows 11 "Next Valley"
-            if ($($OSMedia.Build) -eq 25398) {$OSMedia.ReleaseId = '23H2'} # Windows Server
-        } #>
-        #=================================================
         Write-Host '========================================================================================' -ForegroundColor DarkGray
         #=================================================
         #   Validate-ContentPacks
@@ -349,7 +332,6 @@ function New-OSBuildTask {
             $RemoveAppxProvisionedPackage = $RemoveAppxProvisionedPackage | Sort-Object -Unique
         } else {
             if ($ExistingTask.RemoveAppxProvisionedPackage) {$RemoveAppxProvisionedPackage = $ExistingTask.RemoveAppxProvisionedPackage}
-            #Write-Host "RemoveAppx: Select Appx Provisioned Packages to remove using Remove-AppxProvisionedPackage" -ForegroundColor Gray
         }
         #=================================================
         #   RemoveCapability
@@ -367,7 +349,6 @@ function New-OSBuildTask {
             $RemoveWindowsCapability = $RemoveWindowsCapability | Sort-Object -Unique
         } else {
             if ($ExistingTask.RemoveWindowsCapability) {$RemoveWindowsCapability = $ExistingTask.RemoveWindowsCapability}
-            #Write-Host "RemoveCapability: Select Windows Capabilities to remove using Remove-WindowsCapability" -ForegroundColor Gray
         }
         #=================================================
         #   RemovePackage
@@ -385,7 +366,6 @@ function New-OSBuildTask {
             $RemoveWindowsPackage = $RemoveWindowsPackage | Sort-Object -Unique
         } else {
             if ($ExistingTask.RemoveWindowsPackage) {$RemoveWindowsPackage = $ExistingTask.RemoveWindowsPackage}
-            #Write-Host "RemovePackage: Select Windows Packages to remove using Remove-WindowsPackage" -ForegroundColor Gray
         }
         #=================================================
         #   DisableFeature
@@ -403,7 +383,6 @@ function New-OSBuildTask {
             $DisableWindowsOptionalFeature = $DisableWindowsOptionalFeature | Sort-Object -Unique
         } else {
             if ($ExistingTask.DisableWindowsOptionalFeature) {$DisableWindowsOptionalFeature = $ExistingTask.DisableWindowsOptionalFeature}
-            #Write-Host "DisableFeature: Select Windows Optional Features to disable using Disable-WindowsOptionalFeature" -ForegroundColor Gray
         }
         #=================================================
         #   EnableFeature
@@ -422,11 +401,9 @@ function New-OSBuildTask {
             $EnableWindowsOptionalFeature = $EnableWindowsOptionalFeature | Sort-Object -Unique
         } else {
             if ($ExistingTask.EnableWindowsOptionalFeature) {$EnableWindowsOptionalFeature = $ExistingTask.EnableWindowsOptionalFeature}
-            #Write-Host "EnableFeature: Select Windows Optional Features to enable using Enable-WindowsOptionalFeature" -ForegroundColor Gray
         }
         #=================================================
         #   Content
-        #=================================================
         #=================================================
         #   Content Drivers
         #=================================================
@@ -551,7 +528,6 @@ function New-OSBuildTask {
         #   IsoExtract
         #=================================================
         if ($OSMedia.MajorVersion -eq 10) {
-            #if ($ContentFeaturesOnDemand.IsPresent -or $ContentLanguagePackages.IsPresent) {
             #=================================================
             #   ContentIsoExtract
             #=================================================
@@ -656,7 +632,6 @@ function New-OSBuildTask {
                 if ($ExistingTask.LocalExperiencePacks) {$LocalExperiencePacks = $ExistingTask.LocalExperiencePacks}
             }
             #=================================================
-            #}
         }
         #=================================================
         #   SourcesLanguageCopy
@@ -1000,7 +975,5 @@ function New-OSBuildTask {
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
     }
 }

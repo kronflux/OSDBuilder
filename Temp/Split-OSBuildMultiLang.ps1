@@ -19,9 +19,6 @@ function Split-OSBuildMultiLang {
     )
 
     Begin {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) BEGIN"
-
         #=================================================
         Write-Verbose '19.1.1 Initialize OSDBuilder'
         #=================================================
@@ -96,10 +93,8 @@ function Split-OSBuildMultiLang {
 
                     New-Item "$TempMount" -ItemType Directory | Out-Null
                     Mount-WindowsImage -Path "$TempMount" -ImagePath "$TempInstallWim" -Index 1 | Out-Null
-                    #Dism /Image:"$TempMount" /Gen-LangIni /Distribution:"$DestinationFullName\OS"
                     Dism /image:"$TempMount" /Set-AllIntl:$LangMultiLanguage
                     Dism /image:"$TempMount" /Get-Intl
-                    #Dism /Image:"$TempMount" /Gen-LangIni /Distribution:"$DestinationFullName\OS"
                     Write-Warning "Waiting 10 seconds for processes to finish ..."
                     Start-Sleep -Seconds 10
                     try {
@@ -125,7 +120,5 @@ function Split-OSBuildMultiLang {
     }
 
     End {
-        #Write-Host '========================================================================================' -ForegroundColor DarkGray
-        #Write-Host -ForegroundColor Green "$($MyInvocation.MyCommand.Name) END"
     }
 }
