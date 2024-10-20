@@ -54,9 +54,9 @@ function New-OSBuildTask {
         [Parameter(ParameterSetName='All')]
         [switch]$ContentScripts = $global:SetOSDBuilder.NewOSBuildTaskContentScripts,
 
-        #Select a StartLayout.xml in GridView from the Content\StartLayout directory
+        #Select a StartLayout.xml and/or StartLayout.json in GridView from the Content\StartLayouts directory
         [Parameter(ParameterSetName='All')]
-        [switch]$ContentStartLayout = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayout,
+        [switch]$ContentStartLayouts = $global:SetOSDBuilder.NewOSBuildTaskContentStartLayouts,
 
         #Select a DefaultAppAssociations.xml in GridView from the Content\AppAssociations directory
         [Parameter(ParameterSetName='All')]
@@ -459,21 +459,29 @@ function New-OSBuildTask {
             if ($ExistingTask.Scripts) {$Scripts = $ExistingTask.Scripts}
         }
         #=================================================
-        #   Content StartLayout
+        #   Content StartLayouts
         #=================================================
-        Write-Host "StartLayout" -ForegroundColor Green
-        if ($ExistingTask.StartLayoutXML) {
-            foreach ($Item in $ExistingTask.StartLayoutXML) {
+        Write-Host "StartLayouts" -ForegroundColor Green
+        if ($ExistingTask.StartLayouts) {
+            foreach ($Item in $ExistingTask.StartLayouts) {
                 Write-Host "$Item" -ForegroundColor DarkGray
             }
         }
-        $StartLayoutXML = $null
-        if ($ContentStartLayout.IsPresent) {
-            if ($OSMedia.MajorVersion -eq 10) {$StartLayoutXML = (Get-TaskContentStartLayoutXML).FullName}
+        $StartLayouts = $null
+        if ($ContentStartLayouts.IsPresent) {
+            if ($OSMedia.MajorVersion -eq 10) {
+                $StartLayouts = (Get-TaskContentStartLayouts).FullName
+            }
         } else {
-            if ($ExistingTask.StartLayoutXML) {$StartLayoutXML = $ExistingTask.StartLayoutXML}
+            if ($ExistingTask.StartLayouts) {
+                $StartLayouts = $ExistingTask.StartLayouts
+            }
         }
-        if (!($StartLayoutXML)) {if ($ExistingTask.StartLayoutXML) {$StartLayoutXML = $ExistingTask.StartLayoutXML}}
+        if (!($StartLayouts)) {
+            if ($ExistingTask.StartLayouts) {
+                $StartLayouts = $ExistingTask.StartLayouts
+            }
+        }
         #=================================================
         #   Content AppAssociations
         #=================================================
@@ -922,7 +930,7 @@ function New-OSBuildTask {
             "PSModulesOS" = [string[]]$PSModulesOS;
             "PSModulesWinPE" = [string[]]$PSModulesWinPE;
             "Scripts" = [string[]]$Scripts;
-            "StartLayoutXML" = [string]$StartLayoutXML;
+            "StartLayouts" = [string[]]$StartLayouts;
             "AppAssociationsXML" = [string]$AppAssociationsXML;
             "UnattendXML" = [string]$UnattendXML;
             #=================================================

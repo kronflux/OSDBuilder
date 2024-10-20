@@ -247,7 +247,7 @@ function Update-OSMedia {
                 if (Test-Path "$SetOSDBuilderPathOSMedia\$OSMediaName") {$OSMediaPath = "$SetOSDBuilderPathOSMedia\$OSMediaName"}
                 if (Test-Path "$SetOSDBuilderPathOSImport\$OSMediaName") {$OSMediaPath = "$SetOSDBuilderPathOSImport\$OSMediaName"}
                 $EnableNetFX3 = $Task.EnableNetFX3
-                $StartLayoutXML = $Task.StartLayoutXML
+                $StartLayouts = $Task.StartLayouts
                 $AppAssociationsXML = $Task.AppAssociationsXML
                 $UnattendXML = $Task.UnattendXML
                 $WinPEAutoExtraFiles = $Task.WinPEAutoExtraFiles
@@ -365,7 +365,6 @@ function Update-OSMedia {
                     $ContentPacks += @($Task.ContentPacks | Where-Object {$_})
 
                     if (!($Task.EnableNetFX3 -eq $False)) {$EnableNetFX3 = $Task.EnableNetFX3}
-                    if ($Task.StartLayoutXML) {$StartLayoutXML = $Task.StartLayoutXML}
                     if ($Task.AppAssociationsXML) {$AppAssociationsXML = $Task.AppAssociationsXML}
                     if ($Task.UnattendXML) {$UnattendXML = $Task.UnattendXML}
                     if (!($Task.WinPEAutoExtraFiles -eq $False)) {$WinPEAutoExtraFiles = $Task.WinPEAutoExtraFiles}
@@ -373,6 +372,7 @@ function Update-OSMedia {
                     if (!($Task.WinREWiFi -eq $False)) {$WinREWiFi = $Task.WinREWiFi}
                     if ($Task.WinPEDaRT) {$WinPEDaRT = $Task.WinPEDaRT}
 
+                    $StartLayouts += @($Task.StartLayouts | Where-Object {$_})
                     $ExtraFiles += @($Task.ExtraFiles | Where-Object {$_})
                     $Scripts += @($Task.Scripts | Where-Object {$_})
                     $Drivers += @($Task.Drivers | Where-Object {$_})
@@ -997,7 +997,7 @@ function Update-OSMedia {
                 Disable-WindowsOptionalFeatureOS
                 Add-ContentDriversOS
                 Add-ContentExtraFilesOS
-                Add-ContentStartLayout
+                Add-ContentStartLayouts
                 Add-ContentAppAssociations
                 Add-ContentUnattend
                 Add-ContentScriptsOS
@@ -1008,7 +1008,7 @@ function Update-OSMedia {
                 Add-ContentPack -PackType OSPoshMods
                 Add-ContentPack -PackType OSRegistry
                 Add-ContentPack -PackType OSScripts
-                Add-ContentPack -PackType OSStartLayout
+                Add-ContentPack -PackType OSStartLayouts
                 Add-ContentPack -PackType OSAppAssociations
                 #=================================================
                 #   Mirror OSMedia and OSBuild

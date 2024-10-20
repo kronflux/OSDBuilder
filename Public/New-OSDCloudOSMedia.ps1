@@ -465,7 +465,7 @@ function New-OSDCloudOSMedia {
             Disable-WindowsOptionalFeatureOS
             Add-ContentDriversOS
             Add-ContentExtraFilesOS
-            Add-ContentStartLayout
+            Add-ContentStartLayouts
             Add-ContentAppAssociations
             Add-ContentUnattend
             Add-ContentScriptsOS
@@ -476,7 +476,7 @@ function New-OSDCloudOSMedia {
             Add-ContentPack -PackType OSPoshMods
             Add-ContentPack -PackType OSRegistry
             Add-ContentPack -PackType OSScripts
-            Add-ContentPack -PackType OSStartLayout
+            Add-ContentPack -PackType OSStartLayouts
             Add-ContentPack -PackType OSAppAssociations
             #=======================================================================
             #   Mirror OSMedia and OSBuild

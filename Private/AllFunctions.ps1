@@ -380,7 +380,7 @@ function Add-ContentScriptsPE {
         }
     }
 }
-function Add-ContentStartLayout {
+function Add-ContentStartLayouts {
     [CmdletBinding()]
     param ()
     #=================================================
@@ -388,18 +388,33 @@ function Add-ContentStartLayout {
     #=================================================
     if ($ScriptName -ne 'New-OSBuild') {Return}
     if ($OSMajorVersion -ne 10) {Return}
-    if ([string]::IsNullOrWhiteSpace($StartLayoutXML)) {Return}
+    if ([string]::IsNullOrWhiteSpace($StartLayouts)) {Return}
     #=================================================
     #   TASK
     #=================================================
-    Show-ActionTime; Write-Host -ForegroundColor Green "OS: Use Content StartLayout"
-    Write-Host "    $SetOSDBuilderPathContent\$StartLayoutXML" -ForegroundColor DarkGray
-    Try {
-        Copy-Item -Path "$SetOSDBuilderPathContent\$StartLayoutXML" -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" -Recurse -Force | Out-Null
-    }
-    Catch {
-        $ErrorMessage = $_.Exception.Message
-        Write-Warning "$ErrorMessage"
+    Show-ActionTime; Write-Host -ForegroundColor Green "OS: Use Content StartLayouts"
+    Write-Host "    $SetOSDBuilderPathContent\$StartLayouts" -ForegroundColor DarkGray
+    
+    foreach ($layout in $StartLayouts) {
+        $filePath = "$SetOSDBuilderPathContent\$layout"
+        $destinationPath = if ($layout -match "\.xml$") {
+            "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml"
+        } elseif ($layout -match "\.json$") {
+            "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.json"
+        }
+
+        Try {
+            if (Test-Path $filePath) {
+                Copy-Item -Path $filePath -Destination $destinationPath -Recurse -Force | Out-Null
+                Write-Host "Copied $filePath to $destinationPath" -ForegroundColor Cyan
+            } else {
+                Write-Warning "File not found: $filePath"
+            }
+        }
+        Catch {
+            $ErrorMessage = $_.Exception.Message
+            Write-Warning "$ErrorMessage"
+        }
     }
 }
 function Add-ContentAppAssociations {
@@ -470,7 +485,7 @@ function Add-ContentPack {
             'OSPoshMods',
             'OSRegistry',
             'OSScripts',
-            'OSStartLayout',
+            'OSStartLayouts',
             'OSAppAssociations',
             'PEADK',
             'PEADKLang',
@@ -651,10 +666,10 @@ function Add-ContentPack {
                 }
             }
         }
-        if ($PackType -eq 'OSStartLayout') {
-            Show-ActionTime; Write-Host -ForegroundColor Green "OSStartLayout ContentPack"
+        if ($PackType -eq 'OSStartLayouts') {
+            Show-ActionTime; Write-Host -ForegroundColor Green "OSStartLayouts ContentPack"
             foreach ($ContentPack in $ContentPacks) {
-                $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSStartLayout"
+                $ContentPackPath = Join-Path $SetOSDBuilderPathContentPacks "$ContentPack\OSStartLayouts"
 
                 $ContentPaths = @(
                     "$ContentPackPath\ALL"
@@ -1313,11 +1328,24 @@ function Add-ContentPackOSStartLayouts {
     #======================================================================================
     #   BUILD
     #======================================================================================
-    $ContentPackOSStartLayouts = Get-ChildItem "$ContentPackContent\*.xml" -File | Select-Object -Property FullName
+    # Get both XML and JSON files
+    $ContentPackOSStartLayouts = Get-ChildItem "$ContentPackContent\*" -Include *.xml, *.json -File | Select-Object -Property FullName, Extension
+
     foreach ($ContentPackOSStartLayout in $ContentPackOSStartLayouts) {
         Write-Host -ForegroundColor Cyan "  $($ContentPackOSStartLayout.FullName)"
         Try {
-            Copy-Item -Path "$($ContentPackOSStartLayout.FullName)" -Destination "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" -Recurse -Force | Out-Null
+            # Determine the destination path based on the file extension
+            $destinationPath = if ($ContentPackOSStartLayout.Extension -eq ".xml") {
+                "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml"
+            } elseif ($ContentPackOSStartLayout.Extension -eq ".json") {
+                "$MountDirectory\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.json"
+            } else {
+                # If the file extension is neither .xml nor .json, skip it
+                continue
+            }
+        
+            # Copy the selected file to the appropriate destination
+            Copy-Item -Path "$($ContentPackOSStartLayout.FullName)" -Destination $destinationPath -Recurse -Force | Out-Null
         }
         Catch {
             $ErrorMessage = $_.Exception.Message
@@ -3814,26 +3842,32 @@ function Get-TaskContentScripts {
     foreach ($Item in $Scripts) {Write-Host "$($Item.FullName)" -ForegroundColor White}
     Return $Scripts
 }
-function Get-TaskContentStartLayoutXML {
+function Get-TaskContentStartLayouts {
     #=================================================
-    #   Content StartLayout
+    #   Content StartLayouts
     #=================================================
     [CmdletBinding()]
     param ()
-    $StartLayoutXML = Get-ChildItem -Path $GetOSDBuilderPathContentStartLayout *.xml -ErrorAction SilentlyContinue | Select-Object -Property Name, FullName, Length, CreationTime | Sort-Object -Property FullName
-    foreach ($Item in $StartLayoutXML) {$Item.FullName = $($Item.FullName).replace("$SetOSDBuilderPathContent\",'')}
-
-    if ($null -eq $StartLayoutXML) {Write-Warning "StartLayoutXML: To select a Start Layout, add Content to $GetOSDBuilderPathContentStartLayout"}
-    else {
-        if ($ExistingTask.StartLayoutXML) {
-            foreach ($Item in $ExistingTask.StartLayoutXML) {
-                $StartLayoutXML = $StartLayoutXML | Where-Object {$_.FullName -ne $Item}
-            }
-        }
-        $StartLayoutXML = $StartLayoutXML | Out-GridView -Title "StartLayoutXML: Select a Start Layout XML to apply and press OK (Esc or Cancel to Skip)" -OutputMode Single
+    $StartLayouts = Get-ChildItem -Path $GetOSDBuilderPathContentStartLayouts -Include *.xml, *.json -ErrorAction SilentlyContinue | 
+                    Select-Object -Property Name, FullName, Length, CreationTime | 
+                    Sort-Object -Property FullName
+    foreach ($Item in $StartLayouts) {
+        $Item.FullName = $($Item.FullName).replace("$SetOSDBuilderPathContent\", '')
     }
-    foreach ($Item in $StartLayoutXML) {Write-Host "$($Item.FullName)" -ForegroundColor White}
-    Return $StartLayoutXML
+    if ($null -eq $StartLayouts -or $StartLayouts.Count -eq 0) {
+        Write-Warning "StartLayouts: To select Start Layouts, add Content to $GetOSDBuilderPathContentStartLayouts"
+        return
+    }
+    if ($ExistingTask.StartLayouts) {
+        foreach ($Item in $ExistingTask.StartLayouts) {
+            $StartLayouts = $StartLayouts | Where-Object { $_.FullName -ne $Item }
+        }
+    }
+    $SelectedStartLayouts = $StartLayouts | Out-GridView -Title "StartLayouts: Select Start Layouts to apply and press OK (Esc or Cancel to Skip)" -OutputMode Multiple
+    foreach ($Item in $SelectedStartLayouts) {
+        Write-Host "$($Item.FullName)" -ForegroundColor White
+    }
+    return $SelectedStartLayouts
 }
 function Get-TaskContentAppAssociationsXML {
     #=================================================
@@ -4928,7 +4962,7 @@ function New-ItemDirectorySetOSDBuilderPathContent {
         #"$SetOSDBuilderPathContent\Provisioning"
         #"$SetOSDBuilderPathContent\Registry"
         $GetOSDBuilderPathContentScripts
-        $GetOSDBuilderPathContentStartLayout
+        $GetOSDBuilderPathContentStartLayouts
         $GetOSDBuilderPathContentAppAssociations
         $GetOSDBuilderPathContentUnattend
         #"$SetOSDBuilderPathContent\Updates"
@@ -5256,7 +5290,7 @@ function Repair-OSBuildTask {
                 "ModifiedTime" = [datetime]$OSMedia.ModifiedTime;
 
                 "EnableNetFX3" = [string]$Task.EnableNetFX3;
-                "StartLayoutXML" = [string]$Task.ImportStartLayout;
+                "StartLayouts" = [string]$Task.ImportStartLayouts;
                 "AppAssociationsXML" = [string]$Task.ImportAppAssociations;
                 "UnattendXML" = [string]$Task.UseWindowsUnattend;
                 "WinPEAutoExtraFiles" = [string]"False";
@@ -6116,9 +6150,10 @@ function Show-TaskInfo {
         Write-Host "-Remove Packages:"
         foreach ($item in $RemovePackage)       {Write-Host -ForegroundColor Cyan "   $item"}}
 
+    if ($StartLayouts) {
+        Write-Host "-Start Layouts:"
+        foreach ($item in $StartLayouts)          {Write-Host -ForegroundColor Cyan "   $SetOSDBuilderPathContent\$item"}}
 
-    if ($StartLayoutXML)    {
-    Write-Host "-Start Layout:              $SetOSDBuilderPathContent\$StartLayoutXML"}
     if ($AppAssociationsXML)    {
     Write-Host "-Default App Associations:              $SetOSDBuilderPathContent\$AppAssociationsXML"}
     if ($UnattendXML)       {
@@ -6240,7 +6275,7 @@ function Show-TaskInfo {
         "ModifiedTime" = [datetime]$CombinedOSMedia.ModifiedTime;
 
         "EnableNetFX3" = [string]$EnableNetFX3;
-        "StartLayoutXML" = [string]$StartLayoutXML;
+        "StartLayouts" = [string[]]$($StartLayouts | Sort-Object -Unique);
         "AppAssociationsXML" = [string]$AppAssociationsXML;
         "UnattendXML" = [string]$UnattendXML;
         "WinPEAutoExtraFiles" = [string]$WinPEAutoExtraFiles;
