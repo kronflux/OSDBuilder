@@ -94,7 +94,19 @@ function Save-OSDBuilderDownload {
             'DUSU Setup Dynamic Update',
             'DUCU Component Dynamic Update',
             'DotNet Framework',
-            'Optional')]
+            'Optional',
+            'AdobeSU',
+            'ComponentDU',
+            'ComponentDU Critical',
+            'ComponentDU SafeOS',
+            'DefinitionUpdate',
+            'DotNet',
+            'DotNetCU',
+            'Drivers',
+            'FeatureOnDemand',
+            'QualityUpdate',
+            'SetupDU',
+            'WindowsDriver')]
         [string]$UpdateGroup,
 
         #Filter Microsoft Updates for a specific OS
@@ -352,9 +364,18 @@ function Save-OSDBuilderDownload {
             #=================================================
             if ($UpdateGroup -like "*DotNet*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}}
             if ($UpdateGroup -like "*DUCU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}}
+            if ($UpdateGroup -like "*ComponentDU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}}
+            if ($UpdateGroup -like "*ComponentDU Critical*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU Critical*"}}
+            if ($UpdateGroup -like "*ComponentDU SafeOS*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU SafeOS*"}}
+            if ($UpdateGroup -like "*DefinitionUpdate*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DefinitionUpdate*"}}
+            if ($UpdateGroup -like "*DotNetCU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNetCU*"}}
+            if ($UpdateGroup -like "*Drivers*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "Drivers*"}}
+            if ($UpdateGroup -like "*FeatureOnDemand*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "FeatureOnDemand*"}}
+            if ($UpdateGroup -like "*QualityUpdate*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "QualityUpdate*"}}
             if ($UpdateGroup -like "*DUSU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SetupDU'}}
             if ($UpdateGroup -like "*LCU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}}
             if ($UpdateGroup -like "*SSU*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'SSU'}}
+            if ($UpdateGroup -like "*WindowsDriver*") {$OSDUpdates = $OSDUpdates | Where-Object {$_.UpdateGroup -like "WindowsDriver*"}}
             if ($UpdateGroup -eq 'Optional') {$OSDUpdates = $OSDUpdates | Where-Object {[String]::IsNullOrWhiteSpace($_.UpdateGroup) -or $_.UpdateGroup -eq 'Optional'}}
             #=================================================
             #   Sorting

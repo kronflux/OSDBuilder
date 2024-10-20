@@ -43,11 +43,16 @@ function New-OSBuild {
             'ComponentDU',`
             'ComponentDU Critical',`
             'ComponentDU SafeOS',`
+            'DefinitionUpdate',`
             'DotNet',`
             'DotNetCU',`
-            'LCU',
+            'Drivers',`
+            'FeatureOnDemand',`
+            'LCU',`
+            'QualityUpdate',`
             'SetupDU',`
-            'SSU'
+            'SSU',`
+            'WindowsDriver'
         )]
         [string[]]$Exclude = $global:SetOSDBuilder.NewOSBuildExclude,
 
@@ -74,11 +79,16 @@ function New-OSBuild {
             'ComponentDU',`
             'ComponentDU Critical',`
             'ComponentDU SafeOS',`
+            'DefinitionUpdate',`
             'DotNet',`
             'DotNetCU',`
-            'LCU',
+            'Drivers',`
+            'FeatureOnDemand',`
+            'LCU',`
+            'QualityUpdate',`
             'SetupDU',`
-            'SSU'
+            'SSU',`
+            'WindowsDriver'
         )]
         [string[]]$Include = $global:SetOSDBuilder.NewOSBuildInclude,
 
@@ -721,6 +731,28 @@ function New-OSBuild {
             $OSDUpdateComponentDU = @()
             $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}
             #=================================================
+            #   DefinitionUpdate
+            #=================================================
+            $OSDUpdateComponentDU = @()
+            $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DefinitionUpdate*"}
+            #=================================================
+            #   DotNet
+            #=================================================
+            $OSDUpdateDotNet = @()
+            if ($OSMajorVersion -eq 10) {
+                $OSDUpdateDotNet = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}
+            }
+            #=================================================
+            #   Drivers
+            #=================================================
+            $OSDUpdateComponentDU = @()
+            $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "Drivers*"}
+            #=================================================
+            #   FeatureOnDemand
+            #=================================================
+            $OSDUpdateComponentDU = @()
+            $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "FeatureOnDemand*"}
+            #=================================================
             #   SSU
             #=================================================
             $OSDUpdateSSU = @()
@@ -731,12 +763,15 @@ function New-OSBuild {
             $OSDUpdateLCU = @()
             $OSDUpdateLCU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}
             #=================================================
-            #   DotNet
+            #   QualityUpdate
             #=================================================
-            $OSDUpdateDotNet = @()
-            if ($OSMajorVersion -eq 10) {
-                $OSDUpdateDotNet = $OSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}
-            }
+            $OSDUpdateLCU = @()
+            $OSDUpdateLCU = $OSDUpdates | Where-Object {$_.UpdateGroup -eq 'QualityUpdate'}
+            #=================================================
+            #   WindowsDriver
+            #=================================================
+            $OSDUpdateComponentDU = @()
+            $OSDUpdateComponentDU = $OSDUpdates | Where-Object {$_.UpdateGroup -like "WindowsDriver*"}
             #=================================================
             #   Optional
             #=================================================
